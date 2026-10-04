@@ -219,6 +219,8 @@ def parse_prediction(content: str, evidence: list[dict]) -> dict:
                          "quote_start": start, "quote_end": end,
                          "match_type": match_type,
                          "requires_review": match_type == "source_word_spacing",
+                         **{key: source[key] for key in
+                            ("source_url", "source_page_url", "language", "languages") if key in source},
                          "chunk_id": source["chunk_id"],
                          "document_id": source["document_id"],
                          "source_pdf": source["source_pdf"], "page_number": source["page_number"]})

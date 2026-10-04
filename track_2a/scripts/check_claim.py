@@ -10,6 +10,7 @@ import sys
 from pathlib import Path
 
 from apertus_nli import ApiConfig, api_request, build_request, classify_claim
+from booklet_manifest import attach_document_metadata, load_document_metadata
 from sparse_index import BM25Index, index_path, read_qdrant_chunks
 
 
@@ -121,6 +122,11 @@ def main() -> int:
     parser.add_argument("--retrieval", choices=["hybrid", "dense"], default="hybrid")
     parser.add_argument("--candidate-k", type=int, default=50, help="BM25 candidate pool before dense reranking")
     parser.add_argument("--sparse-dir", type=Path, default=Path("data/bm25"))
+    manifest_options = parser.add_mutually_exclusive_group()
+    manifest_options.add_argument("--manifest", type=Path, default=Path("data/booklets/manifest.json"),
+                                  help="Downloader manifest joined by PDF content SHA-256")
+    manifest_options.add_argument("--no-manifest", action="store_true",
+                                  help="Run the previous baseline without manifest enrichment")
     parser.add_argument("--list-models", action="store_true", help="Check models available to your CSCS key")
     parser.add_argument("--dry-run", action="store_true", help="Retrieve and show request without contacting CSCS")
     parser.add_argument("--output", type=Path, help="Also save the result as JSON")
@@ -140,14 +146,20 @@ def main() -> int:
         if args.list_models:
             result = api_request("models", config)
         else:
+            metadata = (None if args.no_manifest else
+                        load_document_metadata(args.manifest, args.document_id))
             evidence, _, diagnostics = retrieve_evidence(
                 args.db, args.collection, args.document_id, args.claim, args.top_k, args.device,
                 retrieval=args.retrieval, candidate_k=args.candidate_k, sparse_dir=args.sparse_dir)
+            if metadata is not None:
+                evidence = attach_document_metadata(evidence, metadata)
             common = {
                 "claim": args.claim, "document_id": args.document_id,
                 "retrieval": diagnostics,
                 "evidence": evidence,
             }
+            if metadata is not None:
+                common["document_metadata"] = metadata
             if args.dry_run:
                 result = {**common, "status": "dry_run", "request": build_request(args.claim, evidence, config)}
             else:
