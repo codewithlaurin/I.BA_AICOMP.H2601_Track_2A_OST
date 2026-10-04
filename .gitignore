@@ -28,3 +28,6 @@ build/
 
 # script outputs
 track_2a/data/booklets
+track_2a/data/results
+track_2a/data/result
+track_2a/data/bm25

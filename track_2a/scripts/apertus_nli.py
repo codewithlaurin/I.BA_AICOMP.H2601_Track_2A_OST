@@ -5,6 +5,8 @@ from __future__ import annotations
 import hashlib
 import json
 import os
+import re
+import unicodedata
 from dataclasses import dataclass
 from typing import TYPE_CHECKING
 
@@ -39,6 +41,81 @@ list. Do not invent evidence. Do not add Markdown fences or text outside the JSO
 
 class InferenceError(RuntimeError):
     """An API or output-validation failure; never a factual NEUTRAL prediction."""
+
+    def __init__(self, message: str, *, details: dict | None = None):
+        super().__init__(message)
+        self.details = details or {}
+
+
+def normalize_quote_text(text: str) -> tuple[str, list[tuple[int, int]]]:
+    """Normalize formatting and retain a map back to exact source character spans.
+
+    Only canonical Unicode composition, whitespace and discretionary soft hyphens
+    change. Case, punctuation, numbers, negation and visible hyphens stay intact.
+    """
+    characters: list[str] = []
+    spans: list[tuple[int, int]] = []
+    start = 0
+    while start < len(text):
+        end = start + 1
+        while end < len(text) and unicodedata.combining(text[end]):
+            end += 1
+        cluster = unicodedata.normalize("NFC", text[start:end])
+        for character in cluster:
+            if character == "\u00ad":
+                continue
+            if character.isspace():
+                if characters and characters[-1] == " ":
+                    spans[-1] = (spans[-1][0], end)
+                    continue
+                character = " "
+            characters.append(character)
+            spans.append((start, end))
+        start = end
+    return "".join(characters), spans
+
+
+def source_quote_match(quote: str, passage: str) -> tuple[int, int, str] | None:
+    """Locate a quote; source word-spacing repairs are explicitly reviewable."""
+    if not quote.strip():
+        return None
+    position = passage.find(quote)
+    if position >= 0:
+        return position, position + len(quote), "exact"
+    normalized_quote, _ = normalize_quote_text(quote)
+    normalized_quote = normalized_quote.strip()
+    if not normalized_quote:
+        return None
+    normalized_passage, spans = normalize_quote_text(passage)
+    position = normalized_passage.find(normalized_quote)
+    if position >= 0:
+        return (spans[position][0], spans[position + len(normalized_quote) - 1][1],
+                "formatting_normalized")
+
+    # Only source-side gaps between letters may be omitted. Quote spaces stay
+    # mandatory; digits, punctuation and visible hyphens remain literal.
+    # This anchors the citation but cannot prove that a word join is semantic-safe.
+    pattern = "".join(
+        re.escape(character) + (
+            " ?" if character.isalpha() and index + 1 < len(normalized_quote)
+            and normalized_quote[index + 1].isalpha() else ""
+        )
+        for index, character in enumerate(normalized_quote)
+    )
+    if normalized_quote[0].isalnum():
+        pattern = r"(?<!\w)" + pattern
+    if normalized_quote[-1].isalnum():
+        pattern += r"(?!\w)"
+    match = re.search(pattern, normalized_passage)
+    if match is None:
+        return None
+    return spans[match.start()][0], spans[match.end() - 1][1], "source_word_spacing"
+
+
+def source_quote_span(quote: str, passage: str) -> tuple[int, int] | None:
+    """Return source offsets, retaining compatibility with existing callers."""
+    match = source_quote_match(quote, passage)
+    return match[:2] if match else None
 
 
 @dataclass(frozen=True)
@@ -129,9 +206,20 @@ def parse_prediction(content: str, evidence: list[dict]) -> dict:
         if not isinstance(reference, str) or reference not in by_id:
             raise InferenceError("Citation refers to evidence that was not supplied")
         source = by_id[reference]
-        if not isinstance(quote, str) or not quote.strip() or quote not in source["text"]:
-            raise InferenceError("Citation quote does not occur exactly in its passage")
-        resolved.append({**citation, "chunk_id": source["chunk_id"],
+        match = source_quote_match(quote, source["text"]) if isinstance(quote, str) else None
+        if match is None:
+            raise InferenceError(
+                f"Citation {reference} cannot be verified against its passage after formatting normalization",
+                details={"evidence_id": reference, "model_quote": quote,
+                         "source_text": source["text"], "chunk_id": source["chunk_id"]},
+            )
+        start, end, match_type = match
+        original_quote = source["text"][start:end]
+        resolved.append({**citation, "quote": original_quote, "model_quote": quote,
+                         "quote_start": start, "quote_end": end,
+                         "match_type": match_type,
+                         "requires_review": match_type == "source_word_spacing",
+                         "chunk_id": source["chunk_id"],
                          "document_id": source["document_id"],
                          "source_pdf": source["source_pdf"], "page_number": source["page_number"]})
     return {**prediction, "citations": resolved}
@@ -153,10 +241,18 @@ def classify_claim(claim: str, evidence: list[dict], config: ApiConfig) -> dict:
         content = choice["message"]["content"]
     except (KeyError, IndexError, TypeError):
         raise InferenceError("CSCS response has no complete assistant message") from None
-    prediction = parse_prediction(content, evidence)
+    try:
+        prediction = parse_prediction(content, evidence)
+    except InferenceError as error:
+        error.details.update({"raw_model_output": content, "evidence": evidence,
+                              "requested_model": config.model, "model": response.get("model"),
+                              "response_id": response.get("id"), "prompt_version": PROMPT_VERSION})
+        raise
     return {
         "status": "ok", **prediction, "model": response.get("model", config.model),
         "requested_model": config.model, "prompt_version": PROMPT_VERSION,
+        "citation_validation": "source-word-spacing-v2",
+        "citation_review_required": any(c["requires_review"] for c in prediction["citations"]),
         "request_sha256": hashlib.sha256(
             json.dumps(request, sort_keys=True, ensure_ascii=False).encode()).hexdigest(),
         "temperature": request["temperature"], "max_output_tokens": request["max_tokens"],
