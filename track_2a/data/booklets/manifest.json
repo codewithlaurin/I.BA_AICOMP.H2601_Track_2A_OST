@@ -1,0 +1,8201 @@
+{
+  "dataset": "OSTswiss/MNLIoverSwissVotingBooklets",
+  "unique_urls": 60,
+  "files": [
+    {
+      "url": "https://www.bk.admin.ch/dam/de/sd-web/6DaWglL-N7NM/2025-09-28_erlaeuterungen_des_bundesrates.pdf",
+      "path": "pdfs/2025-09-28_erlaeuterungen_des_bundesrates__650f9b46770f49892e727664a02061a3f82f754cfd5e256159ea2fef03dccb83.pdf",
+      "languages": [
+        "de"
+      ],
+      "references": [
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 393
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 444
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 593
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 700
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 792
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 806
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 920
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 1157
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 1182
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 1369
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 1403
+        }
+      ],
+      "status": "downloaded",
+      "bytes": 1140829,
+      "sha256": "39c020145299913685e4d0b6899fa23bb1f94938652a417e0c1da08d316ade8a"
+    },
+    {
+      "url": "https://www.bk.admin.ch/dam/de/sd-web/9igLXNhBGtsc/2025-02-09_erlaeuterungen_des_bundesrates.pdf",
+      "path": "pdfs/2025-02-09_erlaeuterungen_des_bundesrates__ada94fb50a1f0a2b995bb20eff1c21f1cd234a4520cdcbdc583cdaec43e9589d.pdf",
+      "languages": [
+        "de"
+      ],
+      "references": [
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 506
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 525
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 535
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 550
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 563
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 618
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 750
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 824
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 1063
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 1307
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 1419
+        }
+      ],
+      "status": "downloaded",
+      "bytes": 589908,
+      "sha256": "97756edd20157c63956334c8ef563af17fecfd96afa9fd8fba2777b64df36180"
+    },
+    {
+      "url": "https://www.bk.admin.ch/dam/de/sd-web/In9i5Kp4p64r/2024-03-03_erlaeuterungen_des_bundesrates.pdf",
+      "path": "pdfs/2024-03-03_erlaeuterungen_des_bundesrates__b42ca2da64162a6433b5baa93f6c5b45978d216801520848fc2496999fa4c223.pdf",
+      "languages": [
+        "de"
+      ],
+      "references": [
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 65
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 72
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 127
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 165
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 309
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 328
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 449
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 463
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 521
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 589
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 714
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 804
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 857
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 879
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 898
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 929
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 945
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 1106
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 1232
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 1236
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 1276
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 1300
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 1326
+        }
+      ],
+      "status": "downloaded",
+      "bytes": 759783,
+      "sha256": "53c7cc72c28f80969ed56d7813ad8c05e505b1817923418d0dfa45368a6bd07e"
+    },
+    {
+      "url": "https://www.bk.admin.ch/dam/de/sd-web/JwKnnvQMcYT2/2022-02-13_erlaeuterungen_des_bundesrates.pdf",
+      "path": "pdfs/2022-02-13_erlaeuterungen_des_bundesrates__5226acda3d506981a24224eb3316bc83425414121df9a5179e77b12d6710cfff.pdf",
+      "languages": [
+        "de"
+      ],
+      "references": [
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 14
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 20
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 96
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 115
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 307
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 352
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 467
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 491
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 505
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 530
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 555
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 585
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 623
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 628
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 757
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 784
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 886
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 973
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 988
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 993
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 1081
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 1083
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 1097
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 1118
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 1123
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 1248
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 1354
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 1384
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 1396
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 1421
+        }
+      ],
+      "status": "downloaded",
+      "bytes": 869635,
+      "sha256": "4979a6ed7f2f6616cc692638341b00ef20bb3e74cb6a40608f6f8c968fe167a4"
+    },
+    {
+      "url": "https://www.bk.admin.ch/dam/de/sd-web/Lv5UWt6X1iUj/2023-06-18_erlaeuterungen_des_bundesrates.pdf",
+      "path": "pdfs/2023-06-18_erlaeuterungen_des_bundesrates__a25af5e538733680a5454b92ff8e7d3efbb61e0f5be6e50b9067f523ac9b68c0.pdf",
+      "languages": [
+        "de"
+      ],
+      "references": [
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 305
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 334
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 645
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 649
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 688
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 699
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 731
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 768
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 820
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 1142
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 1164
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 1172
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 1175
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 1206
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 1210
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 1262
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 1324
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 1357
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 1389
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 1406
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 1427
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 1461
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 1464
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 1478
+        }
+      ],
+      "status": "downloaded",
+      "bytes": 1104889,
+      "sha256": "d496622d23589e2c9379d2172e0d8c60eca4bbd119588c656c39d49170862881"
+    },
+    {
+      "url": "https://www.bk.admin.ch/dam/de/sd-web/MDRXrtFaVPNG/2026-03-08_erlaeuterungen_des_bundesrates.pdf",
+      "path": "pdfs/2026-03-08_erlaeuterungen_des_bundesrates__35aad2265f34206a8c94a0d07c13ea6ad14f157ad96e177202f29407e9dbafd9.pdf",
+      "languages": [
+        "de"
+      ],
+      "references": [
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 26
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 57
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 87
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 130
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 147
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 236
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 251
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 259
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 270
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 300
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 339
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 346
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 424
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 436
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 451
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 558
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 569
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 619
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 798
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 836
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 881
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 885
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 900
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 912
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 922
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 967
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 1032
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 1040
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 1059
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 1060
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 1082
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 1134
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 1173
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 1227
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 1229
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 1358
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 1359
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 1387
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 1465
+        }
+      ],
+      "status": "downloaded",
+      "bytes": 1281545,
+      "sha256": "d0c794f37d6d2cb25e9969ed058e2a7d7c3e2508f7f03e2b5e90415d364f6170"
+    },
+    {
+      "url": "https://www.bk.admin.ch/dam/de/sd-web/NJXQlhZXHqDA/2021-09-26_erlaeuterungen_des_bundesrates.pdf",
+      "path": "pdfs/2021-09-26_erlaeuterungen_des_bundesrates__239e412995ceff9c0f2fb03eedcd160d1cde051a672c6a7647af71c230e15e32.pdf",
+      "languages": [
+        "de"
+      ],
+      "references": [
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 22
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 342
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 850
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 906
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 946
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 1066
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 1084
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 1155
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 1167
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 1264
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 1315
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 1341
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 1410
+        }
+      ],
+      "status": "downloaded",
+      "bytes": 753452,
+      "sha256": "ebb4288817f5f5fdbde3aa24bf67688220e6c8e2f9fcf82f947a44aec046f341"
+    },
+    {
+      "url": "https://www.bk.admin.ch/dam/de/sd-web/PCWaDg8-GOcJ/2022-05-15_erlaeuterungen_des_bundesrates.pdf",
+      "path": "pdfs/2022-05-15_erlaeuterungen_des_bundesrates__032d07e6c70a8a780f8f33f26fa95c9bf9307e3e0ffd9210210a4cd3d40bcb66.pdf",
+      "languages": [
+        "de"
+      ],
+      "references": [
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 150
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 152
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 254
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 350
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 565
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 646
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 814
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 835
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 911
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 916
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 925
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 932
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 1290
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 1336
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 1373
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 1440
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 1441
+        }
+      ],
+      "status": "downloaded",
+      "bytes": 1978279,
+      "sha256": "c12ea935b73d98790649c3bb8f3f3c5ff967a999a0a4ddc969121b9dd5d47335"
+    },
+    {
+      "url": "https://www.bk.admin.ch/dam/de/sd-web/SwAIDvDocLte/2022-09-25_erlaeuterungen_des_bundesrates.pdf",
+      "path": "pdfs/2022-09-25_erlaeuterungen_des_bundesrates__d81390fb58738ce0591649d8de2d9a374297b09d3926263eee545bb683893a69.pdf",
+      "languages": [
+        "de"
+      ],
+      "references": [
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 18
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 21
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 75
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 89
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 116
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 269
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 322
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 333
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 445
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 484
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 494
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 582
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 594
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 605
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 612
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 777
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 907
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 1000
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 1017
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 1181
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 1259
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 1269
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 1353
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 1376
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 1392
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 1417
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 1484
+        }
+      ],
+      "status": "downloaded",
+      "bytes": 1615276,
+      "sha256": "c67c9bce6da1b5587ee25919cff8172d33c45081e10a96f7c0476f49a91d2b97"
+    },
+    {
+      "url": "https://www.bk.admin.ch/dam/de/sd-web/TbPPMZBkuvPm/2021-11-28_erlaeuterungen_des_bundesrates.pdf",
+      "path": "pdfs/2021-11-28_erlaeuterungen_des_bundesrates__5d1a5d1414aafdfd15b0dae2501a609e99ebfe2950b31df23bd3e77dbcdc23dc.pdf",
+      "languages": [
+        "de"
+      ],
+      "references": [
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 85
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 332
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 395
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 405
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 453
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 624
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 651
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 1006
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 1014
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 1050
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 1143
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 1203
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 1298
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 1306
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 1311
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 1328
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 1474
+        }
+      ],
+      "status": "downloaded",
+      "bytes": 594969,
+      "sha256": "f463fb7ea4b7f663d5e2af0f67bc8e364778ee3c0a19f56caadc655bc2670a7b"
+    },
+    {
+      "url": "https://www.bk.admin.ch/dam/de/sd-web/UxUxfYD5ma0h/2021-06-13_erlaeuterungen_des_bundesrates.pdf",
+      "path": "pdfs/2021-06-13_erlaeuterungen_des_bundesrates__5aad16851c6b8575a4957e5df9aad58199f21daf4cf08cf9b7e41af7447b9199.pdf",
+      "languages": [
+        "de"
+      ],
+      "references": [
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 5
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 54
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 97
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 189
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 193
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 204
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 223
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 308
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 476
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 559
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 592
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 606
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 614
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 662
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 813
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 852
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 873
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 970
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 978
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 1085
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 1087
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 1105
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 1136
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 1296
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 1344
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 1405
+        }
+      ],
+      "status": "downloaded",
+      "bytes": 1563498,
+      "sha256": "521e39af06717d2adeb2f787a08b533164921a952c59b7ad3e5b114fcadec744"
+    },
+    {
+      "url": "https://www.bk.admin.ch/dam/de/sd-web/WeUrKyC0FyPc/2026-06-14_erlaeuterungen_des_bundesrates.pdf",
+      "path": "pdfs/2026-06-14_erlaeuterungen_des_bundesrates__8228e5139d7e30b75021bb36d9e3729f92dcc3bf49c941605f4031ca3ea0aa99.pdf",
+      "languages": [
+        "de"
+      ],
+      "references": [
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 55
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 82
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 83
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 144
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 156
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 184
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 407
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 474
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 648
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 682
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 712
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 1101
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 1204
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 1214
+        }
+      ],
+      "status": "downloaded",
+      "bytes": 848547,
+      "sha256": "13c434202d63d32ca57f03311fb9de5fc7477d5c49ea14b06984f5d3a8591115"
+    },
+    {
+      "url": "https://www.bk.admin.ch/dam/de/sd-web/XuiMCko39BzI/2020-09-27_erlaeuterungen_des_bundesrates.pdf",
+      "path": "pdfs/2020-09-27_erlaeuterungen_des_bundesrates__75dc1a878a0daf50331b361c023cdb1f563e77ab77b70dd6c3ebc6d0f3d2235c.pdf",
+      "languages": [
+        "de"
+      ],
+      "references": [
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 3
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 44
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 71
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 104
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 117
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 125
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 131
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 132
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 177
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 229
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 265
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 288
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 297
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 381
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 418
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 421
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 490
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 534
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 541
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 549
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 568
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 574
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 597
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 635
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 657
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 698
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 719
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 737
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 783
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 811
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 823
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 833
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 1065
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 1086
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 1111
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 1121
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 1194
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 1265
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 1285
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 1322
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 1418
+        }
+      ],
+      "status": "downloaded",
+      "bytes": 941983,
+      "sha256": "a6663984e2d5c42e4c2548fd146229440e9ed941236b1d0221891f0b5c0ca50b"
+    },
+    {
+      "url": "https://www.bk.admin.ch/dam/de/sd-web/aSmZ7rOvZDrG/2020-02-09_erlaeuterungen_des_bundesrates.pdf",
+      "path": "pdfs/2020-02-09_erlaeuterungen_des_bundesrates__d0e1a88ec4cb70a550dc05c554c37a4833717e4c5fff0e042e73c067babce4a1.pdf",
+      "languages": [
+        "de"
+      ],
+      "references": [
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 111
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 124
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 277
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 430
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 523
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 527
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 545
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 554
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 603
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 633
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 718
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 861
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 863
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 919
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 1109
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 1191
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 1199
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 1205
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 1212
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 1228
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 1268
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 1404
+        }
+      ],
+      "status": "downloaded",
+      "bytes": 2424583,
+      "sha256": "9df0813f2728c9de6dd29b132acf11d3e13bf7a011b7e6475a4c8b5155c889c8"
+    },
+    {
+      "url": "https://www.bk.admin.ch/dam/de/sd-web/iWYLyEPfLvhn/2024-09-22_erlaeuterungen_des_bundesrates.pdf",
+      "path": "pdfs/2024-09-22_erlaeuterungen_des_bundesrates__07aa4ebe1d9fdac7e8f5529299559db6ce108363818de1574496668c7001edfa.pdf",
+      "languages": [
+        "de"
+      ],
+      "references": [
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 129
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 336
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 338
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 414
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 473
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 631
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 727
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 778
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 815
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 862
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 943
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 1070
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 1158
+        }
+      ],
+      "status": "downloaded",
+      "bytes": 2680718,
+      "sha256": "d8e0047ae589df3bdaa91c93fcb0f6dd0cbb5e36f7aab00fe293ad996a9bfed4"
+    },
+    {
+      "url": "https://www.bk.admin.ch/dam/de/sd-web/jezxrs8DLj5a/2021-03-07_erlaeuterungen_des_bundesrates.pdf",
+      "path": "pdfs/2021-03-07_erlaeuterungen_des_bundesrates__9c7c82126209674fb3d90ea680d7fd1f4c75c0c6e055f89927c65178a7c8c5b7.pdf",
+      "languages": [
+        "de"
+      ],
+      "references": [
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 6
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 16
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 226
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 239
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 243
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 271
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 301
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 316
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 477
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 492
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 517
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 560
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 647
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 658
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 678
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 679
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 761
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 782
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 889
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 937
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 965
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 1267
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 1334
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 1400
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 1449
+        }
+      ],
+      "status": "downloaded",
+      "bytes": 2358162,
+      "sha256": "a4cc2b811cdd959cbb3353101c226cdbd2398cef17028349c241a833559dc6d2"
+    },
+    {
+      "url": "https://www.bk.admin.ch/dam/de/sd-web/wHXT9BH3VlYQ/2024-11-24_erlaeuterungen_des_bundesrates.pdf",
+      "path": "pdfs/2024-11-24_erlaeuterungen_des_bundesrates__a82aed93f1bde23279372b533175e039b106d81e4b6857ad14fa76b588639cfa.pdf",
+      "languages": [
+        "de"
+      ],
+      "references": [
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 4
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 10
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 11
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 56
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 99
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 142
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 287
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 289
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 294
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 385
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 417
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 425
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 481
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 636
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 710
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 746
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 762
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 899
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 984
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 1079
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 1151
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 1169
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 1183
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 1256
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 1260
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 1331
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 1370
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 1388
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 1447
+        }
+      ],
+      "status": "downloaded",
+      "bytes": 1362467,
+      "sha256": "9ea4ea66c852f580360e4b0837e0af8b5b201eedb8c2f4639fce9a7420dd4b84"
+    },
+    {
+      "url": "https://www.bk.admin.ch/dam/de/sd-web/x6Qn59zt63F7/2025-11-30_erlaeuterungen_des_bundesrates.pdf",
+      "path": "pdfs/2025-11-30_erlaeuterungen_des_bundesrates__d19c14c542c678e8124d81b1aae4f03d08dca3147062cf175b8af746369dd72e.pdf",
+      "languages": [
+        "de"
+      ],
+      "references": [
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 88
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 122
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 134
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 176
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 256
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 272
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 304
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 314
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 373
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 378
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 403
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 480
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 504
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 598
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 654
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 742
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 942
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 1132
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 1174
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 1280
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 1323
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 1413
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 1489
+        }
+      ],
+      "status": "downloaded",
+      "bytes": 667877,
+      "sha256": "4b612b614e65e028c2c0fdaf7bf3d32ddbdcbea060b7540180969c95cf694636"
+    },
+    {
+      "url": "https://www.bk.admin.ch/dam/de/sd-web/ywovGJwC1GeO/2020-11-29_erlaeuterungen_des_bundesrates.pdf",
+      "path": "pdfs/2020-11-29_erlaeuterungen_des_bundesrates__5997ae8c22484b550110486eb2a79925ef830d5bc801f33430de5de314025116.pdf",
+      "languages": [
+        "de"
+      ],
+      "references": [
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 52
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 67
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 108
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 136
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 183
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 217
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 221
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 803
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 1094
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 1116
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 1128
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 1239
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 1246
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 1411
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 1466
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 1485
+        }
+      ],
+      "status": "downloaded",
+      "bytes": 402177,
+      "sha256": "bc43ce8b442b0fd05821da5619afc173d3ba0e9936cef91c6a8772e600885f88"
+    },
+    {
+      "url": "https://www.bk.admin.ch/dam/de/sd-web/z11TVw3xAFqy/2024-06-09_erlaeuterungen_des_bundesrates.pdf",
+      "path": "pdfs/2024-06-09_erlaeuterungen_des_bundesrates__1ca8c310f55c65625f2116c2a0704eff3307b1b3ab330438eb8bdf59cc85ed6a.pdf",
+      "languages": [
+        "de"
+      ],
+      "references": [
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 103
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 203
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 211
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 227
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 232
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 253
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 264
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 292
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 293
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 367
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 370
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 374
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 402
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 420
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 423
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 469
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 493
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 499
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 617
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 659
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 669
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 671
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 694
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 767
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 816
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 902
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 924
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 935
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 957
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 1009
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 1110
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 1161
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 1216
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 1233
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 1234
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 1327
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 1422
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 1458
+        }
+      ],
+      "status": "downloaded",
+      "bytes": 2161327,
+      "sha256": "b5ced6e09502bf5956ce6219c8332a1611566b19a8d8ff7ddf3beb6c44924f92"
+    },
+    {
+      "url": "https://www.bk.admin.ch/dam/fr/sd-web/6DaWglL-N7NM/2025-09-28_explications_du_conseil_federal.pdf",
+      "path": "pdfs/2025-09-28_explications_du_conseil_federal__59ad69c00b2a2badf1525a0a9a0669f28adf96290ae7bae634569d73fbd0ef8b.pdf",
+      "languages": [
+        "fr"
+      ],
+      "references": [
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 8
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 112
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 133
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 209
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 286
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 355
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 488
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 587
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 621
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 825
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 1024
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 1043
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 1061
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 1062
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 1127
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 1159
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 1185
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 1195
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 1223
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 1226
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 1230
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 1253
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 1288
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 1338
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 1426
+        }
+      ],
+      "status": "downloaded",
+      "bytes": 862887,
+      "sha256": "f426e4637a10ecdb7a14296c6455918d47e90b4347a953156be1c00cf1bbfd67"
+    },
+    {
+      "url": "https://www.bk.admin.ch/dam/fr/sd-web/9igLXNhBGtsc/2025-02-09_explications_du_conseil_federal.pdf",
+      "path": "pdfs/2025-02-09_explications_du_conseil_federal__b8e7eb76ecd0b3e6ac24c725a5d3a422071b12adb22c73ee9d77119e4be5b6f9.pdf",
+      "languages": [
+        "fr"
+      ],
+      "references": [
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 1193
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 1272
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 1293
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 1360
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 1361
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 1364
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 1365
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 1367
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 1443
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 1445
+        }
+      ],
+      "status": "downloaded",
+      "bytes": 576173,
+      "sha256": "166db1fcd0587220d3a8f92bad101523a134b77d7a8e2be4b03690c9c16f0fd0"
+    },
+    {
+      "url": "https://www.bk.admin.ch/dam/fr/sd-web/In9i5Kp4p64r/2024-03-03_explications_du_conseil_federal.pdf",
+      "path": "pdfs/2024-03-03_explications_du_conseil_federal__346b8b5a1ad5427dbdb93b7f50ac4c6ef05c186a350ac76b0faea380ce6c90bb.pdf",
+      "languages": [
+        "fr"
+      ],
+      "references": [
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 1
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 35
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 38
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 42
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 77
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 215
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 235
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 268
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 335
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 442
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 577
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 581
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 723
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 812
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 951
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 1251
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 1372
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 1383
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 1457
+        }
+      ],
+      "status": "downloaded",
+      "bytes": 759195,
+      "sha256": "b28e64fbbdb39c3e9499056e433cbcb763c154799fff775262d0becd86d77cd9"
+    },
+    {
+      "url": "https://www.bk.admin.ch/dam/fr/sd-web/JwKnnvQMcYT2/2022-02-13_explications_du_conseil_federal.pdf",
+      "path": "pdfs/2022-02-13_explications_du_conseil_federal__2d3744ea8dc91b2d5264a8f2c91fe2f0f2dc0f771ba15e8eeb23f4c30e9b52ce.pdf",
+      "languages": [
+        "fr"
+      ],
+      "references": [
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 143
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 178
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 195
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 198
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 201
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 210
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 220
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 231
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 240
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 290
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 325
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 330
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 500
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 507
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 553
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 584
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 586
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 601
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 690
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 711
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 733
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 763
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 834
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 866
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 897
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 952
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 971
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 1041
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 1051
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 1052
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 1073
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 1074
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 1107
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 1115
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 1129
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 1145
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 1147
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 1165
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 1168
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 1213
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 1222
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 1313
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 1320
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 1345
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 1433
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 1448
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 1467
+        }
+      ],
+      "status": "downloaded",
+      "bytes": 903952,
+      "sha256": "2d8cb9710acf095b5bdb2f5cf431f1bdd93e21b5e250b168170a1e249b0b7a22"
+    },
+    {
+      "url": "https://www.bk.admin.ch/dam/fr/sd-web/Lv5UWt6X1iUj/2023-06-18_explications_du_conseil_federal.pdf",
+      "path": "pdfs/2023-06-18_explications_du_conseil_federal__66e39f622810b901eec67af28b0cb04aed318de084c2f8eba25682e0b46bb1d0.pdf",
+      "languages": [
+        "fr"
+      ],
+      "references": [
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 32
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 119
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 154
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 228
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 260
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 281
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 313
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 356
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 362
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 364
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 396
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 448
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 458
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 465
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 735
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 856
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 915
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 949
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 955
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 1067
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 1080
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 1114
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 1148
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 1217
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 1436
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 1477
+        }
+      ],
+      "status": "downloaded",
+      "bytes": 1804931,
+      "sha256": "925a6f553a6f67059cebacccfa7d4efcffc3a31d5441d9c978a57546b6b8bdd6"
+    },
+    {
+      "url": "https://www.bk.admin.ch/dam/fr/sd-web/MDRXrtFaVPNG/2026-03-08_explications_du_conseil_federal.pdf",
+      "path": "pdfs/2026-03-08_explications_du_conseil_federal__6cfbe4f549c63e9acc33d3d17efe4a1620961d28efec17591d77efd71bf019c6.pdf",
+      "languages": [
+        "fr"
+      ],
+      "references": [
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 19
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 80
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 114
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 175
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 200
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 225
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 237
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 246
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 257
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 299
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 302
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 306
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 319
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 412
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 508
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 509
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 516
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 528
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 529
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 566
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 572
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 600
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 613
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 643
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 663
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 683
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 696
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 724
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 729
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 730
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 749
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 790
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 791
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 809
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 867
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 868
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 870
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 878
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 962
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 979
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 999
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 1007
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 1069
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 1122
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 1150
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 1177
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 1244
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 1257
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 1275
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 1292
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 1355
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 1368
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 1379
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 1415
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 1452
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 1470
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 1475
+        }
+      ],
+      "status": "downloaded",
+      "bytes": 1193762,
+      "sha256": "2ec02c4d1e2cffae67f89fc5b07af117fa455f5a925cdcd3db0938e1855d053b"
+    },
+    {
+      "url": "https://www.bk.admin.ch/dam/fr/sd-web/NJXQlhZXHqDA/2021-09-26_explications_du_conseil_federal.pdf",
+      "path": "pdfs/2021-09-26_explications_du_conseil_federal__a3a6c56ab9660486f2533a9988f4b212043d990cb65718fe627d2d2d1d4d8417.pdf",
+      "languages": [
+        "fr"
+      ],
+      "references": [
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 24
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 30
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 64
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 105
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 137
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 146
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 206
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 321
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 360
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 413
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 462
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 575
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 637
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 781
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 787
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 801
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 805
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 983
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 986
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 1016
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 1068
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 1395
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 1487
+        }
+      ],
+      "status": "downloaded",
+      "bytes": 753196,
+      "sha256": "ae46dce97c0eb0b000339159ba998f373126f1879eff6bcfed6398d147d30ecf"
+    },
+    {
+      "url": "https://www.bk.admin.ch/dam/fr/sd-web/PCWaDg8-GOcJ/2022-05-15_explications_du_conseil_federal.pdf",
+      "path": "pdfs/2022-05-15_explications_du_conseil_federal__9159039a26e80374df577df3e5074255cb9b851e0ac6b74bbaffff40f3ddec93.pdf",
+      "languages": [
+        "fr"
+      ],
+      "references": [
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 33
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 34
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 41
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 46
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 140
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 157
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 280
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 705
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 706
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 708
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 821
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 849
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 931
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 1015
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 1057
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 1095
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 1309
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 1342
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 1350
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 1351
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 1425
+        }
+      ],
+      "status": "downloaded",
+      "bytes": 1994060,
+      "sha256": "f9c5d7830a90b9af3b0c8fde853e036a14ca1b111958342bb39ad98576adc308"
+    },
+    {
+      "url": "https://www.bk.admin.ch/dam/fr/sd-web/SwAIDvDocLte/2022-09-25_explications_du_conseil_federal.pdf",
+      "path": "pdfs/2022-09-25_explications_du_conseil_federal__d5171e885fcb998785372f42dfe061b2bfa1eeabb58fb99e7e5b0c10f35d698c.pdf",
+      "languages": [
+        "fr"
+      ],
+      "references": [
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 12
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 45
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 61
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 94
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 95
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 107
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 138
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 168
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 331
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 349
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 363
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 386
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 438
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 450
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 454
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 456
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 551
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 557
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 596
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 611
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 616
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 620
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 634
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 640
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 760
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 770
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 776
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 827
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 968
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 987
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 1011
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 1056
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 1221
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 1261
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 1281
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 1343
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 1468
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 1469
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 1479
+        }
+      ],
+      "status": "downloaded",
+      "bytes": 1627659,
+      "sha256": "ed311ed79502a5ffb79d33e83d6ed177cb01aa3b9d1fdb9b5e324fadb443ca78"
+    },
+    {
+      "url": "https://www.bk.admin.ch/dam/fr/sd-web/TbPPMZBkuvPm/2021-11-28_explications_du_conseil_federal.pdf",
+      "path": "pdfs/2021-11-28_explications_du_conseil_federal__adfc878533933d8e70376d49a2f3866fbe62420492ba62c511a74a0603a5881b.pdf",
+      "languages": [
+        "fr"
+      ],
+      "references": [
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 163
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 172
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 233
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 247
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 312
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 315
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 320
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 410
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 478
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 579
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 904
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 934
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 1008
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 1117
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 1135
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 1247
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 1347
+        }
+      ],
+      "status": "downloaded",
+      "bytes": 2532158,
+      "sha256": "340fecfcdcdf292824addf73002c60e91a86744648355665035a5356a38d2225"
+    },
+    {
+      "url": "https://www.bk.admin.ch/dam/fr/sd-web/UxUxfYD5ma0h/2021-06-13_explications_du_conseil_federal.pdf",
+      "path": "pdfs/2021-06-13_explications_du_conseil_federal__5977f9067a54451d52115acca303ef3f5e184bb9e032bc9a261e1aa66ab45607.pdf",
+      "languages": [
+        "fr"
+      ],
+      "references": [
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 31
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 161
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 186
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 238
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 249
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 341
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 357
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 479
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 644
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 675
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 691
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 692
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 702
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 715
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 721
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 728
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 743
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 818
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 830
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 871
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 875
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 876
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 930
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 936
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 944
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 956
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 961
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 977
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 1090
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 1140
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 1184
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 1266
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 1282
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 1297
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 1329
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 1332
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 1333
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 1366
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 1382
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 1398
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 1399
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 1451
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 1471
+        }
+      ],
+      "status": "downloaded",
+      "bytes": 1398389,
+      "sha256": "65c54df2537b8ab9d6e155c0e602d6bc2379e47741004bc66565064d0aee4ab4"
+    },
+    {
+      "url": "https://www.bk.admin.ch/dam/fr/sd-web/WeUrKyC0FyPc/2026-06-14_explications_du_conseil_federal.pdf",
+      "path": "pdfs/2026-06-14_explications_du_conseil_federal__bedaf0d07327143077b51c10be3c9531148aa6bf988a677acac2d84b6b8f3019.pdf",
+      "languages": [
+        "fr"
+      ],
+      "references": [
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 0
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 25
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 70
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 78
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 199
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 284
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 291
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 416
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 429
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 461
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 917
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 1238
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 1450
+        }
+      ],
+      "status": "downloaded",
+      "bytes": 1003316,
+      "sha256": "15391d5fdf2faac51ceff1f4b31f463a7b838587bc1e52ada57e85cc7e6c76d5"
+    },
+    {
+      "url": "https://www.bk.admin.ch/dam/fr/sd-web/XuiMCko39BzI/2020-09-27_explications_du_conseil_federal.pdf",
+      "path": "pdfs/2020-09-27_explications_du_conseil_federal__c7e9a49cad953da0fa00464523b32a0737a82d8056a9b1d3caf7330e83b402a7.pdf",
+      "languages": [
+        "fr"
+      ],
+      "references": [
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 2
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 36
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 73
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 101
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 135
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 158
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 234
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 241
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 266
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 298
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 318
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 323
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 347
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 354
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 369
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 510
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 511
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 533
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 552
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 562
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 615
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 661
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 701
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 744
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 829
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 838
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 884
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 893
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 905
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 953
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 1019
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 1146
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 1156
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 1162
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 1224
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 1250
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 1308
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 1319
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 1393
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 1397
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 1442
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 1446
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 1462
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 1482
+        }
+      ],
+      "status": "downloaded",
+      "bytes": 944186,
+      "sha256": "8e3c67fd515a7438d1ec687be65001c01a0ece56eb952fdd23f9ca23c8393355"
+    },
+    {
+      "url": "https://www.bk.admin.ch/dam/fr/sd-web/aSmZ7rOvZDrG/2020-02-09_explications_du_conseil_federal.pdf",
+      "path": "pdfs/2020-02-09_explications_du_conseil_federal__9664831f45c460242c480a75c30714d43b67460641647f805a7de6bc15e0f1c2.pdf",
+      "languages": [
+        "fr"
+      ],
+      "references": [
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 53
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 74
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 91
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 179
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 196
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 207
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 252
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 327
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 375
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 383
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 390
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 419
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 455
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 515
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 546
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 738
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 793
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 908
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 975
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 1186
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 1188
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 1192
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 1208
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 1218
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 1321
+        }
+      ],
+      "status": "downloaded",
+      "bytes": 2453106,
+      "sha256": "e57074725ce371592bfb0760665c3d90d99b972ca48dfcb0577022276da9a54e"
+    },
+    {
+      "url": "https://www.bk.admin.ch/dam/fr/sd-web/iWYLyEPfLvhn/2024-09-22_explications_du_conseil_federal.pdf",
+      "path": "pdfs/2024-09-22_explications_du_conseil_federal__ae395ed8670970ebb3955f15fd1156bea3d5172445d8a80148667e6fe398ecba.pdf",
+      "languages": [
+        "fr"
+      ],
+      "references": [
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 29
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 47
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 62
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 113
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 164
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 181
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 182
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 285
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 384
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 399
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 431
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 440
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 495
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 627
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 666
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 826
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 938
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 982
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 991
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 1271
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 1339
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 1374
+        }
+      ],
+      "status": "downloaded",
+      "bytes": 1072900,
+      "sha256": "e6717534db788bf85e15bc505c5ab6f839cd61396be0f84a5aa035c767de8578"
+    },
+    {
+      "url": "https://www.bk.admin.ch/dam/fr/sd-web/jezxrs8DLj5a/2021-03-07_explications_du_conseil_federal.pdf",
+      "path": "pdfs/2021-03-07_explications_du_conseil_federal__4fc4b444a653ada76a760d115bb333c533fa0e9a08e3814d742c912650492a99.pdf",
+      "languages": [
+        "fr"
+      ],
+      "references": [
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 28
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 128
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 670
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 739
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 766
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 769
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 891
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 969
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 1049
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 1054
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 1077
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 1139
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 1284
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 1291
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 1312
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 1352
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 1408
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 1459
+        }
+      ],
+      "status": "downloaded",
+      "bytes": 702633,
+      "sha256": "127fe5bf35487ae5327cf27553838123974263f140d924fc5c1e73c0fca0bfcf"
+    },
+    {
+      "url": "https://www.bk.admin.ch/dam/fr/sd-web/wHXT9BH3VlYQ/2024-11-24_explications_du_conseil_federal.pdf",
+      "path": "pdfs/2024-11-24_explications_du_conseil_federal__d410a65e831ac757b7259cedefc6fe0bb0de803a505efe1723d10d9102a09623.pdf",
+      "languages": [
+        "fr"
+      ],
+      "references": [
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 192
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 245
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 278
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 282
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 296
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 351
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 376
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 422
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 471
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 475
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 524
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 536
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 556
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 564
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 567
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 580
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 608
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 609
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 638
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 664
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 717
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 756
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 759
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 845
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 858
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 981
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 996
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 1025
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 1038
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 1071
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 1098
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 1130
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 1141
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 1378
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 1431
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 1463
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 1488
+        }
+      ],
+      "status": "downloaded",
+      "bytes": 1393828,
+      "sha256": "39d395833d051d950d37c75003b4ecbea917e221db17eed55e3cb5ffdcd364b1"
+    },
+    {
+      "url": "https://www.bk.admin.ch/dam/fr/sd-web/x6Qn59zt63F7/2025-11-30_explications_du_conseil_federal.pdf",
+      "path": "pdfs/2025-11-30_explications_du_conseil_federal__b068b0e1bf36113d847f1f7f1990b43eef1ce5b0bd8d014f6e25890cce8f8332.pdf",
+      "languages": [
+        "fr"
+      ],
+      "references": [
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 311
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 337
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 353
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 433
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 501
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 629
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 684
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 725
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 797
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 807
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 974
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 1028
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 1030
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 1034
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 1091
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 1163
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 1289
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 1318
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 1362
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 1377
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 1401
+        }
+      ],
+      "status": "downloaded",
+      "bytes": 763628,
+      "sha256": "137ed9d255ab729265d7cfb765e9befc8a51e3fe5723e88772717ebb59504f8f"
+    },
+    {
+      "url": "https://www.bk.admin.ch/dam/fr/sd-web/ywovGJwC1GeO/2020-11-29_explications_du_conseil_federal.pdf",
+      "path": "pdfs/2020-11-29_explications_du_conseil_federal__9ad3f6083cf0a3ed7d7f29ff875aa74e838ccbf39ac0c8ffad413a8a8e0f678a.pdf",
+      "languages": [
+        "fr"
+      ],
+      "references": [
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 27
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 84
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 120
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 310
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 343
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 358
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 389
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 446
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 457
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 520
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 591
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 599
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 773
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 843
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 872
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 903
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 960
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 963
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 1018
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 1108
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 1310
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 1481
+        }
+      ],
+      "status": "downloaded",
+      "bytes": 400027,
+      "sha256": "62870b79f34f5d9af48ca53709090140403133edc23ef393bf7b17bcdd35c48f"
+    },
+    {
+      "url": "https://www.bk.admin.ch/dam/fr/sd-web/z11TVw3xAFqy/2024-06-09_explications_du_conseil_federal.pdf",
+      "path": "pdfs/2024-06-09_explications_du_conseil_federal__f0096fe73531fedd92847b7025d9e7664212253a9c2b4aacdecd5681a119850d.pdf",
+      "languages": [
+        "fr"
+      ],
+      "references": [
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 37
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 110
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 118
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 261
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 262
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 397
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 459
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 460
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 489
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 498
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 514
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 656
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 668
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 673
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 709
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 713
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 741
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 748
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 802
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 817
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 913
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 964
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 995
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 1003
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 1026
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 1027
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 1075
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 1189
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 1196
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 1197
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 1211
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 1220
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 1245
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 1286
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 1299
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 1325
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 1381
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 1416
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 1439
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 1454
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 1473
+        }
+      ],
+      "status": "downloaded",
+      "bytes": 2324659,
+      "sha256": "8cedb2df05d10299734c86d6d37d80fbd4bb4a6685044455792c77fc73f2d7f6"
+    },
+    {
+      "url": "https://www.bk.admin.ch/dam/it/sd-web/6DaWglL-N7NM/2025-09-28_spiegazioni_del_consigliofederale.pdf",
+      "path": "pdfs/2025-09-28_spiegazioni_del_consigliofederale__7b877146f5cf006d490a8fc7a201733880b73b99efe0fa4c5394ae0fefe842c1.pdf",
+      "languages": [
+        "it"
+      ],
+      "references": [
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 194
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 345
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 439
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 590
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 625
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 740
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 832
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 1031
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 1046
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 1047
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 1103
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 1124
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 1126
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 1231
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 1254
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 1316
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 1363
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 1371
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 1380
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 1385
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 1394
+        }
+      ],
+      "status": "downloaded",
+      "bytes": 1162353,
+      "sha256": "7b8d069bb8d207a1a8ec9a7af49a765d4c19153dee249b3818261d45bf2d5ed8"
+    },
+    {
+      "url": "https://www.bk.admin.ch/dam/it/sd-web/9igLXNhBGtsc/2025-02-09_spiegazioni_del_consigliofederale.pdf",
+      "path": "pdfs/2025-02-09_spiegazioni_del_consigliofederale__1fe94c1fc6bf01e834897a5aea8c5d155da3d82a78ecf746fa2e50e647abd993.pdf",
+      "languages": [
+        "it"
+      ],
+      "references": [
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 93
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 205
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 674
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 926
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 950
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 1058
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 1170
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 1263
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 1420
+        }
+      ],
+      "status": "downloaded",
+      "bytes": 568731,
+      "sha256": "68a097ce1c55950e4edb824d40d954c623a2b53112a22db455e1c9af6b419563"
+    },
+    {
+      "url": "https://www.bk.admin.ch/dam/it/sd-web/In9i5Kp4p64r/2024-03-03_spiegazioni_del_consigliofederale.pdf",
+      "path": "pdfs/2024-03-03_spiegazioni_del_consigliofederale__f1979a8d3494f17f23804584f8791a54d463159cf85e98c307406d2abfefb816.pdf",
+      "languages": [
+        "it"
+      ],
+      "references": [
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 69
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 197
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 230
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 248
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 250
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 544
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 665
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 695
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 786
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 928
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 954
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 1249
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 1349
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 1423
+        }
+      ],
+      "status": "downloaded",
+      "bytes": 775326,
+      "sha256": "3d701765d014b9072a084dcd47ae4dd7bbf798a4b0f382078645b2683a4ce114"
+    },
+    {
+      "url": "https://www.bk.admin.ch/dam/it/sd-web/JwKnnvQMcYT2/2022-02-13_spiegazioni_del_consigliofederale.pdf",
+      "path": "pdfs/2022-02-13_spiegazioni_del_consigliofederale__5894d41410a7d51856cb1c6fceeecfe13da2cb18f3adffc9a5030b26914a1a93.pdf",
+      "languages": [
+        "it"
+      ],
+      "references": [
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 39
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 59
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 60
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 66
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 79
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 102
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 126
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 145
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 218
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 222
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 273
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 275
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 317
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 326
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 361
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 379
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 394
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 406
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 408
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 415
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 435
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 487
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 512
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 519
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 537
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 547
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 573
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 588
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 610
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 660
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 677
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 779
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 799
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 892
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 959
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 1053
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 1093
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 1237
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 1258
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 1283
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 1335
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 1386
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 1428
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 1444
+        }
+      ],
+      "status": "downloaded",
+      "bytes": 871126,
+      "sha256": "1f3346e546e5384f70fd7df7bb80db3be2df5681bd0ff5067437fa1ee7b52a2d"
+    },
+    {
+      "url": "https://www.bk.admin.ch/dam/it/sd-web/Lv5UWt6X1iUj/2023-06-18_spiegazioni_del_consigliofederale.pdf",
+      "path": "pdfs/2023-06-18_spiegazioni_del_consigliofederale__8efaedb2e7dca11cae9c065b6d6aa44ac57439af865b2dd7aa793a55a6f5af0f.pdf",
+      "languages": [
+        "it"
+      ],
+      "references": [
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 68
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 81
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 518
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 522
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 561
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 607
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 667
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 703
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 734
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 789
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 794
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 846
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 855
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 887
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 972
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 998
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 1039
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 1055
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 1088
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 1104
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 1120
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 1198
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 1202
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 1207
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 1240
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 1356
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 1456
+        }
+      ],
+      "status": "downloaded",
+      "bytes": 1779741,
+      "sha256": "1f61954e466f96ae0743dec3791bd68b5a10d7ddfaa3e58a95e9bde3a6d6bc6a"
+    },
+    {
+      "url": "https://www.bk.admin.ch/dam/it/sd-web/MDRXrtFaVPNG/2026-03-08_spiegazioni_del_consigliofederale.pdf",
+      "path": "pdfs/2026-03-08_spiegazioni_del_consigliofederale__a1a3dfbdd4f7dc28e63796857c9998dff557bc50c6cdeb34061f13c15b1a0d6b.pdf",
+      "languages": [
+        "it"
+      ],
+      "references": [
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 170
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 187
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 191
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 212
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 213
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 214
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 216
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 224
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 242
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 244
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 255
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 263
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 279
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 324
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 392
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 401
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 483
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 486
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 502
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 576
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 595
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 602
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 641
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 672
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 685
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 689
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 704
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 726
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 751
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 771
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 837
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 840
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 841
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 854
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 877
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 918
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 940
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 947
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 966
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 985
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 994
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 1004
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 1022
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 1076
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 1113
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 1166
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 1178
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 1180
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 1243
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 1346
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 1390
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 1424
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 1438
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 1483
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 1491
+        }
+      ],
+      "status": "downloaded",
+      "bytes": 1244435,
+      "sha256": "a6ff4964b4cfc0a9d82936cb1e1200396201d66ea29331c5c94d312b35b64a1b"
+    },
+    {
+      "url": "https://www.bk.admin.ch/dam/it/sd-web/NJXQlhZXHqDA/2021-09-26_spiegazioni_del_consigliofederale.pdf",
+      "path": "pdfs/2021-09-26_spiegazioni_del_consigliofederale__b37c3e4cdc67a37f46e169911eb7ab2aa3594e8fa9fed364e7f6ef1fe11bf58a.pdf",
+      "languages": [
+        "it"
+      ],
+      "references": [
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 40
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 50
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 159
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 173
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 174
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 344
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 400
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 411
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 434
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 764
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 780
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 1100
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 1200
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 1274
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 1460
+        }
+      ],
+      "status": "downloaded",
+      "bytes": 749324,
+      "sha256": "d01075b2fabc1609d8c7e2b5ede595286c504d35ea4947b1fa0709fddbb63538"
+    },
+    {
+      "url": "https://www.bk.admin.ch/dam/it/sd-web/PCWaDg8-GOcJ/2022-05-15_spiegazioni_del_consigliofederale.pdf",
+      "path": "pdfs/2022-05-15_spiegazioni_del_consigliofederale__64f9bd0c9aa278890641765ba1a113d3881ee10cf9b15ee9fea2cd168fbd989e.pdf",
+      "languages": [
+        "it"
+      ],
+      "references": [
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 23
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 123
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 276
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 283
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 387
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 482
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 578
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 1064
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 1235
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 1270
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 1337
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 1455
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 1476
+        }
+      ],
+      "status": "downloaded",
+      "bytes": 1983382,
+      "sha256": "f23c14a6ee995836f5a8e0ec5c1776e429128313f59231fc723cc09260d0a608"
+    },
+    {
+      "url": "https://www.bk.admin.ch/dam/it/sd-web/SwAIDvDocLte/2022-09-25_spiegazioni_del_consigliofederale.pdf",
+      "path": "pdfs/2022-09-25_spiegazioni_del_consigliofederale__37fc6aa5e1a21d77f20c8c88e97943f3877797ee11f4b007ba71bc8be121d81d.pdf",
+      "languages": [
+        "it"
+      ],
+      "references": [
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 155
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 340
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 503
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 538
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 570
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 571
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 650
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 716
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 736
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 752
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 753
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 808
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 810
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 839
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 896
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 923
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 941
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 1005
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 1023
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 1037
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 1048
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 1072
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 1078
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 1179
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 1294
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 1375
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 1486
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 1490
+        }
+      ],
+      "status": "downloaded",
+      "bytes": 1649911,
+      "sha256": "7889873c9920e2d9d587d52a6067076123d15810065248349f47253fb85c151d"
+    },
+    {
+      "url": "https://www.bk.admin.ch/dam/it/sd-web/TbPPMZBkuvPm/2021-11-28_spiegazioni_del_consigliofederale.pdf",
+      "path": "pdfs/2021-11-28_spiegazioni_del_consigliofederale__99ca2b532c577c1cdf905c842eabe6476094b3df49fabd6e4e0440d67884e507.pdf",
+      "languages": [
+        "it"
+      ],
+      "references": [
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 13
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 15
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 86
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 98
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 148
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 169
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 371
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 391
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 466
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 513
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 543
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 548
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 626
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 639
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 655
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 859
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 882
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 909
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 1029
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 1160
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 1303
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 1330
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 1402
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 1407
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 1480
+        }
+      ],
+      "status": "downloaded",
+      "bytes": 571450,
+      "sha256": "72bc2e78fd62f8452a8fe9aebd31c5740e77d30e298ed940dcbf788b4ab8cba2"
+    },
+    {
+      "url": "https://www.bk.admin.ch/dam/it/sd-web/UxUxfYD5ma0h/2021-06-13_spiegazioni_del_consigliofederale.pdf",
+      "path": "pdfs/2021-06-13_spiegazioni_del_consigliofederale__2dc71d194a3129a758799671b7c51d882ab8728cda00d7566a852c994d5d3b68.pdf",
+      "languages": [
+        "it"
+      ],
+      "references": [
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 17
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 166
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 295
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 329
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 365
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 366
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 368
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 426
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 437
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 472
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 583
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 800
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 914
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 933
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 1010
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 1020
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 1021
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 1033
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 1036
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 1045
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 1092
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 1149
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 1171
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 1273
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 1278
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 1430
+        }
+      ],
+      "status": "downloaded",
+      "bytes": 1456260,
+      "sha256": "89443719a1e8c0ea4d954754d50e81253bb2f4d2f6ce4d2ad1c19cf0edd570de"
+    },
+    {
+      "url": "https://www.bk.admin.ch/dam/it/sd-web/WeUrKyC0FyPc/2026-06-14_spiegazioni_del_consigliofederale.pdf",
+      "path": "pdfs/2026-06-14_spiegazioni_del_consigliofederale__a92426bc93e602bebb49b54376c0f4c40ff863b118d85a48f4a0e29f0e2a8013.pdf",
+      "languages": [
+        "it"
+      ],
+      "references": [
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 121
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 160
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 208
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 267
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 274
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 441
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 496
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 632
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 652
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 676
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 758
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 828
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 860
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 958
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 1241
+        }
+      ],
+      "status": "downloaded",
+      "bytes": 998151,
+      "sha256": "b5212bf5086306a5d45058aae56be6cef2af02f76bc963b7f72cf2c71c4b6931"
+    },
+    {
+      "url": "https://www.bk.admin.ch/dam/it/sd-web/XuiMCko39BzI/2020-09-27_spiegazioni_del_consigliofederale.pdf",
+      "path": "pdfs/2020-09-27_spiegazioni_del_consigliofederale__2015c2525d232f348cbf76406007003fcbe3014994cc2d1d99a67895cd692f8f.pdf",
+      "languages": [
+        "it"
+      ],
+      "references": [
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 92
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 106
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 153
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 190
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 348
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 468
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 532
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 630
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 795
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 819
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 822
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 865
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 990
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 1044
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 1131
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 1153
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 1176
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 1187
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 1279
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 1295
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 1340
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 1432
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 1493
+        }
+      ],
+      "status": "downloaded",
+      "bytes": 1254806,
+      "sha256": "76acc2e7d58639dccae9d52d7cdeba73418f57aec9928fa0898017f7be2e5111"
+    },
+    {
+      "url": "https://www.bk.admin.ch/dam/it/sd-web/aSmZ7rOvZDrG/2020-02-09_spiegazioni_del_consigliofederale.pdf",
+      "path": "pdfs/2020-02-09_spiegazioni_del_consigliofederale__7f57252c1441ef78090fc4c7db2bd761977516733d0535ec6358c11572298c36.pdf",
+      "languages": [
+        "it"
+      ],
+      "references": [
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 185
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 202
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 219
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 377
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 404
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 497
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 526
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 707
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 732
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 747
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 774
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 869
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 894
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 992
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 1099
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 1125
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 1317
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 1494
+        }
+      ],
+      "status": "downloaded",
+      "bytes": 2434783,
+      "sha256": "480dd90b98de6d9f680a98d0cc165715b939e539e5e31da3dbe34846a610ad6d"
+    },
+    {
+      "url": "https://www.bk.admin.ch/dam/it/sd-web/iWYLyEPfLvhn/2024-09-22_spiegazioni_del_consigliofederale.pdf",
+      "path": "pdfs/2024-09-22_spiegazioni_del_consigliofederale__6eae278508df0d28049605357d393b7f743cf846109569208760cf903715a738.pdf",
+      "languages": [
+        "it"
+      ],
+      "references": [
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 9
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 49
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 100
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 151
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 162
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 452
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 485
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 622
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 642
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 680
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 686
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 722
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 755
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 997
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 1013
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 1042
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 1137
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 1190
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 1201
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 1209
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 1242
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 1252
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 1304
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 1314
+        }
+      ],
+      "status": "downloaded",
+      "bytes": 1087305,
+      "sha256": "581a2c4bdacc8e31bd1d9f854e16918d13f2bf2687971daa886300193de6f327"
+    },
+    {
+      "url": "https://www.bk.admin.ch/dam/it/sd-web/jezxrs8DLj5a/2021-03-07_spiegazioni_del_consigliofederale.pdf",
+      "path": "pdfs/2021-03-07_spiegazioni_del_consigliofederale__c5e0fe54167212d7728db5b03b8fd6c21c7d3605cb52fcb517713d9a24e36bac.pdf",
+      "languages": [
+        "it"
+      ],
+      "references": [
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 149
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 303
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 380
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 447
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 470
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 539
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 540
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 542
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 604
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 687
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 788
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 921
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 927
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 989
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 1144
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 1152
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 1154
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 1215
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 1287
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 1301
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 1414
+        }
+      ],
+      "status": "downloaded",
+      "bytes": 689984,
+      "sha256": "e6ffd768c3c65b9ca19566bc6bc6fda6f1f9e4324cce7898475e02bfec526e21"
+    },
+    {
+      "url": "https://www.bk.admin.ch/dam/it/sd-web/wHXT9BH3VlYQ/2024-11-24_spiegazioni_del_consigliofederale.pdf",
+      "path": "pdfs/2024-11-24_spiegazioni_del_consigliofederale__8c8c1b3c4f42f2953d825caf8b14ce1989adacad5a918b9581c737ebc3ebbd91.pdf",
+      "languages": [
+        "it"
+      ],
+      "references": [
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 48
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 139
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 171
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 180
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 188
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 258
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 372
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 382
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 398
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 427
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 464
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 681
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 693
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 697
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 720
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 745
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 775
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 844
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 847
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 851
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 853
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 864
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 874
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 883
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 888
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 890
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 895
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 901
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 910
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 939
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 976
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 1002
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 1012
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 1089
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 1138
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 1277
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 1302
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 1348
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 1391
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 1409
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 1437
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 1453
+        }
+      ],
+      "status": "downloaded",
+      "bytes": 1350944,
+      "sha256": "a8d40f5f65411f258a36aa7f64941a8853fe7c23c9cb9d0609d5addd4aa4932a"
+    },
+    {
+      "url": "https://www.bk.admin.ch/dam/it/sd-web/x6Qn59zt63F7/2025-11-30_spiegazioni_del_consigliofederale.pdf",
+      "path": "pdfs/2025-11-30_spiegazioni_del_consigliofederale__4f3197365efeafab8433a18882fb8614747a69cffc3d6c5cd0343fa9ed014868.pdf",
+      "languages": [
+        "it"
+      ],
+      "references": [
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 90
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 409
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 772
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 796
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 948
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 1001
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 1225
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 1434
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 1472
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 1492
+        }
+      ],
+      "status": "downloaded",
+      "bytes": 1163254,
+      "sha256": "05a8b22b924597419ba1a89a06e9261a143111944be670260b9e3a0df5c9404a"
+    },
+    {
+      "url": "https://www.bk.admin.ch/dam/it/sd-web/ywovGJwC1GeO/2020-11-29_spiegazioni_del_consigliofederale.pdf",
+      "path": "pdfs/2020-11-29_spiegazioni_del_consigliofederale__0898e617455304f7ad5ef6553ccd5e2dd9da7b1a8afc38789f1415c99967c76d.pdf",
+      "languages": [
+        "it"
+      ],
+      "references": [
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 7
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 76
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 109
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 388
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 432
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 443
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 531
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 653
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 1096
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 1112
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 1255
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 1412
+        }
+      ],
+      "status": "downloaded",
+      "bytes": 436840,
+      "sha256": "6d4b77f24df45bf73e4e4fefdff30e1a77016ccc057ed2137d04269367490f6e"
+    },
+    {
+      "url": "https://www.bk.admin.ch/dam/it/sd-web/z11TVw3xAFqy/2024-06-09_spiegazioni_del_consigliofederale.pdf",
+      "path": "pdfs/2024-06-09_spiegazioni_del_consigliofederale__ecd5607f957ed5ee86cc0d1c6a6e9c099fb9d92cd5987b5cbe799614eba67683.pdf",
+      "languages": [
+        "it"
+      ],
+      "references": [
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 43
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 51
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 58
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 63
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 141
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 167
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 359
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 428
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 754
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 765
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 785
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 831
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 842
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 848
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 880
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 980
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 1035
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 1102
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 1119
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 1133
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 1219
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 1305
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 1429
+        },
+        {
+          "config": "default",
+          "split": "train",
+          "row_index": 1435
+        }
+      ],
+      "status": "downloaded",
+      "bytes": 2200699,
+      "sha256": "691ad90ad95cb4983dfc0bf1f7b43750af34ccc7d3f737ad19a48c263ee54676"
+    }
+  ]
+}
