@@ -129,17 +129,19 @@ class ApiConfig:
     @classmethod
     def from_env(cls) -> ApiConfig:
         return cls(
-            base_url=os.environ.get("CSCS_INFERENCE_BASE_URL", cls.base_url).rstrip("/"),
-            model=os.environ.get("APERTUS_MODEL", cls.model),
+            base_url=os.environ.get("BASE_URL", os.environ.get("LLM_BASE_URL",
+                os.environ.get("CSCS_INFERENCE_BASE_URL", cls.base_url))).rstrip("/"),
+            model=os.environ.get("LLM_NAME", os.environ.get("APERTUS_MODEL", cls.model)),
         )
 
 
 def create_client(config: ApiConfig) -> OpenAI:
     from openai import OpenAI
 
-    key = os.environ.get("CSCS_INFERENCE_API_KEY", "").strip()
+    key = os.environ.get("API_KEY", os.environ.get("LLM_API_KEY",
+        os.environ.get("CSCS_INFERENCE_API_KEY", ""))).strip()
     if not key:
-        raise InferenceError("Set CSCS_INFERENCE_API_KEY before making API requests")
+        raise InferenceError("Set API_KEY (or CSCS_INFERENCE_API_KEY) before making API requests")
     return OpenAI(
         api_key=key,
         base_url=config.base_url,
@@ -211,7 +213,9 @@ def parse_prediction(content: str, evidence: list[dict]) -> dict:
             raise InferenceError(
                 f"Citation {reference} cannot be verified against its passage after formatting normalization",
                 details={"evidence_id": reference, "model_quote": quote,
-                         "source_text": source["text"], "chunk_id": source["chunk_id"]},
+                         "source_text": source["text"], "chunk_id": source["chunk_id"],
+                         "page_number": source["page_number"],
+                         "source_pdf": source["source_pdf"]},
             )
         start, end, match_type = match
         original_quote = source["text"][start:end]

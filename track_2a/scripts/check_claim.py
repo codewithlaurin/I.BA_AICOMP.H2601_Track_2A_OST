@@ -141,8 +141,10 @@ def main() -> int:
 
     config = ApiConfig.from_env()
     try:
-        if not args.dry_run and not os.environ.get("CSCS_INFERENCE_API_KEY", "").strip():
-            raise ValueError("Set CSCS_INFERENCE_API_KEY before making API requests")
+        key = os.environ.get("API_KEY", os.environ.get("LLM_API_KEY",
+            os.environ.get("CSCS_INFERENCE_API_KEY", ""))).strip()
+        if not args.dry_run and not key:
+            raise ValueError("Set API_KEY (or CSCS_INFERENCE_API_KEY) before making API requests")
         if args.list_models:
             result = api_request("models", config)
         else:

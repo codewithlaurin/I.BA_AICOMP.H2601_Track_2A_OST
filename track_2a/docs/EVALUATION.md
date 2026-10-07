@@ -1,203 +1,180 @@
-# Evaluation runner
+# Judge-compatible evaluation
 
-Copy the new `scripts/evaluate.py` and `scripts/evaluation.py` into `track_2a/scripts/`.
-Also merge the updated `scripts/check_claim.py` (optional embedding-model cache) and
-`scripts/apertus_nli.py` (preserves API token usage on rejected output).
-The existing `booklet_manifest.py` and `sparse_index.py` are required.
-No new dependency is needed to evaluate an existing JSONL export.
+The interface follows the [official starter](https://gitlab.com/ifsoftware/hackapertus-starter/)
+and [Solution API Guide](https://notes.rehash.ch/s/7912e1d2-5d79-4c93-add9-12ec4a6d1b1e),
+checked on 2026-10-06. Commands below run from `track_2a/`.
 
-## Export the dataset once
-
-The runner accepts the schema shown in the dataset viewer:
-`claim`, `claim_language`, `entailment_label`, `booklet_url`, and optional
-`reference_string` / `reference_language`. The confirmed labels are 0=ENTAIL,
-1=NEUTRAL, 2=CONTRADICT. Canonical string labels also work. Custom schemas can use
-`--claim-field`, `--label-field` and a JSON `--label-map` file.
-
-If you already have a JSONL export, use that directly. Otherwise, run from `track_2a`:
+## Predict
 
 ```bash
-uv add datasets
-uv run python - <<'PY'
-import json
-from pathlib import Path
-from datasets import load_dataset
-
-dataset = load_dataset("OSTswiss/MNLIoverSwissVotingBooklets", "default", split="train")
-path = Path("data/evaluation/train.jsonl")
-path.parent.mkdir(parents=True, exist_ok=True)
-with path.open("x", encoding="utf-8") as output:
-    for index, row in enumerate(dataset):
-        output.write(json.dumps({**row, "config": "default", "split": "train",
-                                 "row_index": index}, ensure_ascii=False) + "\n")
-print(f"Saved {len(dataset)} examples to {path}")
-PY
+uv run --env-file .env python main.py --input data/cases.jsonl --output output/predictions.jsonl
 ```
 
-Loading uses the documented Hugging Face [`load_dataset` API](https://huggingface.co/docs/datasets/loading).
-You can pass `revision="COMMIT_SHA"` to load a known dataset revision. Preserve the
-export and `uv.lock`; each evaluation records the export's content hash. The export
-command refuses to overwrite an existing file. If HF authentication is needed,
-configure it locally; no credentials belong in exports or run configuration.
+The entrypoint accepts mixed task A (PDF) and task B (reference passage) JSONL.
+Relative booklet paths resolve against the input file's directory (`/data` in the
+judges' container); `--data-root` overrides this for local runs. Inputs must have
+unique string IDs, a vote, claim text/language, and exactly one source. Languages
+are `de`, `fr`, or `it`, in any source/claim combination.
 
-Keep original row indices if you export a subset. The runner never interprets the
-line number of a filtered file as a dataset row index. It joins `booklet_url` through
-`data/booklets/manifest.json` to the PDF content hash. Alternatively, a row may supply
-`document_id`, or its original `row_index` with config/split. If multiple identifiers
-are supplied they must all agree. No document path is inferred from a filename hash.
+The judge baseline sends all extracted PDF pages for A, or the supplied reference
+for B, plus the vote and claim to Apertus. It uses CPU PDFium text extraction and
+caches at most 16 PDFs in memory. It requires no prebuilt Qdrant database, embedding
+weights, manifest, or runtime downloads. The existing Docling/BM25/dense experiments
+remain available through `scripts/check_claim.py`; they are not this baseline.
 
-## First checkpoint: retrieval only
+Runtime environment, in precedence order:
+
+| Setting | Variables | Default |
+| --- | --- | --- |
+| Endpoint | `BASE_URL`, `LLM_BASE_URL`, `CSCS_INFERENCE_BASE_URL` | `https://api.inference.cscs.ch/v1` |
+| Key | `API_KEY`, `LLM_API_KEY`, `CSCS_INFERENCE_API_KEY` | Required |
+| Model | `LLM_NAME`, `APERTUS_MODEL` | `swiss-ai/Apertus-v1.5-8B` |
+
+The entrypoint rejects older Apertus models. If your existing `.env` selects
+`Apertus-8B-Instruct-2509`, update it or set `LLM_NAME=swiss-ai/Apertus-v1.5-8B`.
+Injected `BASE_URL` and `API_KEY` always win, including when empty (an empty value
+is an error). Python does not load `.env` implicitly; use uv's explicit flag locally.
+
+Responses echo the ID and use `0/entailment`, `1/neutral`, or `2/contradiction`.
+Evidence contains short verbatim `{ "page": ..., "text": ... }` excerpts, with
+1-based physical PDF pages for A and `null` for B. Entailment/contradiction require
+at least one quote. Quotes are resolved back to source text using the existing
+citation validator; emitted text is always an exact source substring. Whole source
+passages and quotes exceeding 500 characters are rejected. This length is a local
+implementation cap, not a published numeric judge requirement.
+
+Exactly one API call is made per case, with temperature 0, a 1024-token output
+budget, and no retries. `input_tokens` and `output_tokens` come from API usage;
+completion tokens already include reasoning tokens. `inference_time_ms` covers
+source loading, parsing, the API request, and validation for that case. A PDF cache
+hit can reduce the time but cannot change the prompt or prediction inputs.
+
+Malformed input fails before the output is opened. Successful runs exit 0. Per-case
+failures write `{id, error, metrics}` (an intentionally invalid judge prediction),
+continue the batch, and cause exit 1. Unknown token usage remains null. Completed
+rows are flushed; Ctrl-C exits 130. Existing output files are overwritten, so use
+new output paths to preserve prior runs. There is no automatic resume.
+
+Citation mismatch errors also include a `diagnostics` object in `predictions.jsonl`:
+
+```json
+"diagnostics": {
+  "evidence_id": "E1",
+  "model_quote": "La pensione aumenta.",
+  "source_text": "Die Rente steigt. Weitere Angaben fehlen.",
+  "chunk_id": "sample:1",
+  "page_number": null,
+  "source_pdf": null
+}
+```
+
+`model_quote` is the exact quote returned by Apertus; `source_text` is the full,
+unaltered passage it was compared against, including extraction artifacts and
+line breaks. PDF cases also identify the source file and its 1-based page number;
+reference cases use null for these fields. These details are saved automatically
+on future runs; old error-only results cannot recover the discarded quote.
+The prediction still counts as an error. No additional API call is made.
+
+## Prepare a local development sample
+
+Use your existing dataset export; no `datasets` dependency is required:
 
 ```bash
+uv run python scripts/prepare_cases.py \
+  --input data/evaluation/train.jsonl \
+  --output-dir data/evaluation/judge-smoke \
+  --task both --limit 10 --seed 42 --download-booklets
+```
+
+Preparation writes `cases.jsonl`, `expected-labels.jsonl`, and `preparation.json` to
+a new directory. It samples rows reproducibly and creates both tasks for each row.
+Original `row_index` values are preserved when present; otherwise IDs use positions
+in the supplied file, which must be the original export for stable dataset IDs.
+The input SHA-256 and selected rows are recorded. Downloaded PDFs use URL-hash
+filenames to prevent collisions. Downloads happen only during preparation.
+For reference-only evaluation, use `--task B` and omit `--download-booklets`.
+Title-only references are preserved. Keep gold labels outside the predictor container.
+
+## Score predictions separately
+
+```bash
+LLM_NAME=swiss-ai/Apertus-v1.5-8B uv run --env-file .env python main.py \
+  --input data/evaluation/judge-smoke/cases.jsonl \
+  --output output/judge-smoke/predictions.jsonl
+
 uv run python scripts/evaluate.py \
-  --input data/evaluation/train.jsonl --split train \
-  --limit 10 --seed 42 --retrieval-only \
-  --output-dir data/evaluation/runs/retrieval-smoke
+  --input data/evaluation/judge-smoke/cases.jsonl \
+  --predictions output/judge-smoke/predictions.jsonl \
+  --expected data/evaluation/judge-smoke/expected-labels.jsonl \
+  --output output/judge-smoke/summary.json --verify-pdfs
 ```
 
-This makes no CSCS request. It retrieves up to five chunks per selected claim and
-checks metadata integration. All relevant booklets must already be indexed, and
-their BM25 caches must be current. The run records errors instead of skipping cases.
+The scorer reports macro-F1 separately for A and B, accuracy, prediction coverage,
+confusion matrices, per-claim-language and source-to-claim language breakdowns, and
+reported token/time totals with counts of missing values. Macro-F1 averages all
+three classes, assigning 0 to undefined class F1. Missing/invalid responses count
+as incorrect and as false negatives; they are never dropped from denominators.
+Duplicate or unknown prediction IDs and mismatched gold IDs are rejected. Empty
+task groups report null accuracy/F1. The summary records hashes of all three inputs.
 
-## Classification evaluation
+Reference quotes are checked locally. `--verify-pdfs` additionally checks PDF quotes
+against the stated page. This checks source fidelity, not semantic evidence quality;
+the judges' evidence assessment and token-counting proxy remain authoritative.
+The scorer exits 1 for missing or invalid predictions but still writes the summary.
+
+This is a development sample, not held-out performance. Group related votes and
+translations when creating a held-out split. Previously saved evaluation runs use
+a different, historical schema and must not be fed directly to this scorer.
+
+## Docker
 
 ```bash
-uv run --env-file .env python scripts/evaluate.py \
-  --input data/evaluation/train.jsonl --split train \
-  --limit 10 --seed 42 \
-  --output-dir data/evaluation/runs/hybrid-smoke
+docker build --platform linux/amd64 -t hackapertus-ost:dev .
+mkdir -p output/judge-smoke
+docker run --rm --platform linux/amd64 \
+  -e BASE_URL -e API_KEY -e LLM_NAME \
+  -v "$PWD/data/evaluation/judge-smoke/cases.jsonl:/data/cases.jsonl:ro" \
+  -v "$PWD/data/evaluation/judge-smoke/booklets:/data/booklets:ro" \
+  -v "$PWD/output/judge-smoke:/output" \
+  hackapertus-ost:dev --input /data/cases.jsonl --output /output/predictions.jsonl
 ```
 
-There is at most one Apertus call per selected claim, with no automated API retries.
-No-evidence cases retain the existing NEUTRAL/no_evidence behavior without a call.
-The encoder is reused across claims with the same model/revision/device. Qdrant and
-BM25 validation still happen per claim. Indexes remain unchanged.
+Export `BASE_URL` and `API_KEY` first. Omit the booklet mount for reference-only cases.
+The minimal runtime installs `requirements-evaluation.txt`; it excludes the heavier
+Docling/retrieval development dependencies. The build context is an allowlist and
+only runtime source files are copied, excluding `.env`, datasets, and gold labels.
 
-Use `--retrieval dense` with the same input, seed and limit and a new output directory
-to compare with the dense-only baseline. Use a larger `--limit` after checking the
-small run. `--split train` records the actual source split; it does not create a new
-held-out evaluation partition. The runner rejects mixed source split/config rows.
+`make run INPUT=... DATA_DIR=... OUTPUT_DIR=...` builds and runs the same image.
+Only `DATA_DIR/booklets` and the exact input file are mounted, so sibling gold-label
+files remain outside the container. `BOOKLETS_DIR` overrides the booklet directory.
+Defaults expect `data/cases.jsonl` and write to
+`output/predictions.jsonl`. From the repository root, `make run` delegates to
+`track_2a`; relative make paths are interpreted there.
 
-## Outputs and interpretation
-
-### Prompt comparison after the first smoke run
-
-The default prompt is now `voting-nli-v2`. It requests a compact explanation,
-only necessary short contiguous citations with their correct IDs, and checks for
-negation, attribution and proposal scope. Retrieval and the 768-token output budget
-are unchanged for this experiment. Citation validation is not relaxed. Wrong labels
-are not automatically corrected from the evaluation dataset.
-
-Run the same export/seed/limit in a new output directory:
-
-```bash
-APERTUS_PROMPT_VERSION=voting-nli-v2 uv run --env-file .env python scripts/evaluate.py \
-  --input data/evaluation/train.jsonl --split train --limit 10 --seed 42 \
-  --output-dir data/evaluation/runs/hybrid-prompt-v2
-```
-
-The original prompt remains selectable with `APERTUS_PROMPT_VERSION=voting-nli-v1`.
-Compare error count, coverage, accuracy, completion tokens and inference time. A
-successful quote check does not guarantee a correct label. These ten examples have
-now informed development, so later quality claims need a separate untouched sample.
-
-Failure diagnostics now retain `finish_reason` and partial `raw_model_output` for
-non-stop completions. An invalid citation includes `matching_evidence_ids` to show
-whether its quote belongs to another supplied passage; the code does not silently
-change the citation ID or accept it. No partial JSON repair or automatic retry is used.
-
-## Saved run files
-
-### Experimental passage selection instead of generated quotes
-
-`APERTUS_PROMPT_VERSION=voting-nli-v3-ids` changes the citation output contract:
-the model selects supplied passage IDs, and Python attaches the original full passage
-text locally. It retains the v2 task/label instructions, model, temperature, retrieval
-and 768-token output budget. This is an optional experiment; the default remains v2.
-The v1 and v2 request bodies match the previously saved request hashes.
-
-```bash
-APERTUS_PROMPT_VERSION=voting-nli-v3-ids uv run --env-file .env python scripts/evaluate.py \
-  --input data/evaluation/train.jsonl --split train --limit 10 --seed 42 \
-  --output-dir data/evaluation/runs/hybrid-passage-ids
-```
-
-Update `scripts/apertus_nli.py` to use this mode. Other runner files from the previous
-step are compatible. Responses contain the same label and explanation fields, with
-`citations: [{"evidence_id": "E2"}]`. ENTAIL/CONTRADICT still require evidence;
-NEUTRAL permits an empty list. Unknown IDs, duplicate selections, extra citation
-fields, malformed responses and incomplete completions are rejected.
-
-Resolved citations expose `citation_scope: whole_passage`, `quote_origin: local_source`,
-`match_type: selected_passage` and `model_quote: null`. The `quote` field contains the
-exact full source text for compatibility, not a span extracted by the model. Source
-URLs, PDF page numbers and chunk IDs continue to come from the local evidence.
-`requires_review: false` means no source word-spacing repair occurred; it does not
-certify evidence relevance, entailment, or correctness of the explanation.
-
-Compare error types, completion length and classification accuracy separately.
-Selecting an existing but irrelevant passage is still possible. Negation errors and
-insufficient retrieval can persist after all citation-copying errors disappear.
-Do not retroactively score failed quote-mode responses as successful ID-mode results.
-See `experiments/prompt-v2-comparison.md` for the motivating development run.
-
-Each new run folder contains:
-
-- `config.json`: input and manifest hashes, label mapping, selected IDs, seed,
-  retrieval settings, API configuration (no key), prompt version, package/Python
-  versions, source code hashes and booklet metadata.
-- `predictions.jsonl`: one flushed record per completed claim, containing gold label,
-  predicted label/explanation/citations, retrieved passages, retrieval diagnostics,
-  timings, API usage or explicit failure details. Gold labels, `reference_string`,
-  gold chunk IDs and dataset references never enter the query or NLI prompt.
-- `summary.json`: overall and per-claim-language metrics, coverage, errors and resource
-  totals. Claim language, rather than reference language, defines language groups.
-
-Accuracy divides correct predictions by all processed examples; failed calls or
-invalid outputs count as incorrect. `accuracy_on_valid_predictions` reports the
-successful-prediction subset separately; `prediction_coverage` shows its size.
-Macro-F1 averages all three classes, with zero for an absent class. The confusion
-matrix has gold labels as rows and predictions (including `ERROR`) as columns.
-Citation-review flags are counted but do not remove a prediction from metrics.
-
-`prompt_tokens` is the API's input/context token usage, including the system prompt,
-claim and supplied evidence. Completion and total tokens are also reported. Missing
-API usage stays null; sums cover only reporting calls and include a missing-call
-count. Failed API requests can consume unreported tokens. Inference time is client
-wall-clock time including network and validation, not server-only compute time.
-Retrieval is timed separately, including initial model loading.
-
-Recall@5 is a macro average of `|gold chunk IDs intersect top 5| / |gold chunk IDs|`.
-To enable it, add a nonempty `relevant_chunk_ids` list to annotated input rows, using
-IDs from the exact indexed chunk version. Missing annotations use null; an empty
-list is rejected. Rows without annotations do not enter recall's denominator.
-Retrieval failures on annotated examples count as zero; classification failures
-retain independently computed retrieval scores. Duplicate retrieved IDs count once.
-
-The native dataset's `reference_string` is preserved for error analysis, but is not
-automatically mapped to chunks. PDF extraction artifacts, split passages and multiple
-supporting passages make exact text alignment unreliable. Without verified chunk
-annotations, Recall@5 is null with an explanation, not a fabricated score. Mapping
-those references to indexed chunks is a separate next step.
-
-Sampled `train` results are development diagnostics. Do not present them as held-out
-performance when these examples informed prompt or retrieval tuning. Preserve a
-separate evaluation set; group related claims/translations by vote when creating
-development and held-out subsets. Sampling by seed alone does not prevent leakage.
-
-## Failure behavior and verification
-
-The output directory must be new. Missing manifests, unknown labels, conflicting
-booklet IDs and malformed inputs fail before inference. Per-example retrieval/API
-failures are recorded and processing continues; exit status is 1 if any example
-failed. Interrupting with Ctrl-C produces a partial summary, marked `complete: false`,
-and exit status 130. Completed rows remain saved. This first runner does not resume
-an interrupted batch; choose a new directory for another run.
+## Verification and limits
 
 ```bash
 uv run python -m unittest discover -s tests -v
 ```
 
-Offline tests check the supplied schema/label mapping, multilingual grouping,
-hand-calculated metrics, failure denominators, token usage completeness, model reuse,
-and batch output behavior. No live dataset download or CSCS evaluation was run here.
+Offline tests cover mixed batches, environment precedence, labels, actual token
+accounting, citation validation, error denominators, order independence, input
+validation, deterministic preparation, and exclusion of gold fields from prompts.
+
+Verified on 2026-10-06: all 18 tests passed; the `linux/amd64` image built and ran
+with a read-only root filesystem, read-only inputs, and writable `/tmp` and output.
+A live CSCS check used one sampled dataset row (1309) in both task formats with
+`swiss-ai/Apertus-v1.5-8B`. Both responses were structurally valid but predicted
+neutral instead of the gold contradiction: accuracy and macro-F1 were 0 for each
+task. Task A used 25,735 input / 69 output tokens in 2,896 ms; task B used 704 input /
+75 output tokens in 586 ms. These two cases validate the integration, not model
+quality. Local artifacts are in `output/judge-contract-smoke/`; the prepared inputs
+and dataset fingerprint are in `data/evaluation/judge-contract-smoke/`. Neither
+directory is committed. No prompt tuning was performed on these results.
+
+This initial full-document baseline does not OCR image-only pages. A completely
+image-only PDF fails explicitly; scanned pages inside mixed PDFs may be omitted.
+Large documents fail rather than silently truncate above a 300,000-character prompt
+cap; the endpoint can impose a smaller token context limit. Classification and
+short-quote generation may still fail or be wrong. No automatic output repair or
+fallback model hides those failures.

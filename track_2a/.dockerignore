@@ -1,0 +1,8 @@
+*
+!Dockerfile
+!requirements-evaluation.txt
+!main.py
+!scripts/
+scripts/*
+!scripts/benchmark.py
+!scripts/apertus_nli.py
