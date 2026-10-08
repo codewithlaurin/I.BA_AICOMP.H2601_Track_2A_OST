@@ -25,3 +25,7 @@ build/
 .DS_Store
 .idea/
 .vscode/
+
+# Project Data
+/data/pdf/
+/data/booklet_manifest.json

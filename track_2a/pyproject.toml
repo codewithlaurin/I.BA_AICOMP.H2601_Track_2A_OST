@@ -14,3 +14,8 @@ claimcheck = "claimcheck.cli:main"
 
 [tool.setuptools.packages.find]
 where = ["src"]
+
+[dependency-groups]
+dev = [
+    "argparse>=1.4.0",
+]
