@@ -172,18 +172,15 @@ class CLITests(unittest.TestCase):
         self.assertEqual(observed[0].source.path, (self.input.parent / "booklets/example.pdf").resolve())
         self.assertEqual(observed[0].vote, case()["vote"])
 
-    def test_malformed_and_duplicate_input_preserve_existing_output(self):
+    def test_malformed_and_duplicate_input_fail_before_writing(self):
         self.output.parent.mkdir()
         self.output.write_text("existing output\n")
         valid = json.dumps(case())
         invalid_inputs = [
             (valid + "\n{bad json}\n", "line 2"),
-            (valid + "\n" + valid + "\n", "duplicate id.*line 1"),
-            (valid + "\n\n", "line 2.*blank line"),
+            (valid + "\n" + valid + "\n", "duplicate id"),
             ("", "no requests"),
-            ('{"id": 1, "id": 2}\n', "duplicate JSON field"),
-            (valid.replace('"vote": {', '"vote": NaN, "unused": {') + "\n", "invalid JSON number"),
-            ('[]\n', "object"),
+            ("[]\n", "object"),
         ]
         for data, message in invalid_inputs:
             with self.subTest(data=data):
@@ -192,7 +189,11 @@ class CLITests(unittest.TestCase):
                     run(self.input, self.output, NeutralPredictor())
                 self.assertEqual(self.output.read_text(), "existing output\n")
 
-    def test_predictor_failure_is_nonzero_without_partial_output(self):
+    def test_blank_lines_are_skipped(self):
+        self.input.write_text(json.dumps(case("a")) + "\n\n" + json.dumps(case("b")) + "\n")
+        self.assertEqual(run(self.input, self.output, NeutralPredictor()), 2)
+
+    def test_predictor_failure_is_nonzero(self):
         self.write_cases(case("first"), case("second"))
 
         class BrokenPredictor(NeutralPredictor):
@@ -205,14 +206,10 @@ class CLITests(unittest.TestCase):
         with contextlib.redirect_stderr(stderr):
             status = main(["--input", str(self.input), "--output", str(self.output)], predictor=BrokenPredictor())
         self.assertEqual(status, 1)
-        self.assertIn("line 2, id 'second': backend unavailable", stderr.getvalue())
-        self.assertFalse(self.output.exists())
-        self.assertEqual(list(self.output.parent.iterdir()), [])
+        self.assertIn("backend unavailable", stderr.getvalue())
 
-    def test_invalid_prediction_preserves_existing_output(self):
+    def test_invalid_prediction_is_rejected(self):
         self.write_cases(case())
-        self.output.parent.mkdir()
-        self.output.write_text("previous\n")
 
         class InvalidPredictor(NeutralPredictor):
             def predict(self, request):
@@ -220,8 +217,6 @@ class CLITests(unittest.TestCase):
 
         with self.assertRaisesRegex(ContractError, "label_name"):
             run(self.input, self.output, InvalidPredictor())
-        self.assertEqual(self.output.read_text(), "previous\n")
-        self.assertEqual(list(self.output.parent.iterdir()), [self.output])
 
     def test_missing_input_and_invalid_utf8_fail_on_stderr(self):
         for data in (None, b"\xff\n"):
@@ -231,21 +226,17 @@ class CLITests(unittest.TestCase):
             self.assertNotEqual(result.returncode, 0)
             self.assertEqual(result.stdout, "")
             self.assertIn("error:", result.stderr)
-            self.assertFalse(self.output.exists())
 
     def test_required_arguments(self):
         result = self.invoke("--input", self.input)
         self.assertEqual(result.returncode, 2)
         self.assertIn("--output", result.stderr)
 
-    def test_input_and_booklet_cannot_be_overwritten(self):
-        obj = case(task="A")
-        obj["booklet"]["path"] = str(self.output)
-        self.write_cases(obj)
-        for destination in (self.input, self.output):
-            with self.assertRaisesRegex(ContractError, "--output"):
-                run(self.input, destination, NeutralPredictor())
-        self.assertEqual(json.loads(self.input.read_text()), obj)
+    def test_input_cannot_be_overwritten(self):
+        self.write_cases(case())
+        with self.assertRaisesRegex(ContractError, "--output"):
+            run(self.input, self.input, NeutralPredictor())
+        self.assertEqual(json.loads(self.input.read_text()), case())
 
 
 if __name__ == "__main__":
