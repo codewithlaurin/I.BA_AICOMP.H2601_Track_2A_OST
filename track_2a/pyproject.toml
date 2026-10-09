@@ -1,0 +1,21 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "apertus-claimcheck"
+version = "0.1.0"
+description = "Track 2A / OST multilingual claim checking CLI"
+requires-python = ">=3.10"
+dependencies = []
+
+[project.scripts]
+claimcheck = "claimcheck.cli:main"
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[dependency-groups]
+dev = [
+    "argparse>=1.4.0",
+]
