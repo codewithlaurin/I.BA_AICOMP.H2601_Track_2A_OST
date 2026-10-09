@@ -8,7 +8,7 @@ import sys
 import tempfile
 
 from .contracts import Booklet, ContractError, Request, validate_prediction, validate_request
-from .predict import NeutralPredictor, Predictor
+from .predict import ApertusPredictor, NeutralPredictor, Predictor
 
 
 def _reject_constant(value: str):
@@ -90,8 +90,11 @@ def main(argv: list[str] | None = None, *, predictor: Predictor | None = None) -
     parser.add_argument("--output", required=True, type=Path, help="Predictions JSONL destination")
     args = parser.parse_args(argv)
     if predictor is None:
-        print("claimcheck: using neutral infrastructure stub; no inference or PDF extraction", file=sys.stderr)
-        predictor = NeutralPredictor()
+        if any(os.environ.get(name, "").strip() for name in ("API_KEY", "LLM_API_KEY", "CSCS_INFERENCE_API_KEY")):
+            predictor = ApertusPredictor()
+        else:
+            print("claimcheck: API_KEY not set; using neutral infrastructure stub, no inference", file=sys.stderr)
+            predictor = NeutralPredictor()
     try:
         count = run(args.input, args.output, predictor)
     except Exception as exc:
