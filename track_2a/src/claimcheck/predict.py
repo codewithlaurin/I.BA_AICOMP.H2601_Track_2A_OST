@@ -45,6 +45,23 @@ def clean_page_text(text: str) -> str:
     return _CONTROL.sub("", text)
 
 
+def _shingles(text: str, k: int = 10) -> set:
+    text = re.sub(r"\s+", " ", text.casefold())
+    return {text[i:i + k] for i in range(max(len(text) - k + 1, 0))}
+
+
+def choose_page_text(pdfium_text: str, pypdf_text: str) -> str:
+    """pdfium is the primary extractor; pypdf replaces a page only when it holds text pdfium missed.
+
+    pdfium skipped a paragraph inside a Form XObject on one booklet page (1 of 1,432 measured);
+    pypdf had it. pypdf is not used by default because it inserts spurious spaces more often.
+    """
+    a, b = _shingles(pdfium_text), _shingles(pypdf_text)
+    if b and len(pypdf_text) > len(pdfium_text) + 100 and len(b - a) / len(b) > 0.15:
+        return pypdf_text
+    return pdfium_text
+
+
 @lru_cache(maxsize=16)
 def pdf_pages(path: Path) -> tuple[dict, ...]:
     """Text per page, 1-based page numbers; empty pages skipped. CPU only, no OCR.
@@ -53,19 +70,26 @@ def pdf_pages(path: Path) -> tuple[dict, ...]:
     box and lost whole pages on some booklets (34 of 1,400 pages measured).
     """
     import pypdfium2 as pdfium
+    from pypdf import PdfReader
 
     pages = []
+    reader = PdfReader(path)
     with pdfium.PdfDocument(path) as document:
         for index in range(len(document)):
             page = document[index]
             try:
                 textpage = page.get_textpage()
                 try:
-                    text = clean_page_text(textpage.get_text_range())
+                    text = textpage.get_text_range()
                 finally:
                     textpage.close()
             finally:
                 page.close()
+            try:
+                alternative = reader.pages[index].extract_text() or ""
+            except Exception:
+                alternative = ""
+            text = clean_page_text(choose_page_text(text, alternative))
             if text.strip():
                 pages.append({"text": text, "page": index + 1})
     if not pages:
