@@ -1,6 +1,7 @@
 """Predictors behind the CLI: the Apertus inference and a neutral stub."""
 
 from functools import lru_cache
+import os
 import json
 from pathlib import Path
 import re
@@ -197,24 +198,55 @@ def vote_title(vote) -> str | None:
 
 
 class ApertusPredictor:
-    """Task B: the reference is the only chunk. Task A: every booklet page is a chunk (full-document baseline).
+    """Task B: the reference is the only chunk. Task A: the booklet pages most similar to the
+    claim (FAISS over e5 embeddings, see retrieval.py); set CLAIMCHECK_FULL_DOCUMENT=1 to send
+    every page instead (the baseline).
 
     Never raises per case: any failure degrades to neutral with empty evidence and a line on
     stderr, so the CLI still writes a valid prediction for every id.
     """
 
+    def __init__(self, top_k: int | None = None, full_document: bool | None = None):
+        from .retrieval import TOP_K
+
+        self.top_k = top_k or int(os.environ.get("CLAIMCHECK_TOP_K", TOP_K))
+        self.full_document = (os.environ.get("CLAIMCHECK_FULL_DOCUMENT") == "1"
+                              if full_document is None else full_document)
+
     def predict(self, request: Request) -> dict:
-        from .nli import classify, to_judge
+        from .nli import MAX_EVIDENCE_CHARS, MAX_EVIDENCE_ITEMS, classify, to_judge
 
         try:
+            retrieved: list[dict] = []
             if isinstance(request.source, Booklet):
-                chunks = list(pdf_pages(request.source.path))
+                pages = pdf_pages(request.source.path)
+                if self.full_document:
+                    chunks = list(pages)
+                else:
+                    from .retrieval import top_pages
+
+                    retrieved = top_pages(request.source.path, pages, request.claim.text,
+                                          vote_title(request.vote), self.top_k)
+                    chunks = sorted(retrieved, key=lambda page: page["page"])  # reading order
             else:
                 chunks = [{"text": request.source.text, "page": None}]
             pred = classify(request.claim.text, chunks, vote_title(request.vote))
             if pred["error"]:
                 print(f"claimcheck: {request.id!r}: {pred['error']}", file=sys.stderr)
-            return to_judge(pred, request.id)
+            result = to_judge(pred, request.id)
+            if result["label"] != 1 and retrieved:
+                # Hit@5 safety net: after the model's quotes, the retrieved pages themselves,
+                # best first. One of the first five items has to overlap the gold passage.
+                cited = {(item["page"], item["text"]) for item in result["evidence"]}
+                for page in retrieved:
+                    if len(result["evidence"]) >= MAX_EVIDENCE_ITEMS:
+                        break
+                    text = page["text"][:MAX_EVIDENCE_CHARS]
+                    if (page["page"], text) not in cited and not any(
+                            item["page"] == page["page"] and item["text"] in text for item in result["evidence"]
+                            if len(item["text"]) >= len(text)):
+                        result["evidence"].append({"page": page["page"], "text": text})
+            return result
         except Exception as exc:
             print(f"claimcheck: {request.id!r}: {exc.__class__.__name__}: {exc}; predicting neutral", file=sys.stderr)
             return NeutralPredictor().predict(request)
