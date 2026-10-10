@@ -24,7 +24,7 @@ import time
 from datetime import datetime, timezone
 from pathlib import Path
 
-PROMPT_VERSION = "judge-nli-v4"
+PROMPT_VERSION = "judge-nli-v5"
 LABELS = ("ENTAILMENT", "NEUTRAL", "CONTRADICTION")
 MODEL_LABELS = {"ENTAIL": "ENTAILMENT", "ENTAILMENT": "ENTAILMENT", "NEUTRAL": "NEUTRAL",
                 "CONTRADICT": "CONTRADICTION", "CONTRADICTION": "CONTRADICTION"}
@@ -59,8 +59,11 @@ Steps:
    does not address it.
 3. "subject_addressed": true or false accordingly. "passage_says": when true, one short sentence with
    what the passage states about the topic, with its exact value or position; when false, "not addressed".
-4. "same_meaning": compare "claim_says" with "passage_says" detail by detail. true only when they state
-   the same thing (paraphrase and translation are fine). false when any detail differs: a different
+4. "same_meaning": compare "claim_says" with "passage_says". true when the passage states what the
+   claim states (paraphrase and translation are fine). The passage may say more than the claim: extra
+   actors, reasons, conditions or details that the claim leaves out do not make the meaning different
+   ("A said X" is confirmed by "A and B said X"). false when the passage states something different
+   about the same thing that the claim asserts: a different
    number, percentage, amount, date, duration or threshold; accept versus reject (JA/OUI/SI versus
    NEIN/NON/NO); a negation; the opposite outcome (succeeded versus failed, rises versus falls, allowed
    versus forbidden, mandatory versus voluntary, applies versus does not apply); or the statement
