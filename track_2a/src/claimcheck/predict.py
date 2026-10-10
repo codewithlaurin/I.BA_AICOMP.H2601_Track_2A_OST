@@ -3,6 +3,7 @@
 from functools import lru_cache
 import json
 from pathlib import Path
+import re
 import sys
 from typing import Protocol
 
@@ -35,9 +36,22 @@ class NeutralPredictor:
         }
 
 
+# pdfium marks hyphenation/ligature points with control characters inside words
+# ("schweize\x02rische"); they break word matching and verbatim evidence.
+_CONTROL = re.compile("[\x00-\x08\x0b\x0c\x0e-\x1f\ufffe\ufeff]")
+
+
+def clean_page_text(text: str) -> str:
+    return _CONTROL.sub("", text)
+
+
 @lru_cache(maxsize=16)
 def pdf_pages(path: Path) -> tuple[dict, ...]:
-    """Text per page, 1-based page numbers; empty pages skipped. CPU only, no OCR."""
+    """Text per page, 1-based page numbers; empty pages skipped. CPU only, no OCR.
+
+    get_text_range() rather than get_text_bounded(): the latter clips to the page
+    box and lost whole pages on some booklets (34 of 1,400 pages measured).
+    """
     import pypdfium2 as pdfium
 
     pages = []
@@ -47,7 +61,7 @@ def pdf_pages(path: Path) -> tuple[dict, ...]:
             try:
                 textpage = page.get_textpage()
                 try:
-                    text = textpage.get_text_bounded()
+                    text = clean_page_text(textpage.get_text_range())
                 finally:
                     textpage.close()
             finally:

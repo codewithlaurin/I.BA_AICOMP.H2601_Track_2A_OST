@@ -67,6 +67,10 @@ class ApertusPredictorTests(unittest.TestCase):
         with patch.object(predict, "pdf_pages", side_effect=ValueError("no text")), contextlib.redirect_stderr(stderr):
             self.assertEqual(predict.ApertusPredictor().predict(request("A"))["label"], 1)
 
+    def test_clean_page_text_removes_pdfium_control_characters(self):
+        self.assertEqual(predict.clean_page_text("schweize\x02rische modifi\ufffecation\r\nnext"),
+                         "schweizerische modification\r\nnext")
+
     def test_vote_title(self):
         self.assertEqual(predict.vote_title("x"), "x")
         self.assertEqual(predict.vote_title({"title": "t", "date": "d"}), "t")
