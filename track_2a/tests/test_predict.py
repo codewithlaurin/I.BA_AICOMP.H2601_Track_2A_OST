@@ -71,6 +71,19 @@ class ApertusPredictorTests(unittest.TestCase):
         self.assertEqual(predict.clean_page_text("schweize\x02rische modifi\ufffecation\r\nnext"),
                          "schweizerische modification\r\nnext")
 
+    def test_pypdf_replaces_page_only_when_pdfium_missed_text(self):
+        full = "Für Bundesrat und Parlament ist klar: Es gibt ausreichend Mietwohnungen zu tragbaren Preisen. " * 3
+        self.assertEqual(predict.choose_page_text("Nein\n", full), full)
+        self.assertEqual(predict.choose_page_text(full, full.replace("  ", " ")), full)
+        self.assertEqual(predict.choose_page_text(full, ""), full)
+
+    def test_real_booklet_page_with_form_xobject_text(self):
+        pdf = Path(__file__).resolve().parents[1] / "data/pdf/2020-02-09_erlaeuterungen_des_bundesrates.pdf"
+        if not pdf.exists():
+            self.skipTest("booklet not downloaded")
+        page5 = {p["page"]: p["text"] for p in predict.pdf_pages(pdf)}[5]
+        self.assertIn("Mietwohnungen zu tragbaren Preisen", page5)
+
     def test_vote_title(self):
         self.assertEqual(predict.vote_title("x"), "x")
         self.assertEqual(predict.vote_title({"title": "t", "date": "d"}), "t")
