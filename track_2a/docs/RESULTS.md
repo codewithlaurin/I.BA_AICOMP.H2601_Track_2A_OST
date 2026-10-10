@@ -27,19 +27,8 @@ Macro-F1 by language pair (source -> claim), current code:
 Caveat: 100 of these rows (`b-100`) were used to tune the prompt; the disjoint 100-row holdout
 gives 0.92 with the current code.
 
-## Task A, 30 rows (`a-30`): full document vs. page retrieval
+## Task A, 30 rows, full-document baseline (no retrieval yet)
 
-Same model and prompt; Task A sends booklet pages as chunks. Retrieval: one FAISS index per
-booklet over `intfloat/multilingual-e5-small` page embeddings (CPU), query = claim + vote title,
-top 8 pages in reading order. Offline study on 429 public rows: gold page in the top 8 for 91 %
-(BM25: 76 %).
-
-| Run (2026-10-10) | Macro-F1 | Evidence (Hit@5) | Input tokens / case | Time / case |
-| --- | --- | --- | --- | --- |
-| full document (`CLAIMCHECK_FULL_DOCUMENT=1`) | 0.79 | 0.32 | ~31,600 | ~8 s |
-| FAISS top 8 pages (current code) | **0.95** | **0.88** | 4,883 | 1.2 s |
-
-Retrieval run: E 0.92 / N 1.00 / C 0.92; 22 of 25 E/C cases cite the gold passage.
-Evidence per case = the model's quotes, then the retrieved pages best first (max 5 items,
-5,000 chars each). Index build on first use ~6 s per booklet (cached afterwards);
-embedding model load ~19 s once per process.
+Macro-F1 0.79 (minimum 0.60), evidence score 0.32, ~31k input tokens per case.
+Offline page-retrieval study: `multilingual-e5-small` with claim + vote finds the gold page
+in the top 8 for 91 % of 429 rows (BM25: 76 %). Next step: send only the top pages.
