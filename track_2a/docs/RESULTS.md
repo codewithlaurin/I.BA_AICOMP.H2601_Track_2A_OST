@@ -4,32 +4,28 @@ Scored with the organisers' `evaluate.py` (macro-F1, invalid lines count as wron
 
 ## Task B, full public dataset (1,495 rows, `OSTswiss/MNLIoverSwissVotingBooklets` train split)
 
-Run 2026-10-10, branch `feature/cli`, commit c21d7f0, `python -m claimcheck`, prompt `judge-nli-v4`,
-model `swiss-ai/Apertus-v1.5-8B`, one call per case. Rows 432-1494 were re-run after a network
-outage (1,063 cases), results merged (`output/cli-b-all/predictions.merged.jsonl`).
+Branch `feature/cli`, `python -m claimcheck`, model `swiss-ai/Apertus-v1.5-8B`, one call per case.
+Scored with the organisers' `evaluate.py`. Network outages during the runs were repaired by
+re-running the affected ids and merging (`output/cli-b-all*/predictions*.jsonl`).
 
-| Metric | Value |
-| --- | --- |
-| Macro-F1 | **0.887** (minimum 0.70) |
-| Accuracy | 0.887 |
-| Entailment P / R / F1 | 0.946 / 0.882 / 0.913 (n=498) |
-| Neutral P / R / F1 | 0.822 / 0.964 / 0.887 (n=498) |
-| Contradiction P / R / F1 | 0.911 / 0.816 / 0.860 (n=499) |
-| Input / output tokens per case | 3,182 / 136 |
-| Inference time per case | 1.0 s |
+| Run (2026-10-10) | Macro-F1 | E / N / C F1 | Notes |
+| --- | --- | --- | --- |
+| prompt v4, quote-grounding rule on (c21d7f0) | 0.887 | 0.913 / 0.887 / 0.860 | rule forced 80 cases to neutral; all 80 were gold E/C |
+| prompt v4, rule removed (e54faee) | **0.938** | 0.949 / 0.958 / 0.908 | current code |
+| prompt v5 "extra detail is not a contradiction" | 0.926 | 0.942 / 0.948 / 0.888 | contradiction recall 0.90 -> 0.87; reverted |
 
-Macro-F1 by language pair (source -> claim):
+Current code: accuracy 0.938; per case 3,182 input / 136 output tokens, 1.0 s.
+
+Macro-F1 by language pair (source -> claim), current code:
 
 | | de claim | fr claim | it claim |
 | --- | --- | --- | --- |
-| de source | 0.879 | 0.807 | 0.824 |
-| fr source | 0.950 | 0.964 | 0.869 |
-| it source | 0.831 | 0.862 | 0.957 |
+| de source | 0.90 | 0.93 | 0.92 |
+| fr source | 0.97 | 0.97 | 0.94 |
+| it source | 0.87 | 0.95 | 0.97 |
 
-Same-language pairs 0.88-0.96, cross-lingual 0.81-0.95. Weakest: German source with a
-French or Italian claim. Main error: contradictions read as neutral (recall 0.82) and
-neutral over-predicted (precision 0.82). Note: the prompt was tuned on 100 of these rows
-(`b-100`), so this number is slightly optimistic; the disjoint 100-row holdout gave 0.90.
+Caveat: 100 of these rows (`b-100`) were used to tune the prompt; the disjoint 100-row holdout
+gives 0.92 with the current code.
 
 ## Task A, 30 rows, full-document baseline (no retrieval yet)
 
