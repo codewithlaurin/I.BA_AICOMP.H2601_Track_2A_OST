@@ -81,8 +81,13 @@ class ApertusPredictorTests(unittest.TestCase):
         pdf = Path(__file__).resolve().parents[1] / "data/pdf/2020-02-09_erlaeuterungen_des_bundesrates.pdf"
         if not pdf.exists():
             self.skipTest("booklet not downloaded")
-        page5 = {p["page"]: p["text"] for p in predict.pdf_pages(pdf)}[5]
-        self.assertIn("Mietwohnungen zu tragbaren Preisen", page5)
+        pages = {p["page"]: p["text"] for p in predict.pdf_pages(pdf)}
+        self.assertIn("Mietwohnungen zu tragbaren Preisen", pages[5])
+        page10 = pages[10]
+        self.assertIn("ländlichen Regionen", page10)  # hyphenated line break joined
+        self.assertLess(page10.index("Regional unterschiedliche Situation"),
+                        page10.index("Die Situation ist regional"))  # label before its paragraph
+        self.assertLess(page10.index("Vorkaufsrecht\n"), page10.index("Zur Erhöhung des Anteils"))
 
     def test_vote_title(self):
         self.assertEqual(predict.vote_title("x"), "x")

@@ -62,6 +62,57 @@ def choose_page_text(pdfium_text: str, pypdf_text: str) -> str:
     return pdfium_text
 
 
+# Soft hyphen (U+00AD) or pdfium's U+0002 marker at a line break: the word continues on the next line.
+_HYPHEN_BREAK = re.compile("[ \t]*[\u00ad\x02][ \t]*\n[ \t]*|\n[ \t]*[\u00ad\x02][ \t]*\n?[ \t]*")
+LABEL_COLUMN = 0.27  # booklet margin labels end left of 27 % of the page width
+LABEL_GAP = 16.0     # points between consecutive lines of one margin label
+
+
+def layout_text(page, textpage) -> str:
+    """Reading-order text: margin labels placed before their paragraph, hyphenated line breaks joined.
+
+    pdfium's own order lists the margin column ("Ausgangslage", "Forderungen der Initiative")
+    after the whole page. Each line's first character box gives its column and height.
+    """
+    raw = textpage.get_text_range()
+    if not raw.strip():
+        return raw
+    width = page.get_size()[0]
+    labels, mains, offset = [], [], 0
+    for line in raw.split("\r\n"):
+        stripped = line.strip()
+        if stripped:
+            index = offset + line.index(stripped[0])
+            try:
+                left, _, _, top = textpage.get_charbox(index)
+            except Exception:
+                left, top = width, 0.0
+            is_label = (left < width * LABEL_COLUMN and len(stripped) < 60
+                        and not stripped.endswith((".", ",", ";", ":")))
+            (labels if is_label else mains).append((top, left, stripped))
+        offset += len(line) + 2
+    mains.sort(key=lambda item: (-round(item[0]), item[1]))
+    labels.sort(key=lambda item: -item[0])
+    # Group label lines into blocks; a block is emitted before the first main line at or below it.
+    blocks = []
+    for top, _, text in labels:
+        if blocks and blocks[-1][0] - top < LABEL_GAP * (len(blocks[-1][1]) + 1) and blocks[-1][2] - top < LABEL_GAP:
+            blocks[-1][1].append(text); blocks[-1][2] = top
+        else:
+            blocks.append([top, [text], top])
+    out, block_index = [], 0
+    for top, _, text in mains:
+        while block_index < len(blocks) and blocks[block_index][0] >= top - 2:
+            out.append("\n" + " ".join(blocks[block_index][1]) + "\n")
+            block_index += 1
+        out.append(text + "\n")
+    for block in blocks[block_index:]:
+        out.append("\n" + " ".join(block[1]) + "\n")
+    text = _HYPHEN_BREAK.sub("", "".join(out))
+    text = text.replace("\u00ad", "-").replace("\x02", "")  # remaining soft hyphens are visible hyphens
+    return re.sub(r"\n{3,}", "\n\n", text).strip() + "\n"
+
+
 @lru_cache(maxsize=16)
 def pdf_pages(path: Path) -> tuple[dict, ...]:
     """Text per page, 1-based page numbers; empty pages skipped. CPU only, no OCR.
@@ -80,7 +131,7 @@ def pdf_pages(path: Path) -> tuple[dict, ...]:
             try:
                 textpage = page.get_textpage()
                 try:
-                    text = textpage.get_text_range()
+                    text = layout_text(page, textpage)
                 finally:
                     textpage.close()
             finally:
