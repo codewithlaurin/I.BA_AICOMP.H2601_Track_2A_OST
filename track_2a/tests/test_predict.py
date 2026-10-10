@@ -51,11 +51,38 @@ class ApertusPredictorTests(unittest.TestCase):
         pages = ({"text": "Seite eins.", "page": 1}, {"text": REFERENCE, "page": 7})
         patcher, calls = fake_complete(answer(chunk=1))
         with patcher, patch.object(predict, "pdf_pages", return_value=pages):
-            prediction = predict.ApertusPredictor().predict(request("A", vote={"title": "Initiative", "date": "2026"}))
+            prediction = predict.ApertusPredictor(full_document=True).predict(
+                request("A", vote={"title": "Initiative", "date": "2026"}))
         self.assertEqual(validate_prediction(prediction, request("A")), prediction)
         self.assertEqual(prediction["evidence"], [{"page": 7, "text": "recommandent d'accepter l'initiative"}])
         self.assertEqual(calls[0]["vote"], "Initiative")
         self.assertEqual(calls[0]["chunks"][1]["page"], 7)
+
+    def test_task_a_retrieval_sends_top_pages_and_adds_them_as_evidence(self):
+        pages = tuple({"text": f"Seite {n}. " * 5, "page": n} for n in range(1, 11))
+        pages = pages[:6] + ({"text": REFERENCE, "page": 7},) + pages[7:]
+        retrieved = [dict(pages[6], score=0.9), dict(pages[2], score=0.5), dict(pages[8], score=0.4)]
+        patcher, calls = fake_complete(answer(chunk=1))  # chunks are in page order: 3, 7, 9
+        with patcher, patch.object(predict, "pdf_pages", return_value=pages), \
+                patch("claimcheck.retrieval.top_pages", return_value=retrieved) as search:
+            prediction = predict.ApertusPredictor(top_k=3).predict(request("A"))
+        self.assertEqual(validate_prediction(prediction, request("A")), prediction)
+        self.assertEqual(search.call_args.args[2:], ("Der Bundesrat empfiehlt ein Nein.", "Initiative", 3))
+        self.assertEqual([c["page"] for c in calls[0]["chunks"]], [3, 7, 9])
+        self.assertEqual(prediction["evidence"][0], {"page": 7, "text": "recommandent d'accepter l'initiative"})
+        self.assertEqual([e["page"] for e in prediction["evidence"]], [7, 7, 3, 9])  # quote, then pages best first
+        self.assertEqual(prediction["evidence"][1]["text"], REFERENCE)
+
+    def test_task_a_neutral_gets_no_page_evidence(self):
+        pages = tuple({"text": f"Seite {n}. " * 5, "page": n} for n in range(1, 11))
+        retrieved = [dict(pages[0], score=0.9)]
+        neutral = json.dumps({"claim_says": "x", "subject_addressed": False, "passage_says": "not addressed",
+                              "same_meaning": None, "label": "NEUTRAL", "citations": []})
+        with fake_complete(neutral)[0], \
+                patch.object(predict, "pdf_pages", return_value=pages), \
+                patch("claimcheck.retrieval.top_pages", return_value=retrieved):
+            prediction = predict.ApertusPredictor().predict(request("A"))
+        self.assertEqual((prediction["label"], prediction["evidence"]), (1, []))
 
     def test_failures_degrade_to_neutral(self):
         stderr = io.StringIO()
