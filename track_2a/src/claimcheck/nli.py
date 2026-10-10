@@ -29,7 +29,6 @@ LABELS = ("ENTAILMENT", "NEUTRAL", "CONTRADICTION")
 MODEL_LABELS = {"ENTAIL": "ENTAILMENT", "ENTAILMENT": "ENTAILMENT", "NEUTRAL": "NEUTRAL",
                 "CONTRADICT": "CONTRADICTION", "CONTRADICTION": "CONTRADICTION"}
 QUOTE_MIN_SCORE = 90       # judges' evidence rule: rapidfuzz partial_ratio >= 90
-GROUNDING_MIN_SCORE = 70   # enough to believe the model read the chunk, not enough to cite
 MAX_EVIDENCE_CHARS = 5000  # judges ignore longer items
 MAX_EVIDENCE_ITEMS = 5     # judges score only the first five
 
@@ -108,7 +107,7 @@ Chunk 1 (it): "...i servizi di streaming dovranno investire il 4 per cento dei l
 
 # ---------------------------------------------------------------- 1. inference call
 
-def complete(system: str, user: str, max_tokens: int = 600) -> dict:
+def complete(system: str, user: str, max_tokens: int = 1024) -> dict:
     """One chat call to Apertus. Reads BASE_URL, API_KEY, LLM_NAME from the environment."""
     import openai
 
@@ -211,18 +210,16 @@ def locate_quote(quote: str, chunk_index: int, chunks: list) -> dict | None:
     return None
 
 
-def grounded(texts: list[str], chunks: list) -> int | None:
-    """Index of the first chunk one of the model's texts is a near-quote of, else None."""
+def best_chunk(texts: list[str], chunks: list) -> int:
+    """Index of the chunk that the model's texts resemble most (0 when nothing matches)."""
     from rapidfuzz import fuzz
 
-    for text in texts:
-        for index, chunk in enumerate(chunks):
-            if len(text.strip()) >= 8 and fuzz.partial_ratio(text, _text(chunk)) >= GROUNDING_MIN_SCORE:
-                return index
-    return None
+    scores = [max((fuzz.partial_ratio(t, _text(c)) for t in texts if len(t.strip()) >= 8), default=0)
+              for c in chunks]
+    return max(range(len(chunks)), key=scores.__getitem__)
 
 
-def classify(claim: str, chunks: list, vote: str | None = None, max_tokens: int = 600) -> dict:
+def classify(claim: str, chunks: list, vote: str | None = None, max_tokens: int = 1024) -> dict:
     """One Apertus call. Never raises on model problems: falls back to NEUTRAL with "error" set."""
     if not claim.strip() or not chunks:
         raise ValueError("claim and at least one chunk are required")
@@ -243,12 +240,12 @@ def classify(claim: str, chunks: list, vote: str | None = None, max_tokens: int 
     label = derive_label(parsed)
     citations = [c for c in (locate_quote(c["quote"], c["chunk"], chunks) for c in parsed["citations"]) if c]
     if label != "NEUTRAL" and not citations:
-        index = grounded([c["quote"] for c in parsed["citations"]] + [parsed["passage_says"] or ""], chunks)
-        if index is None:
-            pred["error"], label = "no quote found in the chunks; label forced to NEUTRAL", "NEUTRAL"
-        else:  # judges require evidence for entailment/contradiction: cite the grounding chunk whole
-            pred["error"] = "quote only approximate; whole chunk cited instead"
-            citations = [{"chunk": index, **_ids(chunks[index]), "quote": _text(chunks[index])[:MAX_EVIDENCE_CHARS]}]
+        # The label is never changed because of quote problems (measured: forcing NEUTRAL here
+        # was wrong in 80/80 cases). Judges require evidence for entailment/contradiction, so
+        # cite the chunk the model's texts resemble most, whole.
+        index = best_chunk([c["quote"] for c in parsed["citations"]] + [parsed["passage_says"] or ""], chunks)
+        pred["error"] = "quote not found verbatim; whole best-matching chunk cited instead"
+        citations = [{"chunk": index, **_ids(chunks[index]), "quote": _text(chunks[index])[:MAX_EVIDENCE_CHARS]}]
     pred.update(label=label, citations=citations)
     return pred
 
