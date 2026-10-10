@@ -45,6 +45,19 @@ def clean_page_text(text: str) -> str:
     return _CONTROL.sub("", text)
 
 
+MIN_PAGE_CHARS = 50
+
+
+def is_filler_page(text: str) -> bool:
+    """Pages with nothing but a page number, a running header or a 'left blank' note carry no evidence.
+
+    Examples: "17", "28 Aus produktionstechnischen Gründen leer.", "Page laissée vide ...".
+    Measured by the remaining text after the page number, not by a phrase list, so all languages work.
+    """
+    body = re.sub(r"^\s*\d{1,3}\s*", "", text, count=1).strip()
+    return len(body) < MIN_PAGE_CHARS
+
+
 def _shingles(text: str, k: int = 10) -> set:
     text = re.sub(r"\s+", " ", text.casefold())
     return {text[i:i + k] for i in range(max(len(text) - k + 1, 0))}
@@ -146,7 +159,7 @@ def pdf_pages(path: Path) -> tuple[dict, ...]:
                 except Exception:
                     pass
             text = clean_page_text(text)
-            if text.strip():
+            if not is_filler_page(text):
                 pages.append({"text": text, "page": index + 1})
     if not pages:
         raise ValueError(f"no extractable text in {path}")

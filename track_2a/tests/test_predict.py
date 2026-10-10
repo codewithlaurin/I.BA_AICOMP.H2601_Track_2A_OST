@@ -83,11 +83,17 @@ class ApertusPredictorTests(unittest.TestCase):
             self.skipTest("booklet not downloaded")
         pages = {p["page"]: p["text"] for p in predict.pdf_pages(pdf)}
         self.assertIn("Mietwohnungen zu tragbaren Preisen", pages[5])
+        self.assertEqual([n for n in (2, 28, 29, 30, 31) if n in pages], [])  # blank / filler pages dropped
         page10 = pages[10]
         self.assertIn("ländlichen Regionen", page10)  # hyphenated line break joined
         self.assertLess(page10.index("Regional unterschiedliche Situation"),
                         page10.index("Die Situation ist regional"))  # label before its paragraph
         self.assertLess(page10.index("Vorkaufsrecht\n"), page10.index("Zur Erhöhung des Anteils"))
+
+    def test_filler_pages_are_dropped(self):
+        for text in ("17", "28\nAus produktionstechnischen Gründen leer.\n", "  ", "29 Page laissée vide pour des raisons techniques."):
+            self.assertTrue(predict.is_filler_page(text), text)
+        self.assertFalse(predict.is_filler_page("8 Erste Vorlage: «Mehr bezahlbare Wohnungen»\nIm Detail\nArgumente Initiativkomitee 12\nAbstimmungstext 16"))
 
     def test_vote_title(self):
         self.assertEqual(predict.vote_title("x"), "x")
