@@ -29,3 +29,11 @@ build/
 # Project Data
 /data/pdf/
 /data/booklet_manifest.json
+
+# Local evaluation data, run outputs, build artifacts
+/data/bm25/
+/data/booklets/
+/data/evaluation/
+/data/parsed/
+/output/
+*.egg-info/
