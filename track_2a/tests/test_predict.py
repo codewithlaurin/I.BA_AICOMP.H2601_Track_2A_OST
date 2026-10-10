@@ -95,6 +95,15 @@ class ApertusPredictorTests(unittest.TestCase):
             self.assertTrue(predict.is_filler_page(text), text)
         self.assertFalse(predict.is_filler_page("8 Erste Vorlage: «Mehr bezahlbare Wohnungen»\nIm Detail\nArgumente Initiativkomitee 12\nAbstimmungstext 16"))
 
+    def test_september_2020_booklet_hyphen_lines_and_label_order(self):
+        pdf = Path(__file__).resolve().parents[1] / "data/pdf/2020-09-27_erlaeuterungen_des_bundesrates.pdf"
+        if not pdf.exists():
+            self.skipTest("booklet not downloaded")
+        pages = {p["page"]: p["text"] for p in predict.pdf_pages(pdf)}
+        self.assertIn("unkontrollierter Jagd", pages[27])          # "-" on its own line joined
+        self.assertIn("Heutige Steuerabzüge für Kinderkosten", pages[47])  # hyphen inside a label
+        self.assertLess(pages[5].index("Abstimmungsfrage"), pages[5].index("Wollen Sie die Volksinitiative"))
+
     def test_vote_title(self):
         self.assertEqual(predict.vote_title("x"), "x")
         self.assertEqual(predict.vote_title({"title": "t", "date": "d"}), "t")

@@ -91,7 +91,7 @@ def layout_text(page, textpage) -> str:
     if not raw.strip():
         return raw
     width = page.get_size()[0]
-    labels, mains, offset = [], [], 0
+    labels, mains, hyphens, offset = [], [], [], 0
     for line in raw.split("\r\n"):
         stripped = line.strip()
         if stripped:
@@ -100,10 +100,27 @@ def layout_text(page, textpage) -> str:
                 left, _, _, top = textpage.get_charbox(index)
             except Exception:
                 left, top = width, 0.0
-            is_label = (left < width * LABEL_COLUMN and len(stripped) < 60
-                        and not stripped.endswith((".", ",", ";", ":")))
-            (labels if is_label else mains).append((top, left, stripped))
+            if stripped in ("-", "\u00ad", "\x02"):
+                # Some booklets emit the line-end hyphen as its own text run, listed
+                # after the paragraph; its position says which line it belongs to.
+                hyphens.append((top, left))
+            else:
+                is_label = (left < width * LABEL_COLUMN and len(stripped) < 60
+                            and not stripped.endswith((".", ",", ";", ":")))
+                (labels if is_label else mains).append((top, left, stripped))
         offset += len(line) + 2
+    for hyphen_top, hyphen_left in hyphens:
+        # The hyphen ends a line at the same height that starts left of it; when a
+        # label and a paragraph line share the height, the nearer start wins.
+        best = None
+        for lines in (mains, labels):
+            for i, (top, left, _) in enumerate(lines):
+                if abs(top - hyphen_top) <= 6 and left < hyphen_left and (best is None or left > best[2]):
+                    best = (lines, i, left)
+        if best:
+            lines, i, _ = best
+            top, left, text = lines[i]
+            lines[i] = (top, left, text + "\u00ad")
     mains.sort(key=lambda item: (-round(item[0]), item[1]))
     labels.sort(key=lambda item: -item[0])
     # Group label lines into blocks; a block is emitted before the first main line at or below it.
@@ -113,14 +130,19 @@ def layout_text(page, textpage) -> str:
             blocks[-1][1].append(text); blocks[-1][2] = top
         else:
             blocks.append([top, [text], top])
+    def label_text(block) -> str:
+        return re.sub(r"[\u00ad\x02]\s*", "", " ".join(block[1]))
+
     out, block_index = [], 0
     for top, _, text in mains:
-        while block_index < len(blocks) and blocks[block_index][0] >= top - 2:
-            out.append("\n" + " ".join(blocks[block_index][1]) + "\n")
+        # A label sits beside the first line of its paragraph; large titles start a
+        # few points above the label, hence the tolerance.
+        while block_index < len(blocks) and blocks[block_index][0] >= top - 14:
+            out.append("\n" + label_text(blocks[block_index]) + "\n")
             block_index += 1
         out.append(text + "\n")
     for block in blocks[block_index:]:
-        out.append("\n" + " ".join(block[1]) + "\n")
+        out.append("\n" + label_text(block) + "\n")
     text = _HYPHEN_BREAK.sub("", "".join(out))
     text = text.replace("\u00ad", "-").replace("\x02", "")  # remaining soft hyphens are visible hyphens
     return re.sub(r"\n{3,}", "\n\n", text).strip() + "\n"
