@@ -121,10 +121,8 @@ def pdf_pages(path: Path) -> tuple[dict, ...]:
     box and lost whole pages on some booklets (34 of 1,400 pages measured).
     """
     import pypdfium2 as pdfium
-    from pypdf import PdfReader
 
-    pages = []
-    reader = PdfReader(path)
+    pages, reader = [], None
     with pdfium.PdfDocument(path) as document:
         for index in range(len(document)):
             page = document[index]
@@ -134,13 +132,20 @@ def pdf_pages(path: Path) -> tuple[dict, ...]:
                     text = layout_text(page, textpage)
                 finally:
                     textpage.close()
+                # pdfium skipped text inside a Form XObject once; only such pages get the
+                # slow pypdf second read (3 % of pages, ~0.1 s per booklet instead of ~2.7 s).
+                has_form = any(obj.type == pdfium.raw.FPDF_PAGEOBJ_FORM for obj in page.get_objects())
             finally:
                 page.close()
-            try:
-                alternative = reader.pages[index].extract_text() or ""
-            except Exception:
-                alternative = ""
-            text = clean_page_text(choose_page_text(text, alternative))
+            if has_form:
+                if reader is None:
+                    from pypdf import PdfReader
+                    reader = PdfReader(path)
+                try:
+                    text = choose_page_text(text, reader.pages[index].extract_text() or "")
+                except Exception:
+                    pass
+            text = clean_page_text(text)
             if text.strip():
                 pages.append({"text": text, "page": index + 1})
     if not pages:
