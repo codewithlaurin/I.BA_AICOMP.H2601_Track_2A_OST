@@ -27,7 +27,6 @@ build/
 .vscode/
 
 # Project Data
-/data/pdf/
 /data/booklet_manifest.json
 
 # Local evaluation data, run outputs, build artifacts

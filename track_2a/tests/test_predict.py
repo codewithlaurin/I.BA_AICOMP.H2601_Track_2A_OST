@@ -105,7 +105,7 @@ class ApertusPredictorTests(unittest.TestCase):
         self.assertEqual(predict.choose_page_text(full, ""), full)
 
     def test_real_booklet_page_with_form_xobject_text(self):
-        pdf = Path(__file__).resolve().parents[1] / "data/pdf/2020-02-09_erlaeuterungen_des_bundesrates.pdf"
+        pdf = Path(__file__).resolve().parents[1] / "data/booklets/pdfs/2020-02-09_erlaeuterungen_des_bundesrates.pdf"
         if not pdf.exists():
             self.skipTest("booklet not downloaded")
         pages = {p["page"]: p["text"] for p in predict.pdf_pages(pdf)}
@@ -123,7 +123,7 @@ class ApertusPredictorTests(unittest.TestCase):
         self.assertFalse(predict.is_filler_page("8 Erste Vorlage: «Mehr bezahlbare Wohnungen»\nIm Detail\nArgumente Initiativkomitee 12\nAbstimmungstext 16"))
 
     def test_september_2020_booklet_hyphen_lines_and_label_order(self):
-        pdf = Path(__file__).resolve().parents[1] / "data/pdf/2020-09-27_erlaeuterungen_des_bundesrates.pdf"
+        pdf = Path(__file__).resolve().parents[1] / "data/booklets/pdfs/2020-09-27_erlaeuterungen_des_bundesrates.pdf"
         if not pdf.exists():
             self.skipTest("booklet not downloaded")
         pages = {p["page"]: p["text"] for p in predict.pdf_pages(pdf)}

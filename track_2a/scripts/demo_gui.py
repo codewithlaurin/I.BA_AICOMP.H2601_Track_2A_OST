@@ -1,6 +1,6 @@
 """Local demo GUI for the whole pipeline: booklet (or reference) + claim -> label + evidence.
 
-    uv run --env-file .env python scripts/demo_gui.py [--port 8765] [--pdf-dir data/pdf]
+    uv run --env-file .env python scripts/demo_gui.py [--port 8765] [--pdf-dir data/booklets/pdfs]
 
 Opens http://localhost:8765. Standard library only; the server runs ApertusPredictor exactly
 as the judges' CLI does, so what you see here is what `python -m claimcheck` writes.
@@ -140,7 +140,7 @@ class Handler(BaseHTTPRequestHandler):
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument("--port", type=int, default=8765)
-    parser.add_argument("--pdf-dir", type=Path, default=ROOT / "data" / "pdf")
+    parser.add_argument("--pdf-dir", type=Path, default=ROOT / "data" / "booklets" / "pdfs")
     args = parser.parse_args()
     PDFS.extend(sorted(args.pdf_dir.glob("*.pdf")))
     if not PDFS:
