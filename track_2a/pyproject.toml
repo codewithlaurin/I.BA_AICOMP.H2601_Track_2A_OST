@@ -8,9 +8,12 @@ version = "0.1.0"
 description = "Track 2A / OST multilingual claim checking CLI"
 requires-python = ">=3.10"
 dependencies = [
+    "faiss-cpu>=1.15.1",
     "openai>=1.50",
+    "pypdf>=6.20.0",
     "pypdfium2>=4.30",
     "rapidfuzz>=3.10",
+    "sentence-transformers>=6.1.0",
 ]
 
 [project.scripts]
