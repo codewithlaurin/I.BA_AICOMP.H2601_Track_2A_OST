@@ -14,6 +14,7 @@ from pathlib import Path
 DEFAULT_MODEL = "intfloat/multilingual-e5-small"
 PASSAGE_CHARS = 2500   # e5-small reads 512 tokens; a booklet page is ~1,800 chars
 TOP_K = 8
+MAX_CACHED_BOOKLETS = 256  # one index is ~60 x 384 floats; never evict within a run
 
 
 @lru_cache(maxsize=1)
@@ -47,7 +48,7 @@ def booklet_index(path: Path, pages: tuple):
         vectors = _normalize(model.encode(texts, batch_size=16, show_progress_bar=False))
         index = faiss.IndexFlatIP(vectors.shape[1])
         index.add(vectors)
-        if len(_INDEXES) >= 16:
+        if len(_INDEXES) >= MAX_CACHED_BOOKLETS:
             _INDEXES.pop(next(iter(_INDEXES)))
         _INDEXES[key] = index
     return _INDEXES[key]
