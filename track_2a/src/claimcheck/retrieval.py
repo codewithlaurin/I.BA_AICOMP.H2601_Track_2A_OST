@@ -36,12 +36,15 @@ _INDEXES: dict[str, object] = {}
 
 def booklet_index(path: Path, pages: tuple):
     """FAISS inner-product index over the pages of one booklet (cosine on unit vectors), cached per file."""
-    import faiss
-
     key = str(path)
     if key not in _INDEXES:
+        # Load PyTorch before FAISS: their bundled OpenMP runtimes otherwise
+        # conflict on macOS and can segfault during embedding inference.
+        model = embedder()
+        import faiss
+
         texts = ["passage: " + page["text"][:PASSAGE_CHARS] for page in pages]
-        vectors = _normalize(embedder().encode(texts, batch_size=16, show_progress_bar=False))
+        vectors = _normalize(model.encode(texts, batch_size=16, show_progress_bar=False))
         index = faiss.IndexFlatIP(vectors.shape[1])
         index.add(vectors)
         if len(_INDEXES) >= 16:
