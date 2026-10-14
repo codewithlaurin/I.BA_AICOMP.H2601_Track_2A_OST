@@ -230,7 +230,8 @@ def vote_title(vote) -> str | None:
 
 class ApertusPredictor:
     """Task B: the reference is the only chunk. Task A: the booklet pages most similar to the
-    claim (FAISS over e5 embeddings, see retrieval.py); set CLAIMCHECK_FULL_DOCUMENT=1 to send
+    claim (BM25 + FAISS over e5 embeddings, fused with RRF; see retrieval.py).
+    Set CLAIMCHECK_FULL_DOCUMENT=1 to send
     every page instead (the baseline).
 
     Never raises per case: any failure degrades to neutral with empty evidence and a line on
@@ -248,6 +249,7 @@ class ApertusPredictor:
     def prepare(self, requests: list[Request], *, strict: bool = False) -> None:
         """Cache each unique booklet before processing any claims; no LLM calls."""
         from .retrieval import booklet_index
+        from .sparse import booklet_bm25
 
         paths = dict.fromkeys(request.source.path for request in requests if isinstance(request.source, Booklet))
         self._preparation_errors.clear()
@@ -257,6 +259,7 @@ class ApertusPredictor:
                 pages = pdf_pages(path)
                 if not self.full_document and len(pages) > self.top_k:
                     booklet_index(path, pages)
+                    booklet_bm25(pages)
             except Exception as exc:
                 self._preparation_errors[path] = f"{exc.__class__.__name__}: {exc}"
                 print(f"claimcheck: cannot prepare {path}: {exc}", file=sys.stderr)

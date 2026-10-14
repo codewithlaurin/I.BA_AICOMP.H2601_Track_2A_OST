@@ -17,7 +17,7 @@ import numpy as np
 
 faiss.omp_set_num_threads(1)
 
-from claimcheck import predict, retrieval
+from claimcheck import predict, retrieval, sparse
 from claimcheck.cli import main, run
 
 
@@ -52,6 +52,7 @@ class DocumentCacheTests(unittest.TestCase):
     def clear_memory():
         predict._cached_pdf_pages.cache_clear()
         retrieval._INDEXES.clear()
+        sparse._INDEXES.clear()
 
     def test_extracted_pages_survive_memory_eviction_and_identical_pdf_copy(self):
         with patch.object(predict, "_extract_pdf_pages", return_value=PAGES) as extract:
@@ -202,6 +203,7 @@ with patch.object(retrieval, 'embedder', return_value=Embedder()):
         complete.assert_not_called()
         self.assertEqual(len(model.calls), 1)
         self.assertEqual(len(list((self.cache / "indexes").glob("*.faiss"))), 1)
+        self.assertEqual(len(list((self.cache / "sparse").glob("*.bm25.json"))), 1)
 
     def test_prepare_failure_is_nonzero_and_prediction_still_degrades_to_neutral(self):
         source = self.root / "cases.jsonl"
@@ -228,6 +230,7 @@ with patch.object(retrieval, 'embedder', return_value=Embedder()):
 
         def complete(*args, **kwargs):
             self.assertEqual(extract.call_count, 2)  # Both PDFs prepared before the first claim.
+            self.assertEqual(len(list((self.cache / "sparse").glob("*.bm25.json"))), 1)
             return {"text": '{"label":"NEUTRAL", "subject_addressed":false}',
                     "model": "test", "input_tokens": 10, "output_tokens": 5, "inference_time_ms": 1}
 

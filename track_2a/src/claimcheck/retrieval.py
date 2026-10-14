@@ -1,7 +1,8 @@
-"""Page retrieval for Task A: e5 embeddings per page, one FAISS index per booklet.
+"""Hybrid page retrieval for Task A: BM25 + multilingual-e5-small + RRF.
 
-Measured on 429 public rows (24 booklets): query = claim + vote finds the gold page in the
-top 8 for 91 % of rows (BM25: 76 %). Everything runs on CPU; the embedding model must be
+Historical dense-only result on 429 public rows (24 booklets): query = claim + vote finds
+the gold page in the top 8 for 91 % of rows (BM25 alone: 76 %). Hybrid is not yet evaluated.
+Everything runs on CPU; the embedding model must be
 available locally in the judge container (set EMBEDDING_MODEL to a path, HF_HUB_OFFLINE=1).
 """
 
@@ -12,11 +13,14 @@ import os
 from pathlib import Path
 
 from .cache import atomic_file, cache_dir, cache_lock, content_key
+from .sparse import booklet_bm25
 
 DEFAULT_MODEL = "intfloat/multilingual-e5-small"
 PASSAGE_CHARS = 2500   # e5-small reads 512 tokens; a booklet page is ~1,800 chars
 TOP_K = 8
 INDEX_VERSION = 1
+RETRIEVAL_CANDIDATES = 32
+RRF_CONSTANT = 60
 
 
 def _model_config() -> dict:
@@ -89,11 +93,37 @@ def booklet_index(path: Path, pages: tuple):
     return _INDEXES[key]
 
 
+def reciprocal_rank_fusion(rankings: list[list[int]], rank_constant: int = RRF_CONSTANT) -> list[tuple[int, float]]:
+    """Merge page positions with equal weights; ranks start at one.
+
+    Ties retain the first retriever's order (dense ranking in top_pages).
+    Raw cosine and BM25 scores are never added together.
+    """
+    if rank_constant < 1:
+        raise ValueError("RRF rank constant must be at least 1")
+    scores: dict[int, float] = {}
+    for ranking in rankings:
+        for rank, index in enumerate(dict.fromkeys(ranking), 1):
+            scores[index] = scores.get(index, 0.0) + 1.0 / (rank_constant + rank)
+    return sorted(scores.items(), key=lambda item: -item[1])
+
+
 def top_pages(path: Path, pages: tuple, claim: str, vote: str | None, k: int = TOP_K) -> list[dict]:
-    """Most relevant pages for the claim, best first, each with its retrieval score."""
+    """Select at most k pages by fusing dense and BM25 candidate rankings."""
+    if k < 1:
+        raise ValueError("top-k must be at least 1")
     if len(pages) <= k:
         return [dict(page, score=None) for page in pages]
+    candidates = int(os.environ.get("CLAIMCHECK_RETRIEVAL_CANDIDATES", RETRIEVAL_CANDIDATES))
+    rank_constant = int(os.environ.get("CLAIMCHECK_RRF_CONSTANT", RRF_CONSTANT))
+    if candidates < 1 or rank_constant < 1:
+        raise ValueError("retrieval candidates and RRF constant must be at least 1")
+    window = min(len(pages), max(k, candidates))
+    query_text = " ".join(filter(None, [claim, vote]))
     index = booklet_index(path, pages)
-    query = _normalize(embedder().encode(["query: " + " ".join(filter(None, [claim, vote]))]))
-    scores, ids = index.search(query, k)
-    return [dict(pages[i], score=float(s)) for s, i in zip(scores[0], ids[0]) if i >= 0]
+    query = _normalize(embedder().encode(["query: " + query_text]))
+    _, ids = index.search(query, window)
+    dense = [int(index) for index in ids[0] if index >= 0]
+    sparse = [index for index, _ in booklet_bm25(pages).search(query_text, window)]
+    fused = reciprocal_rank_fusion([dense, sparse], rank_constant)
+    return [dict(pages[index], score=score) for index, score in fused[:k]]
