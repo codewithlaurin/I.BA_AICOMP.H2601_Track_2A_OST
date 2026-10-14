@@ -38,6 +38,9 @@ def run(input_path: Path, output_path: Path, predictor: Predictor) -> int:
     if input_path == output_path:
         raise ContractError("--output must differ from --input")
     requests = read_requests(input_path)
+    prepare = getattr(predictor, "prepare", None)
+    if prepare is not None:
+        prepare(requests)
     output_path.parent.mkdir(parents=True, exist_ok=True)
     with output_path.open("w", encoding="utf-8") as out:
         for request in requests:
@@ -49,15 +52,25 @@ def run(input_path: Path, output_path: Path, predictor: Predictor) -> int:
 def main(argv: list[str] | None = None, *, predictor: Predictor | None = None) -> int:
     parser = argparse.ArgumentParser(description="Classify claims against Swiss voting booklets.")
     parser.add_argument("--input", required=True, type=Path, help="cases.jsonl")
-    parser.add_argument("--output", required=True, type=Path, help="predictions.jsonl")
+    parser.add_argument("--output", type=Path, help="predictions.jsonl (required unless --prepare-only)")
+    parser.add_argument("--prepare-only", action="store_true",
+                        help="cache booklet pages and indexes without processing claims or calling Apertus")
     args = parser.parse_args(argv)
+    if not args.prepare_only and args.output is None:
+        parser.error("--output is required unless --prepare-only is set")
     if predictor is None:
-        if any(os.environ.get(name, "").strip() for name in ("API_KEY", "LLM_API_KEY", "CSCS_INFERENCE_API_KEY")):
+        if args.prepare_only or any(os.environ.get(name, "").strip()
+                                    for name in ("API_KEY", "LLM_API_KEY", "CSCS_INFERENCE_API_KEY")):
             predictor = ApertusPredictor()
         else:
             print("claimcheck: API_KEY not set; using neutral stub, no inference", file=sys.stderr)
             predictor = NeutralPredictor()
     try:
+        if args.prepare_only:
+            requests = read_requests(args.input.resolve())
+            predictor.prepare(requests, strict=True)
+            print(f"claimcheck: document cache ready for {len(requests)} cases", file=sys.stderr)
+            return 0
         count = run(args.input, args.output, predictor)
     except Exception as exc:
         print(f"claimcheck: error: {exc}", file=sys.stderr)

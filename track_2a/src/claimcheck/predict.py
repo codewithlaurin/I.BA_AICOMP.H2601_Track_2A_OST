@@ -9,6 +9,7 @@ import sys
 from typing import Protocol
 
 from .contracts import Booklet, Request
+from .cache import atomic_file, cache_dir, cache_lock, content_key, file_key
 
 
 class Predictor(Protocol):
@@ -149,8 +150,38 @@ def layout_text(page, textpage) -> str:
     return re.sub(r"\n{3,}", "\n\n", text).strip() + "\n"
 
 
-@lru_cache(maxsize=16)
+DOCUMENT_CACHE_VERSION = 1  # Bump when extraction, cleanup or filler-page rules change.
+
+
 def pdf_pages(path: Path) -> tuple[dict, ...]:
+    """Reuse extracted pages from disk; PDF content changes select a new cache entry."""
+    path = Path(path).resolve()
+    key = content_key({"pdf": file_key(path), "extraction": DOCUMENT_CACHE_VERSION})
+    return _cached_pdf_pages(path, cache_dir() / "documents" / (key + ".json"))
+
+
+@lru_cache(maxsize=16)
+def _cached_pdf_pages(path: Path, destination: Path) -> tuple[dict, ...]:
+    with cache_lock(destination):
+        try:
+            data = json.loads(destination.read_text(encoding="utf-8"))
+            pages = data["pages"]
+            if (not isinstance(pages, list) or not pages
+                    or any(not isinstance(page, dict) or type(page.get("page")) is not int
+                           or page["page"] < 1 or not isinstance(page.get("text"), str)
+                           or not page["text"].strip() for page in pages)
+                    or data["checksum"] != content_key(pages)):
+                raise ValueError("invalid cached pages")
+            return tuple(pages)
+        except (OSError, ValueError, KeyError, TypeError):
+            pages = _extract_pdf_pages(path)
+            with atomic_file(destination) as temporary:
+                temporary.write_text(json.dumps({"pages": pages, "checksum": content_key(pages)},
+                                                ensure_ascii=False), encoding="utf-8")
+            return pages
+
+
+def _extract_pdf_pages(path: Path) -> tuple[dict, ...]:
     """Text per page, 1-based page numbers; empty pages skipped. CPU only, no OCR.
 
     get_text_range() rather than get_text_bounded(): the latter clips to the page
@@ -212,6 +243,28 @@ class ApertusPredictor:
         self.top_k = top_k or int(os.environ.get("CLAIMCHECK_TOP_K", TOP_K))
         self.full_document = (os.environ.get("CLAIMCHECK_FULL_DOCUMENT") == "1"
                               if full_document is None else full_document)
+        self._preparation_errors: dict[Path, str] = {}
+
+    def prepare(self, requests: list[Request], *, strict: bool = False) -> None:
+        """Cache each unique booklet before processing any claims; no LLM calls."""
+        from .retrieval import booklet_index
+
+        paths = dict.fromkeys(request.source.path for request in requests if isinstance(request.source, Booklet))
+        self._preparation_errors.clear()
+        for number, path in enumerate(paths, 1):
+            print(f"claimcheck: preparing booklet {number}/{len(paths)}: {path.name}", file=sys.stderr)
+            try:
+                pages = pdf_pages(path)
+                if not self.full_document and len(pages) > self.top_k:
+                    booklet_index(path, pages)
+            except Exception as exc:
+                self._preparation_errors[path] = f"{exc.__class__.__name__}: {exc}"
+                print(f"claimcheck: cannot prepare {path}: {exc}", file=sys.stderr)
+        if paths:
+            print(f"claimcheck: prepared {len(paths) - len(self._preparation_errors)}/{len(paths)} booklets; "
+                  "document cache ready", file=sys.stderr)
+        if strict and self._preparation_errors:
+            raise RuntimeError(f"failed to prepare {len(self._preparation_errors)} booklets")
 
     def predict(self, request: Request) -> dict:
         from .nli import MAX_EVIDENCE_CHARS, MAX_EVIDENCE_ITEMS, classify, to_judge
@@ -219,6 +272,8 @@ class ApertusPredictor:
         try:
             retrieved: list[dict] = []
             if isinstance(request.source, Booklet):
+                if request.source.path in self._preparation_errors:
+                    raise RuntimeError(self._preparation_errors[request.source.path])
                 pages = pdf_pages(request.source.path)
                 if self.full_document:
                     chunks = list(pages)

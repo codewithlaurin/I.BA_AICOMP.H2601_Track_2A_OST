@@ -15,6 +15,7 @@ __pycache__/
 *.py[cod]
 .venv/
 venv/
+.cache/
 
 # Node
 node_modules/
