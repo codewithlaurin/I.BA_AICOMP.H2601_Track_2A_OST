@@ -13,8 +13,9 @@ re-running the affected ids and merging (`output/cli-b-all*/predictions*.jsonl`)
 | prompt v4, quote-grounding rule on (c21d7f0) | 0.887 | 0.913 / 0.887 / 0.860 | rule forced 80 cases to neutral; all 80 were gold E/C |
 | prompt v4, rule removed (e54faee) | **0.938** | 0.949 / 0.958 / 0.908 | current code |
 | prompt v5 "extra detail is not a contradiction" | 0.926 | 0.942 / 0.948 / 0.888 | contradiction recall 0.90 -> 0.87; reverted |
+| re-run on `feature/retrieval` (2026-10-12), same Task B code | **0.939** | 0.950 / 0.959 / 0.908 | one pass, no repairs needed; reproduces the 0.938 run |
 
-Current code: accuracy 0.938; per case 3,182 input / 136 output tokens, 1.0 s.
+Current code: accuracy 0.939; per case 3,182 input / 136 output tokens, 1.0 s.
 
 Macro-F1 by language pair (source -> claim), current code:
 
@@ -26,6 +27,29 @@ Macro-F1 by language pair (source -> claim), current code:
 
 Caveat: 100 of these rows (`b-100`) were used to tune the prompt; the disjoint 100-row holdout
 gives 0.92 with the current code.
+
+## Task A, full public dataset (1,495 rows, 60 booklets)
+
+Branch `feature/retrieval`, `python -m claimcheck` on `data/evaluation/a-all/cases.jsonl`
+(every public row as a booklet case, PDFs from the dataset URLs), FAISS top 8 pages,
+same prompt as Task B. Run 2026-10-12, scored with the organisers' `evaluate.py`; 0 invalid lines.
+
+| | Macro-F1 | E / N / C F1 | Accuracy | Evidence (Hit@5) | Input / output tokens | Time / case |
+| --- | --- | --- | --- | --- | --- | --- |
+| FAISS top 8 pages | **0.878** | 0.835 / 0.960 / 0.841 | 0.878 | **0.842** | 4,691 / 151 | 1.5 s |
+
+Macro-F1 by language pair (source -> claim):
+
+| | de claim | fr claim | it claim |
+| --- | --- | --- | --- |
+| de source | 0.94 | 0.89 | 0.83 |
+| fr source | 0.82 | 0.90 | 0.88 |
+| it source | 0.83 | 0.89 | 0.90 |
+
+Task A is 0.06 below Task B on the same rows: the model has to find the passage itself. The
+30-row sample (below) overestimated it (0.95). Neutral stays strong (0.96); the losses are in
+entailment and contradiction (error analysis still open). Time per case includes PDF extraction and the one-off index build per booklet,
+amortised over its cases (all 60 booklets stay cached, `MAX_CACHED_BOOKLETS`).
 
 ## Task A, 30 rows (`a-30`): full document vs. page retrieval
 
