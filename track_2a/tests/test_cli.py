@@ -157,7 +157,9 @@ class CLITests(unittest.TestCase):
             self.assertEqual(obj["label"], 1)
             self.assertEqual(obj["label_name"], "neutral")
             self.assertEqual(obj["evidence"], [])
-            self.assertEqual(obj["metrics"], {"input_tokens": 0, "output_tokens": 0, "inference_time_ms": 0})
+            self.assertEqual(set(obj["metrics"]), {"input_tokens", "output_tokens", "inference_time_ms"})
+            self.assertEqual((obj["metrics"]["input_tokens"], obj["metrics"]["output_tokens"]), (0, 0))
+            self.assertIsInstance(obj["metrics"]["inference_time_ms"], int)  # measured, not a constant
 
     def test_predictor_receives_resolved_path_and_vote(self):
         self.write_cases(case(task="A"))

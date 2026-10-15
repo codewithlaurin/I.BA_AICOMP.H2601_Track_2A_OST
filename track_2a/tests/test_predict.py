@@ -31,8 +31,69 @@ def fake_complete(text):
     def complete(system, user, max_tokens=600):
         calls.append(json.loads(user))
         return {"text": text, "model": "swiss-ai/Apertus-v1.5-8B", "input_tokens": 100, "output_tokens": 20,
-                "inference_time_ms": 5}
+                "api_time_ms": 5}
     return patch.object(nli, "complete", side_effect=complete), calls
+
+
+def slow_api_complete(text, api_seconds, fail=False):
+    """A fake Apertus call that is 'in flight' for api_seconds and records its interval like complete()."""
+    import time
+
+    def complete(system, user, max_tokens=600):
+        start = time.perf_counter()
+        time.sleep(api_seconds)
+        nli.API_INTERVALS.append((start, time.perf_counter()))
+        if fail:
+            raise TimeoutError("endpoint timed out")
+        return {"text": text, "model": "swiss-ai/Apertus-v1.5-8B", "input_tokens": 100, "output_tokens": 20,
+                "api_time_ms": round(api_seconds * 1000)}
+    return patch.object(nli, "complete", side_effect=complete)
+
+
+class LocalTimeTests(unittest.TestCase):
+    def test_overlapping_api_intervals_count_once(self):
+        with patch.object(nli, "API_INTERVALS", [(1.0, 3.0), (2.0, 4.0), (6.0, 7.0), (0.0, 0.5)]):
+            self.assertAlmostEqual(nli.api_seconds(1.0, 10.0), 4.0)   # [1,4] + [6,7]
+            self.assertAlmostEqual(nli.api_seconds(2.5, 6.5), 2.0)    # clipped: [2.5,4] + [6,6.5]
+            self.assertAlmostEqual(nli.api_seconds(4.0, 6.0), 0.0)
+
+    def test_api_latency_is_excluded_and_local_work_is_included(self):
+        import time
+
+        def slow_pages(path):
+            time.sleep(0.15)  # stands in for PDF extraction and retrieval
+            return ({"text": REFERENCE, "page": 3},)
+
+        with slow_api_complete(answer(), api_seconds=0.6), patch.object(predict, "pdf_pages", side_effect=slow_pages):
+            prediction = predict.ApertusPredictor(full_document=True).predict(request("A"))
+        elapsed = prediction["metrics"]["inference_time_ms"]
+        self.assertIsInstance(elapsed, int)
+        self.assertGreaterEqual(elapsed, 140)   # the 150 ms of local work
+        self.assertLess(elapsed, 500)            # but not the 600 ms the request was in flight
+        self.assertEqual(validate_prediction(prediction, request("A")), prediction)
+
+    def test_failed_call_falls_back_to_neutral_with_measured_local_time(self):
+        import time
+
+        def slow_pages(path):
+            time.sleep(0.15)
+            return ({"text": REFERENCE, "page": 3},)
+
+        with slow_api_complete(answer(), api_seconds=0.4, fail=True), \
+                patch.object(predict, "pdf_pages", side_effect=slow_pages), contextlib.redirect_stderr(io.StringIO()):
+            prediction = predict.ApertusPredictor(full_document=True).predict(request("A"))
+        self.assertEqual(prediction["label"], 1)
+        self.assertGreaterEqual(prediction["metrics"]["inference_time_ms"], 140)
+        self.assertLess(prediction["metrics"]["inference_time_ms"], 350)
+
+    def test_neutral_stub_reports_measured_time_not_a_constant(self):
+        import time
+
+        started = time.perf_counter() - 0.05  # 50 ms of local work before the stub was called
+        with patch.object(nli, "API_INTERVALS", []):  # no request in flight in that window
+            prediction = predict.NeutralPredictor().predict(request(), started)
+        self.assertGreaterEqual(prediction["metrics"]["inference_time_ms"], 50)
+        self.assertEqual(validate_prediction(prediction, request()), prediction)
 
 
 class ApertusPredictorTests(unittest.TestCase):
@@ -43,7 +104,11 @@ class ApertusPredictorTests(unittest.TestCase):
         self.assertEqual(validate_prediction(prediction, request()), prediction)
         self.assertEqual((prediction["label"], prediction["label_name"]), (2, "contradiction"))
         self.assertEqual(prediction["evidence"], [{"page": None, "text": "recommandent d'accepter l'initiative"}])
-        self.assertEqual(prediction["metrics"], {"input_tokens": 100, "output_tokens": 20, "inference_time_ms": 5})
+        metrics = prediction["metrics"]
+        self.assertEqual((metrics["input_tokens"], metrics["output_tokens"]), (100, 20))
+        # local processing time, not the 5 ms the (fake) API call reported
+        self.assertIsInstance(metrics["inference_time_ms"], int)
+        self.assertGreaterEqual(metrics["inference_time_ms"], 0)
         self.assertEqual(calls[0]["vote"], "Initiative")
         self.assertEqual(calls[0]["chunks"], [{"chunk": 0, "page": None, "paragraph": None, "text": REFERENCE}])
 

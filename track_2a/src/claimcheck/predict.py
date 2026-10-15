@@ -6,6 +6,7 @@ import json
 from pathlib import Path
 import re
 import sys
+import time
 from typing import Protocol
 
 from .contracts import Booklet, Request
@@ -21,9 +22,18 @@ class Predictor(Protocol):
 
 
 class NeutralPredictor:
-    """Deterministic infrastructure stub, not semantic inference or a fallback."""
+    """Deterministic neutral prediction: the no-API-key stub and the per-case failure fallback.
 
-    def predict(self, request: Request) -> dict:
+    `started` is the perf_counter() value when the case began; a fallback passes it so the
+    local work done before the failure is reported. Time with an API request in flight is
+    excluded (see nli.local_ms).
+    """
+
+    def predict(self, request: Request, started: float | None = None) -> dict:
+        from .nli import local_ms
+
+        if started is None:
+            started = time.perf_counter()
         return {
             "id": request.id,
             "label": 1,
@@ -32,7 +42,7 @@ class NeutralPredictor:
             "metrics": {
                 "input_tokens": 0,
                 "output_tokens": 0,
-                "inference_time_ms": 0,
+                "inference_time_ms": local_ms(started),
             },
         }
 
@@ -214,8 +224,12 @@ class ApertusPredictor:
                               if full_document is None else full_document)
 
     def predict(self, request: Request) -> dict:
-        from .nli import MAX_EVIDENCE_CHARS, MAX_EVIDENCE_ITEMS, classify, to_judge
+        from .nli import MAX_EVIDENCE_CHARS, MAX_EVIDENCE_ITEMS, classify, local_ms, to_judge
 
+        # inference_time_ms = local processing time of this case: PDF extraction (or the cache
+        # hit), retrieval and embeddings, prompt building, parsing and evidence assembly,
+        # minus the time an Apertus request was in flight. Rounded to whole milliseconds.
+        started = time.perf_counter()
         try:
             retrieved: list[dict] = []
             if isinstance(request.source, Booklet):
@@ -246,7 +260,8 @@ class ApertusPredictor:
                             item["page"] == page["page"] and item["text"] in text for item in result["evidence"]
                             if len(item["text"]) >= len(text)):
                         result["evidence"].append({"page": page["page"], "text": text})
+            result["metrics"]["inference_time_ms"] = local_ms(started)
             return result
         except Exception as exc:
             print(f"claimcheck: {request.id!r}: {exc.__class__.__name__}: {exc}; predicting neutral", file=sys.stderr)
-            return NeutralPredictor().predict(request)
+            return NeutralPredictor().predict(request, started)
