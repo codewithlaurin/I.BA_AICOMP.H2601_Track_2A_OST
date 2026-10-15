@@ -149,7 +149,7 @@ def layout_text(page, textpage) -> str:
     return re.sub(r"\n{3,}", "\n\n", text).strip() + "\n"
 
 
-@lru_cache(maxsize=16)
+@lru_cache(maxsize=256)
 def pdf_pages(path: Path) -> tuple[dict, ...]:
     """Text per page, 1-based page numbers; empty pages skipped. CPU only, no OCR.
 
