@@ -1,0 +1,9 @@
+# Allowlist: the image gets the package and its lock, nothing else (no .env, data or gold labels).
+*
+!Dockerfile
+!pyproject.toml
+!uv.lock
+!src/
+src/**/__pycache__
+src/*.egg-info
+src/claimcheck/chunks.py

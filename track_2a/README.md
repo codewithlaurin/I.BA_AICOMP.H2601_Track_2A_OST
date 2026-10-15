@@ -22,17 +22,39 @@ https://hackapertus.notion.site/getting-started-guide-onlinehack
 Keep `track_2a/` as it is: don't rename it or move its files, just delete the
 other track directories.
 
-From the root of the project:
+From `track_2a/`:
 
 ```bash
-make run
+export BASE_URL=https://api.inference.cscs.ch/v1 API_KEY=... LLM_NAME=swiss-ai/Apertus-v1.5-8B
+make run                                     # data/cases.jsonl -> output/predictions.jsonl
+make run INPUT=/path/cases.jsonl OUTPUT=/path/predictions.jsonl
 ```
 
-Fill in the [Makefile](Makefile) so that it works on a clean checkout. It is
-expected to run the project in a Docker container, since that is how the judges
-will run it, without relying on anything already installed on your machine.
+`make run` builds the `linux/amd64` image ([Dockerfile](Dockerfile)) and runs the CLI in it.
+Only the cases file and the `booklets/` folder next to it are mounted (booklet paths in the
+cases file are relative to it); predictions are written next to `OUTPUT`. A local `.env` is
+passed to the container if present. The same image without make:
 
-Requirements: `runtime, hardware, API keys, model weights`
+```bash
+docker build --platform linux/amd64 -t apertus-claimcheck .
+docker run --rm --platform linux/amd64 -e BASE_URL -e API_KEY -e LLM_NAME \
+  -v "$PWD/data/cases.jsonl:/data/cases.jsonl:ro" -v "$PWD/data/booklets:/data/booklets:ro" \
+  -v "$PWD/output:/output" \
+  apertus-claimcheck --input /data/cases.jsonl --output /output/predictions.jsonl
+```
+
+Requirements:
+- **Runtime:** Docker (image is `linux/amd64`); the build needs internet, the run only reaches the Apertus endpoint.
+- **Hardware:** CPU only, no GPU. Peak memory 1.1 GB on 50 Task A cases (29 booklets cached); image about 3 GB.
+- **API keys:** `API_KEY` for the OpenAI-compatible Apertus endpoint (`BASE_URL`, default CSCS); `LLM_NAME` defaults to `swiss-ai/Apertus-v1.5-8B`. No key is stored in the image.
+- **Model weights:** Apertus runs remotely. The page-retrieval embedder `intfloat/multilingual-e5-small` (CPU) is downloaded at build time and baked into the image; the container runs with `HF_HUB_OFFLINE=1`.
+
+Scoring locally with the organisers' script:
+
+```bash
+uv run --with scikit-learn python scripts/official_evaluate.py \
+  --predictions output/predictions.jsonl --expected expected-labels.jsonl --cases cases.jsonl
+```
 
 ## Data
 The `data/` directory must not exceed 100 MB.
