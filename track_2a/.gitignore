@@ -31,7 +31,8 @@ build/
 
 # Local evaluation data, run outputs, build artifacts
 /data/bm25/
-/data/booklets/
+/data/booklets/*
+!/data/booklets/2024_09_22_de.pdf
 /data/evaluation/
 /data/parsed/
 /output/
