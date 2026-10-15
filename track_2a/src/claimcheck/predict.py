@@ -6,10 +6,12 @@ import json
 from pathlib import Path
 import re
 import sys
+import time
 from typing import Protocol
 
 from .contracts import Booklet, Request
 from .cache import atomic_file, cache_dir, cache_lock, content_key, file_key
+from .timing import include_preparation, measure_local_time
 
 
 class Predictor(Protocol):
@@ -24,6 +26,7 @@ class Predictor(Protocol):
 class NeutralPredictor:
     """Deterministic infrastructure stub, not semantic inference or a fallback."""
 
+    @measure_local_time
     def predict(self, request: Request) -> dict:
         return {
             "id": request.id,
@@ -33,7 +36,6 @@ class NeutralPredictor:
             "metrics": {
                 "input_tokens": 0,
                 "output_tokens": 0,
-                "inference_time_ms": 0,
             },
         }
 
@@ -245,6 +247,7 @@ class ApertusPredictor:
         self.full_document = (os.environ.get("CLAIMCHECK_FULL_DOCUMENT") == "1"
                               if full_document is None else full_document)
         self._preparation_errors: dict[Path, str] = {}
+        self._preparation_seconds: dict[Path, float] = {}
 
     def prepare(self, requests: list[Request], *, strict: bool = False) -> None:
         """Cache each unique booklet before processing any claims; no LLM calls."""
@@ -253,8 +256,10 @@ class ApertusPredictor:
 
         paths = dict.fromkeys(request.source.path for request in requests if isinstance(request.source, Booklet))
         self._preparation_errors.clear()
+        self._preparation_seconds.clear()
         for number, path in enumerate(paths, 1):
             print(f"claimcheck: preparing booklet {number}/{len(paths)}: {path.name}", file=sys.stderr)
+            start = time.perf_counter()
             try:
                 pages = pdf_pages(path)
                 if not self.full_document and len(pages) > self.top_k:
@@ -263,18 +268,22 @@ class ApertusPredictor:
             except Exception as exc:
                 self._preparation_errors[path] = f"{exc.__class__.__name__}: {exc}"
                 print(f"claimcheck: cannot prepare {path}: {exc}", file=sys.stderr)
+            finally:
+                self._preparation_seconds[path] = time.perf_counter() - start
         if paths:
             print(f"claimcheck: prepared {len(paths) - len(self._preparation_errors)}/{len(paths)} booklets; "
                   "document cache ready", file=sys.stderr)
         if strict and self._preparation_errors:
             raise RuntimeError(f"failed to prepare {len(self._preparation_errors)} booklets")
 
+    @measure_local_time
     def predict(self, request: Request) -> dict:
         from .nli import MAX_EVIDENCE_CHARS, MAX_EVIDENCE_ITEMS, classify, to_judge
 
         try:
             retrieved: list[dict] = []
             if isinstance(request.source, Booklet):
+                include_preparation(self._preparation_seconds.pop(request.source.path, 0.0))
                 if request.source.path in self._preparation_errors:
                     raise RuntimeError(self._preparation_errors[request.source.path])
                 pages = pdf_pages(request.source.path)

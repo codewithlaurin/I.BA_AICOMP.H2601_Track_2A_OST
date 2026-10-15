@@ -20,9 +20,10 @@ import json
 import os
 import re
 import subprocess
-import time
 from datetime import datetime, timezone
 from pathlib import Path
+
+from .timing import external_api_call, measure_local_time
 
 PROMPT_VERSION = "judge-nli-v4"
 LABELS = ("ENTAILMENT", "NEUTRAL", "CONTRADICTION")
@@ -107,6 +108,7 @@ Chunk 1 (it): "...i servizi di streaming dovranno investire il 4 per cento dei l
 
 # ---------------------------------------------------------------- 1. inference call
 
+@measure_local_time
 def complete(system: str, user: str, max_tokens: int = 1024) -> dict:
     """One chat call to Apertus. Reads BASE_URL, API_KEY, LLM_NAME from the environment."""
     import openai
@@ -118,15 +120,15 @@ def complete(system: str, user: str, max_tokens: int = 1024) -> dict:
     model = env("LLM_NAME", env("APERTUS_MODEL", "swiss-ai/Apertus-v1.5-8B"))
     client = openai.OpenAI(api_key=key, timeout=90, max_retries=1,
                            base_url=env("BASE_URL", env("LLM_BASE_URL", "https://api.inference.cscs.ch/v1")))
-    start = time.perf_counter()
-    response = client.chat.completions.create(
-        model=model, temperature=0, max_tokens=max_tokens, stream=False,
-        messages=[{"role": "system", "content": system}, {"role": "user", "content": user}])
+    messages = [{"role": "system", "content": system}, {"role": "user", "content": user}]
+    with external_api_call():
+        response = client.chat.completions.create(
+            model=model, temperature=0, max_tokens=max_tokens, stream=False,
+            messages=messages)
     usage = response.usage
     return {"text": response.choices[0].message.content or "", "model": response.model or model,
             "input_tokens": int(getattr(usage, "prompt_tokens", 0) or 0),
-            "output_tokens": int(getattr(usage, "completion_tokens", 0) or 0),
-            "inference_time_ms": round((time.perf_counter() - start) * 1000)}
+            "output_tokens": int(getattr(usage, "completion_tokens", 0) or 0)}
 
 
 # ---------------------------------------------------------------- 2. classify
@@ -219,6 +221,7 @@ def best_chunk(texts: list[str], chunks: list) -> int:
     return max(range(len(chunks)), key=scores.__getitem__)
 
 
+@measure_local_time
 def classify(claim: str, chunks: list, vote: str | None = None, max_tokens: int = 1024) -> dict:
     """One Apertus call. Never raises on model problems: falls back to NEUTRAL with "error" set."""
     if not claim.strip() or not chunks:

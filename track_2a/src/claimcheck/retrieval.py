@@ -17,7 +17,7 @@ from .sparse import booklet_bm25
 
 DEFAULT_MODEL = "intfloat/multilingual-e5-small"
 PASSAGE_CHARS = 2500   # e5-small reads 512 tokens; a booklet page is ~1,800 chars
-TOP_K = 8
+TOP_K = 5
 INDEX_VERSION = 1
 RETRIEVAL_CANDIDATES = 32
 RRF_CONSTANT = 60
