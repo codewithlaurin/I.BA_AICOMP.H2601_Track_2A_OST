@@ -107,6 +107,30 @@ Chunk 1 (it): "...i servizi di streaming dovranno investire il 4 per cento dei l
 
 # ---------------------------------------------------------------- 1. inference call
 
+# The judges score processing time as wall-clock time minus the time with at least one LLM
+# request in flight (OST Q&A, 08.10.2026). Every Apertus request records its wall-clock
+# interval here, including retries and failed requests; `local_ms` subtracts them.
+API_INTERVALS: list[tuple[float, float]] = []
+
+
+def api_seconds(since: float, until: float) -> float:
+    """Seconds within [since, until] with at least one Apertus request in flight; overlaps count once."""
+    spans = sorted((max(start, since), min(end, until)) for start, end in API_INTERVALS
+                   if end > since and start < until)
+    total, covered = 0.0, since
+    for start, end in spans:
+        if end > covered:
+            total += end - max(start, covered)
+            covered = end
+    return total
+
+
+def local_ms(started: float) -> int:
+    """Local processing time of a case: milliseconds since `started` (perf_counter) minus API time."""
+    now = time.perf_counter()
+    return max(0, round((now - started - api_seconds(started, now)) * 1000))
+
+
 def complete(system: str, user: str, max_tokens: int = 1024) -> dict:
     """One chat call to Apertus. Reads BASE_URL, API_KEY, LLM_NAME from the environment."""
     import openai
@@ -119,14 +143,17 @@ def complete(system: str, user: str, max_tokens: int = 1024) -> dict:
     client = openai.OpenAI(api_key=key, timeout=90, max_retries=1,
                            base_url=env("BASE_URL", env("LLM_BASE_URL", "https://api.inference.cscs.ch/v1")))
     start = time.perf_counter()
-    response = client.chat.completions.create(
-        model=model, temperature=0, max_tokens=max_tokens, stream=False,
-        messages=[{"role": "system", "content": system}, {"role": "user", "content": user}])
+    try:  # the client's own retry runs inside create(), so it is part of this interval
+        response = client.chat.completions.create(
+            model=model, temperature=0, max_tokens=max_tokens, stream=False,
+            messages=[{"role": "system", "content": system}, {"role": "user", "content": user}])
+    finally:
+        API_INTERVALS.append((start, time.perf_counter()))
     usage = response.usage
     return {"text": response.choices[0].message.content or "", "model": response.model or model,
             "input_tokens": int(getattr(usage, "prompt_tokens", 0) or 0),
             "output_tokens": int(getattr(usage, "completion_tokens", 0) or 0),
-            "inference_time_ms": round((time.perf_counter() - start) * 1000)}
+            "api_time_ms": round((API_INTERVALS[-1][1] - start) * 1000)}
 
 
 # ---------------------------------------------------------------- 2. classify
@@ -230,7 +257,7 @@ def classify(claim: str, chunks: list, vote: str | None = None, max_tokens: int 
     pred = {"label": "NEUTRAL", "claim_says": None, "subject_addressed": None, "passage_says": None,
             "same_meaning": None, "model_label": None, "citations": [], "error": None,
             "raw": result["text"], "model": result["model"],
-            **{k: result[k] for k in ("input_tokens", "output_tokens", "inference_time_ms")}}
+            **{k: result[k] for k in ("input_tokens", "output_tokens", "api_time_ms")}}
     try:
         parsed = parse_output(result["text"])
     except ValueError as error:
@@ -250,12 +277,16 @@ def classify(claim: str, chunks: list, vote: str | None = None, max_tokens: int 
     return pred
 
 
-def to_judge(pred: dict, case_id: str) -> dict:
-    """The judges' output line (OST slides, 'Output Format'). Task B evidence has page null."""
+def to_judge(pred: dict, case_id: str, inference_time_ms: int = 0) -> dict:
+    """The judges' output line (OST slides, 'Output Format'). Task B evidence has page null.
+
+    inference_time_ms is the case's local processing time (see `local_ms`), not the API latency.
+    """
     return {"id": case_id, "label": LABELS.index(pred["label"]), "label_name": pred["label"].lower(),
             "evidence": [{"page": c.get("page"), "text": c["quote"][:MAX_EVIDENCE_CHARS]}
                          for c in pred["citations"][:MAX_EVIDENCE_ITEMS]],
-            "metrics": {k: pred[k] for k in ("input_tokens", "output_tokens", "inference_time_ms")}}
+            "metrics": {"input_tokens": pred["input_tokens"], "output_tokens": pred["output_tokens"],
+                        "inference_time_ms": inference_time_ms}}
 
 
 # ---------------------------------------------------------------- 3. experiment log
@@ -310,12 +341,14 @@ def main() -> int:
         parser.error("give --claim with --chunk ..., or --cases FILE")
     preds = []
     for row in rows:
+        started = time.perf_counter()
         pred = classify(row["claim"], row["chunks"], row.get("vote"))
+        pred["local_time_ms"] = local_ms(started)
         preds.append(pred)
         print(f"{pred['label']:13} {row['claim'][:90]}" + (f"   ! {pred['error']}" if pred["error"] else ""))
     if args.output:
         args.output.parent.mkdir(parents=True, exist_ok=True)
-        args.output.write_text("".join(json.dumps(to_judge(p, str(r.get("id", i))), ensure_ascii=False) + "\n"
+        args.output.write_text("".join(json.dumps(to_judge(p, str(r.get("id", i)), p["local_time_ms"]), ensure_ascii=False) + "\n"
                                        for i, (r, p) in enumerate(zip(rows, preds))), encoding="utf-8")
     gold = [int(r["label"]) for r in rows if r.get("label") is not None]
     if gold and len(gold) == len(preds):

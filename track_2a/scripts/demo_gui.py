@@ -106,7 +106,7 @@ def run(form: dict) -> str:
     return f"""<div class="result">
 <p><span class="label" style="background:{COLORS[prediction["label"]]}">{LABELS[prediction["label"]]}</span>
 <span class="meta"> &nbsp; {metrics["input_tokens"]} input / {metrics["output_tokens"]} output tokens,
-Modell {metrics["inference_time_ms"]} ms, gesamt {total_ms:.0f} ms (inkl. PDF + Retrieval)</span></p>
+lokal {metrics["inference_time_ms"]} ms (ohne Apertus-Wartezeit), gesamt {total_ms:.0f} ms</span></p>
 <h3>Evidenz ({len(prediction["evidence"])})</h3>{evidence}
 {retrieved_html}
 <details><summary>Rohe Vorhersage (Judge-Format)</summary><pre>{html.escape(json.dumps(prediction, ensure_ascii=False, indent=2))}</pre></details>
