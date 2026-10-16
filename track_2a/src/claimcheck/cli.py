@@ -11,7 +11,7 @@ from pathlib import Path
 import sys
 
 from .contracts import ContractError, validate_prediction, validate_request
-from .predict import ApertusPredictor, NeutralPredictor, Predictor
+from .predict import ApertusPredictor, Predictor
 
 
 def read_requests(path: Path) -> list:
@@ -53,11 +53,13 @@ def main(argv: list[str] | None = None, *, predictor: Predictor | None = None) -
     args = parser.parse_args(argv)
     try:
         if predictor is None:
-            if any(os.environ.get(name, "").strip() for name in ("API_KEY", "LLM_API_KEY", "CSCS_INFERENCE_API_KEY")):
-                predictor = ApertusPredictor()
-            else:
-                print("claimcheck: API_KEY not set; using neutral stub, no inference", file=sys.stderr)
-                predictor = NeutralPredictor()
+            key = os.environ.get("API_KEY", os.environ.get("LLM_API_KEY", os.environ.get("CSCS_INFERENCE_API_KEY", ""))).strip()
+            if not key:
+                raise RuntimeError(
+                    "API_KEY is missing or empty. Set API_KEY in the runtime environment "
+                    "(LLM_API_KEY and CSCS_INFERENCE_API_KEY are also supported)."
+                )
+            predictor = ApertusPredictor()
         count = run(args.input, args.output, predictor)
     except Exception as exc:
         print(f"claimcheck: error: {exc}", file=sys.stderr)
