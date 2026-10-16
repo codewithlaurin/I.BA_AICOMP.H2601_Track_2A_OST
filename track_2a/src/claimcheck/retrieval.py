@@ -13,7 +13,7 @@ from pathlib import Path
 
 DEFAULT_MODEL = "intfloat/multilingual-e5-small"
 PASSAGE_CHARS = 2500   # e5-small reads 512 tokens; a booklet page is ~1,800 chars
-TOP_K = 8
+TOP_K = 5
 MAX_CACHED_BOOKLETS = 256  # one index is ~60 x 384 floats; never evict within a run
 
 
