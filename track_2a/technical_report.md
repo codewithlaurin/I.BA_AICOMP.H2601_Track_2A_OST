@@ -148,7 +148,7 @@ The organisers measure remote tokens through their proxy and processing time exc
 
 The README records approximately 1.1 GB peak memory for 50 Task A cases with 29 cached booklets and an image of approximately 3 GB. Earlier results notes record approximately 19 seconds for embedding-model loading and six seconds for index construction per booklet. Host hardware and complete measurement protocols were not preserved; these are indicative measurements, not resource guarantees.
 
-An offline test run against reviewed commit `8c02375` on 16 October 2026 ran 30 tests: **25 passed, three failed, and two were skipped**. One CLI test still expects the removed no-key neutral stub. Two timing tests expect API latency to be excluded from a wall-clock metric. The skipped tests require booklet files at paths absent from this checkout. No new remote benchmark or Docker build was performed for this report.
+An offline test run against reviewed commit `8c02375` on 16 October 2026 ran 30 tests: **25 passed, three failed, and two were skipped**. One CLI test still expects the removed no-key neutral stub. Two timing tests expect API latency to be excluded from a wall-clock metric. The skipped tests require booklet files at paths absent from this checkout. No new remote benchmark was performed for this report. During final submission preparation, the image was rebuilt for `linux/amd64`; CPU-only dependencies, offline embedding-model loading, and the missing-key configuration error were checked successfully.
 
 ## 6. Limitations
 
@@ -226,7 +226,15 @@ make test
 
 For the local demo, run `uv run --env-file .env python scripts/demo_gui.py --pdf-dir data/booklets` and open the displayed localhost address. `scripts/extraction_viewer.py` creates a side-by-side PDF/text view for inspecting extraction.
 
-Exact reproduction requires retaining the code commit, model name, dataset revision, case IDs, input/gold hashes, retrieval settings, image digest, and hardware information together with predictions and scorer output. The submission image must be published for `linux/amd64` and pullable by the organisers; no published image location has been supplied for this report.
+Exact reproduction requires retaining the code commit, model name, dataset revision, case IDs, input/gold hashes, retrieval settings, image digest, and hardware information together with predictions and scorer output.
+
+The final `linux/amd64` container was built from the source at repository commit `a949a594dfc7ce0bc9dc49edfe831af765423885` and published publicly to [GitHub Container Registry](https://github.com/users/codewithlaurin/packages/container/package/i.ba_aicomp.h2601_track_2a_ost). Its tag is `ghcr.io/codewithlaurin/i.ba_aicomp.h2601_track_2a_ost:latest`, and its immutable reference is:
+
+```text
+ghcr.io/codewithlaurin/i.ba_aicomp.h2601_track_2a_ost@sha256:f2faee4de008296d6ecdc50b5393b1d75a24baa0225cd9211085b449a4c1045c
+```
+
+Use this image in place of `apertus-claimcheck:latest` in the Docker command above to run without rebuilding.
 
 ## 8. Next steps
 

@@ -25,7 +25,7 @@ other track directories.
 From `track_2a/`:
 
 ```bash
-export BASE_URL=https://api.inference.cscs.ch/v1 API_KEY=... LLM_NAME=swiss-ai/Apertus-v1.5-8B
+export BASE_URL=https://api.inference.cscs.ch/v1 API_KEY=... LLM_NAME=swiss-ai/Apertus-v1.5-70B
 make run                                     # data/cases.jsonl -> output/predictions.jsonl
 make run INPUT=/path/cases.jsonl OUTPUT=/path/predictions.jsonl
 ```
@@ -46,7 +46,7 @@ docker run --rm --platform linux/amd64 -e BASE_URL -e API_KEY -e LLM_NAME \
 Requirements:
 - **Runtime:** Docker (image is `linux/amd64`); the build needs internet, the run only reaches the Apertus endpoint.
 - **Hardware:** CPU only, no GPU. Peak memory 1.1 GB on 50 Task A cases (29 booklets cached); image about 3 GB.
-- **API keys:** `API_KEY` for the OpenAI-compatible Apertus endpoint (`BASE_URL`, default CSCS); `LLM_NAME` defaults to `swiss-ai/Apertus-v1.5-8B`. No key is stored in the image.
+- **API keys:** `API_KEY` for the OpenAI-compatible Apertus endpoint (`BASE_URL`, default CSCS); `LLM_NAME` defaults to `swiss-ai/Apertus-v1.5-70B`. No key is stored in the image.
 - **Model weights:** Apertus runs remotely. The page-retrieval embedder `intfloat/multilingual-e5-small` (CPU) is downloaded at build time and baked into the image; the container runs with `HF_HUB_OFFLINE=1`.
 
 Scoring locally with the organisers' script:

@@ -46,6 +46,34 @@ Place the referenced PDFs in `booklets/` next to the cases file. See the
 [setup guide](track_2a/README.md) for the input format, Docker commands, and local
 scoring instructions.
 
+## Submission container
+
+The published `linux/amd64` image is available from
+[GitHub Container Registry](https://github.com/users/codewithlaurin/packages/container/package/i.ba_aicomp.h2601_track_2a_ost):
+
+```bash
+docker pull --platform linux/amd64 ghcr.io/codewithlaurin/i.ba_aicomp.h2601_track_2a_ost:latest
+```
+
+Immutable image reference:
+
+```text
+ghcr.io/codewithlaurin/i.ba_aicomp.h2601_track_2a_ost@sha256:f2faee4de008296d6ecdc50b5393b1d75a24baa0225cd9211085b449a4c1045c
+```
+
+Run it from `track_2a/` with runtime credentials set as above:
+
+```bash
+mkdir -p output
+docker run --rm --platform linux/amd64 \
+  -e BASE_URL -e API_KEY -e LLM_NAME \
+  -v "$PWD/data/cases.jsonl:/data/cases.jsonl:ro" \
+  -v "$PWD/data/booklets:/data/booklets:ro" \
+  -v "$PWD/output:/output" \
+  ghcr.io/codewithlaurin/i.ba_aicomp.h2601_track_2a_ost:latest \
+  --input /data/cases.jsonl --output /output/predictions.jsonl
+```
+
 ## Documentation
 
 - [Setup and execution](track_2a/README.md)
