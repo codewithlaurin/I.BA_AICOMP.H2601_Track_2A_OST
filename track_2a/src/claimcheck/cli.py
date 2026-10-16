@@ -51,13 +51,13 @@ def main(argv: list[str] | None = None, *, predictor: Predictor | None = None) -
     parser.add_argument("--input", required=True, type=Path, help="cases.jsonl")
     parser.add_argument("--output", required=True, type=Path, help="predictions.jsonl")
     args = parser.parse_args(argv)
-    if predictor is None:
-        if any(os.environ.get(name, "").strip() for name in ("API_KEY", "LLM_API_KEY", "CSCS_INFERENCE_API_KEY")):
-            predictor = ApertusPredictor()
-        else:
-            print("claimcheck: API_KEY not set; using neutral stub, no inference", file=sys.stderr)
-            predictor = NeutralPredictor()
     try:
+        if predictor is None:
+            if any(os.environ.get(name, "").strip() for name in ("API_KEY", "LLM_API_KEY", "CSCS_INFERENCE_API_KEY")):
+                predictor = ApertusPredictor()
+            else:
+                print("claimcheck: API_KEY not set; using neutral stub, no inference", file=sys.stderr)
+                predictor = NeutralPredictor()
         count = run(args.input, args.output, predictor)
     except Exception as exc:
         print(f"claimcheck: error: {exc}", file=sys.stderr)

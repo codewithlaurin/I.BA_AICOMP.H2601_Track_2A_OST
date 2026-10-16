@@ -4,6 +4,7 @@
 !pyproject.toml
 !uv.lock
 !src/
-src/**/__pycache__
-src/*.egg-info
-src/claimcheck/chunks.py
+src/*
+!src/claimcheck/
+src/claimcheck/*
+!src/claimcheck/*.py
