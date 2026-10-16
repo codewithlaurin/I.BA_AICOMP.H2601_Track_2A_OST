@@ -22,6 +22,7 @@ import re
 import subprocess
 import time
 from datetime import datetime, timezone
+from functools import lru_cache
 from pathlib import Path
 
 PROMPT_VERSION = "judge-nli-v4"
@@ -131,17 +132,30 @@ def local_ms(started: float) -> int:
     return max(0, round((now - started - api_seconds(started, now)) * 1000))
 
 
-def complete(system: str, user: str, max_tokens: int = 1024) -> dict:
-    """One chat call to Apertus. Reads BASE_URL, API_KEY, LLM_NAME from the environment."""
+def remote_model() -> str:
+    """Keep the configured Apertus model, rejecting other remote model families."""
+    model = os.environ.get("LLM_NAME", os.environ.get("APERTUS_MODEL", "swiss-ai/Apertus-v1.5-70B"))
+    if not model.startswith("swiss-ai/Apertus-v1.5-") or not model.removeprefix("swiss-ai/Apertus-v1.5-").strip():
+        raise ValueError("LLM_NAME/APERTUS_MODEL must belong to swiss-ai/Apertus-v1.5-...")
+    return model
+
+
+@lru_cache(maxsize=4)
+def _api_client(base_url: str, key: str):
+    """Keep the HTTP connection pool alive between claims."""
     import openai
 
+    return openai.OpenAI(api_key=key, timeout=90, max_retries=1, base_url=base_url)
+
+
+def complete(system: str, user: str, max_tokens: int = 1024) -> dict:
+    """One chat call to Apertus. Reads BASE_URL, API_KEY, LLM_NAME from the environment."""
     env = os.environ.get
     key = env("API_KEY", env("LLM_API_KEY", env("CSCS_INFERENCE_API_KEY", ""))).strip()
     if not key:
         raise RuntimeError("Set API_KEY")
-    model = env("LLM_NAME", env("APERTUS_MODEL", "swiss-ai/Apertus-v1.5-8B"))
-    client = openai.OpenAI(api_key=key, timeout=90, max_retries=1,
-                           base_url=env("BASE_URL", env("LLM_BASE_URL", "https://api.inference.cscs.ch/v1")))
+    model = remote_model()
+    client = _api_client(env("BASE_URL", env("LLM_BASE_URL", "https://api.inference.cscs.ch/v1")), key)
     start = time.perf_counter()
     try:  # the client's own retry runs inside create(), so it is part of this interval
         response = client.chat.completions.create(
@@ -280,7 +294,7 @@ def classify(claim: str, chunks: list, vote: str | None = None, max_tokens: int 
 def to_judge(pred: dict, case_id: str, inference_time_ms: int = 0) -> dict:
     """The judges' output line (OST slides, 'Output Format'). Task B evidence has page null.
 
-    inference_time_ms is the case's local processing time (see `local_ms`), not the API latency.
+    The prediction CLI supplies the case's full wall-clock processing time, including API latency.
     """
     return {"id": case_id, "label": LABELS.index(pred["label"]), "label_name": pred["label"].lower(),
             "evidence": [{"page": c.get("page"), "text": c["quote"][:MAX_EVIDENCE_CHARS]}

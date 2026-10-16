@@ -25,13 +25,10 @@ class NeutralPredictor:
     """Deterministic neutral prediction: the no-API-key stub and the per-case failure fallback.
 
     `started` is the perf_counter() value when the case began; a fallback passes it so the
-    local work done before the failure is reported. Time with an API request in flight is
-    excluded (see nli.local_ms).
+    work done before the failure is reported, including time spent waiting for the API.
     """
 
     def predict(self, request: Request, started: float | None = None) -> dict:
-        from .nli import local_ms
-
         if started is None:
             started = time.perf_counter()
         return {
@@ -42,7 +39,7 @@ class NeutralPredictor:
             "metrics": {
                 "input_tokens": 0,
                 "output_tokens": 0,
-                "inference_time_ms": local_ms(started),
+                "inference_time_ms": round((time.perf_counter() - started) * 1000),
             },
         }
 
@@ -217,18 +214,18 @@ class ApertusPredictor:
     """
 
     def __init__(self, top_k: int | None = None, full_document: bool | None = None):
+        from .nli import remote_model
         from .retrieval import TOP_K
 
+        remote_model()  # Reject incompatible configuration before processing any cases.
         self.top_k = top_k or int(os.environ.get("CLAIMCHECK_TOP_K", TOP_K))
         self.full_document = (os.environ.get("CLAIMCHECK_FULL_DOCUMENT") == "1"
                               if full_document is None else full_document)
 
     def predict(self, request: Request) -> dict:
-        from .nli import MAX_EVIDENCE_CHARS, MAX_EVIDENCE_ITEMS, classify, local_ms, to_judge
+        from .nli import MAX_EVIDENCE_CHARS, MAX_EVIDENCE_ITEMS, classify, to_judge
 
-        # inference_time_ms = local processing time of this case: PDF extraction (or the cache
-        # hit), retrieval and embeddings, prompt building, parsing and evidence assembly,
-        # minus the time an Apertus request was in flight. Rounded to whole milliseconds.
+        # Full wall-clock time per case, including PDF processing, retrieval and API latency.
         started = time.perf_counter()
         try:
             retrieved: list[dict] = []
@@ -260,7 +257,7 @@ class ApertusPredictor:
                             item["page"] == page["page"] and item["text"] in text for item in result["evidence"]
                             if len(item["text"]) >= len(text)):
                         result["evidence"].append({"page": page["page"], "text": text})
-            result["metrics"]["inference_time_ms"] = local_ms(started)
+            result["metrics"]["inference_time_ms"] = round((time.perf_counter() - started) * 1000)
             return result
         except Exception as exc:
             print(f"claimcheck: {request.id!r}: {exc.__class__.__name__}: {exc}; predicting neutral", file=sys.stderr)
