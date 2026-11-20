@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>claimcheck live</title>
+<title>{{TITLE}} · claimcheck live</title>
 <style>
   :root { --bg:#101418; --panel:#181e24; --panel2:#1f262e; --line:#2a323b; --text:#e8edf2; --muted:#8b98a5;
           --ok:#3fb97f; --ok-bg:#12281f; --nok:#ef6461; --nok-bg:#2d1717; --neutral:#8b98a5; --accent:#4cc38a; }
@@ -13,6 +13,20 @@
   header { display:flex; align-items:baseline; justify-content:space-between; gap:16px; margin-bottom:12px; }
   h1 { font-size:18px; font-weight:600; margin:0; }
   h1 span { color:var(--muted); font-weight:400; }
+  header .left { display:flex; align-items:baseline; gap:16px; min-width:0; }
+  header .right { display:flex; align-items:center; gap:20px; }
+  a.back { color:var(--muted); text-decoration:none; font-size:14px; white-space:nowrap; }
+  a.back:hover { color:var(--text); }
+  /* toggle switch */
+  .switch { display:flex; align-items:center; gap:9px; font-size:13px; color:var(--muted); cursor:pointer; user-select:none; }
+  .switch input { display:none; }
+  .switch .track { width:34px; height:20px; border-radius:999px; background:var(--line); position:relative; transition:background .15s; }
+  .switch .track::after { content:""; position:absolute; top:3px; left:3px; width:14px; height:14px; border-radius:50%;
+                          background:#c5cfd9; transition:transform .15s; }
+  .switch input:checked + .track { background:#2f6fb0; }
+  .switch input:checked + .track::after { transform:translateX(14px); background:#fff; }
+  .switch input:checked ~ .label { color:var(--text); }
+  .switch.disabled { opacity:.45; cursor:not-allowed; }
   #status { font-size:13px; color:var(--muted); }
   #status::before { content:""; display:inline-block; width:8px; height:8px; border-radius:50%; background:var(--muted); margin-right:7px; }
   #status.live { color:var(--accent); } #status.live::before { background:var(--accent); animation:pulse 1.2s infinite; }
@@ -74,18 +88,32 @@
                       border-radius:0 6px 6px 0; max-height:170px; overflow-y:auto; white-space:pre-wrap; }
   .claim blockquote b { display:block; font-size:12px; color:var(--muted); font-weight:600; margin-bottom:2px; }
   .claim .said { color:var(--muted); margin:8px 0 0; font-size:13px; }
+  .claim .web-tag { font-size:11px; font-weight:700; letter-spacing:.04em; color:#8fc1f5; background:#13243a;
+                    padding:2px 7px; border-radius:999px; margin-right:6px; }
+  .claim .pending { font-size:12px; color:var(--muted); margin-left:8px; }
+  .claim .pending::before { content:""; display:inline-block; width:9px; height:9px; margin-right:5px; vertical-align:-1px;
+           border:2px solid var(--muted); border-top-color:transparent; border-radius:50%; animation:spin .8s linear infinite; }
+  .claim blockquote a { color:#8fc1f5; font-size:12px; word-break:break-all; }
 </style>
 </head>
 <body>
 <main>
   <header>
-    <h1>claimcheck live <span>· {{VIDEO_NAME}}</span></h1>
-    <div id="status">Bereit – Video starten</div>
+    <div class="left">
+      <a class="back" href="/">← Alle Arenen</a>
+      <h1>{{TITLE}} <span>· {{VIDEO_NAME}}</span></h1>
+    </div>
+    <div class="right">
+      <label class="switch" id="web-switch" title="Claims, zu denen das Büchlein nichts sagt, zusätzlich mit vertrauenswürdigen Web-Quellen prüfen">
+        <input type="checkbox" id="web-toggle"><span class="track"></span><span class="label">Web-Recherche</span>
+      </label>
+      <div id="status">Bereit – Video starten</div>
+    </div>
   </header>
   <div class="layout">
     <section>
       <div class="stage">
-        <video id="video" src="/video" controls preload="metadata"></video>
+        <video id="video" src="video" controls preload="metadata"></video>
         <div id="subtitle"></div>
       </div>
       <details class="transcript">
@@ -94,7 +122,7 @@
       </details>
     </section>
     <aside>
-      <div class="claims-head"><h2>Claims · Abgleich mit dem Büchlein</h2><div id="tally"></div></div>
+      <div class="claims-head"><h2 id="claims-title">Claims · Abgleich mit dem Büchlein</h2><div id="tally"></div></div>
       <div id="claims"><div class="hint" id="claims-hint">Claims erscheinen hier, sobald im Video eine prüfbare Aussage fällt.</div></div>
     </aside>
   </div>
@@ -107,6 +135,9 @@ const transcript = document.getElementById('transcript');
 const claimsBox = document.getElementById('claims');
 const claimsHint = document.getElementById('claims-hint');
 const tally = document.getElementById('tally');
+const webToggle = document.getElementById('web-toggle');
+const webSwitch = document.getElementById('web-switch');
+const claimsTitle = document.getElementById('claims-title');
 
 const LINE_CHARS = 58;   // characters per subtitle line
 const HOLD = 2.5;        // seconds a finished sentence stays visible after its last word
@@ -118,6 +149,15 @@ let interim = null;      // text of the sentence being spoken right now (may sti
 let claims = new Map();  // id -> claim (latest version)
 let rev = 0;             // newest claim revision already received
 let openClaims = new Set();   // ids whose reference is unfolded
+let webPages = 0;        // web pages collected for this arena (0: the toggle is off and disabled)
+
+// The toggle is remembered per browser; storage can be unavailable, then it simply starts off.
+try { webToggle.checked = localStorage.getItem('claimcheck-web') === '1'; } catch (error) {}
+webToggle.onchange = () => {
+  try { localStorage.setItem('claimcheck-web', webToggle.checked ? '1' : '0'); } catch (error) {}
+  claimsShown = '';
+};
+const webOn = () => webToggle.checked && webPages > 0;
 
 function clock(seconds) {
   const s = Math.floor(seconds);
@@ -149,33 +189,60 @@ function addSegment(segment) {
 
 // ---------------------------------------------------------------- claims
 
+// The verdict the page shows: the booklet's, or with the toggle on and the booklet silent, the web's.
+function verdict(claim) {
+  if (claim.status !== 'done') return { state: claim.status, label: null, evidence: [], web: false };
+  if (webOn() && claim.label === 'neutral' && claim.web)
+    return { state: claim.web.label, label: claim.web.label, evidence: claim.web.evidence || [], web: true };
+  return { state: claim.label, label: claim.label, evidence: claim.evidence || [], web: false };
+}
+
 function claimCard(claim) {
-  const state = claim.status === 'done' ? claim.label : claim.status;   // entailment | neutral | contradiction | checking | error
-  const card = element('div', 'claim ' + state);
+  const v = verdict(claim);   // state: entailment | neutral | contradiction | checking | error
+  const card = element('div', 'claim ' + v.state);
   const top = element('div', 'top');
   const stamp = element('time', '', clock(claim.start));
   stamp.title = 'Zur Stelle im Video springen';
   stamp.onclick = () => { video.currentTime = Math.max(claim.start - 1, 0); video.play(); };
-  const badge = element('span', 'badge',
-    claim.status === 'checking' ? 'wird geprüft' : claim.status === 'error' ? 'nicht geprüft' : LABELS[claim.label]);
+  const right = element('span');
+  if (v.web && v.label !== 'neutral') right.append(element('span', 'web-tag', 'WEB'));
+  let text = claim.status === 'checking' ? 'wird geprüft' : claim.status === 'error' ? 'nicht geprüft' : LABELS[v.label];
+  if (v.label === 'neutral' && webOn() && claim.web) text = 'Nicht belegt';
+  const badge = element('span', 'badge', text);
   if (claim.status === 'error' && claim.note) badge.title = claim.note;
-  top.append(stamp, badge);
-  const text = element('p', 'text');
-  text.append(element('small', '', 'Claim'), claim.text);
-  card.append(top, text);
+  right.append(badge);
+  top.append(stamp, right);
+  const body = element('p', 'text');
+  body.append(element('small', '', 'Claim'), claim.text);
+  if (webOn() && claim.status === 'done' && claim.label === 'neutral' && !claim.web && claim.web_status !== 'error')
+    body.append(element('span', 'pending', 'Web-Recherche läuft'));
+  card.append(top, body);
 
-  const evidence = claim.evidence || [];
+  const evidence = v.evidence;
   if (evidence.length || claim.quote) {
     const details = element('details');
     details.open = openClaims.has(claim.id);
     details.ontoggle = () => details.open ? openClaims.add(claim.id) : openClaims.delete(claim.id);
-    const pages = [...new Set(evidence.map(item => item.page).filter(Boolean))];
-    const kinds = [...new Set(evidence.map(item => item.section).filter(Boolean))];
-    details.append(element('summary', '', evidence.length
-      ? 'Referenz · Büchlein S. ' + pages.join(', ') + (kinds.length ? ' · ' + kinds.join(', ') : '') : 'Gesagt wurde'));
+    let summary = 'Gesagt wurde';
+    if (evidence.length && v.web) {
+      summary = 'Referenz · Web · ' + [...new Set(evidence.map(item => item.source))].join(', ');
+    } else if (evidence.length) {
+      const pages = [...new Set(evidence.map(item => item.page).filter(Boolean))];
+      const kinds = [...new Set(evidence.map(item => item.section).filter(Boolean))];
+      summary = 'Referenz · Büchlein S. ' + pages.join(', ') + (kinds.length ? ' · ' + kinds.join(', ') : '');
+    }
+    details.append(element('summary', '', summary));
     for (const item of evidence) {
       const quote = element('blockquote');
-      quote.append(element('b', '', 'Seite ' + item.page + (item.section ? ' · ' + item.section : '')), item.text);
+      if (v.web) {
+        quote.append(element('b', '', item.source + (item.media ? ' · Medienbericht' : '') + (item.title ? ' · ' + item.title : '')),
+                     item.text, document.createElement('br'));
+        const link = element('a', '', item.url);
+        link.href = item.url; link.target = '_blank'; link.rel = 'noopener';
+        quote.append(link);
+      } else {
+        quote.append(element('b', '', 'Seite ' + item.page + (item.section ? ' · ' + item.section : '')), item.text);
+      }
       details.append(quote);
     }
     if (claim.quote) details.append(element('p', 'said', 'Im Video: «' + claim.quote + '»'));
@@ -189,14 +256,15 @@ let claimsShown = '';
 function renderClaims() {
   const t = video.currentTime;
   const visible = [...claims.values()].filter(claim => claim.t <= t + 0.3).sort((a, b) => b.t - a.t || b.rev - a.rev);
-  const key = visible.map(claim => claim.id + ':' + claim.rev).join('|');
+  const key = (webOn() ? 'w' : 'b') + visible.map(claim => claim.id + ':' + claim.rev).join('|');
   if (key === claimsShown) return;
   claimsShown = key;
   claimsBox.replaceChildren(...(visible.length ? visible.map(claimCard) : [claimsHint]));
-  const count = label => visible.filter(claim => claim.status === 'done' && claim.label === label).length;
+  const count = label => visible.filter(claim => claim.status === 'done' && verdict(claim).label === label).length;
   tally.innerHTML = visible.length
-    ? `<b class="ok">${count('entailment')} belegt</b> · <b class="nok">${count('contradiction')} Widerspruch</b> · ${count('neutral')} nicht im Büchlein`
+    ? `<b class="ok">${count('entailment')} belegt</b> · <b class="nok">${count('contradiction')} Widerspruch</b> · ${count('neutral')} ${webOn() ? 'nicht belegt' : 'nicht im Büchlein'}`
     : '';
+  claimsTitle.textContent = webOn() ? 'Claims · Büchlein und Web-Quellen' : 'Claims · Abgleich mit dem Büchlein';
 }
 
 // ---------------------------------------------------------------- sync with the server
@@ -211,8 +279,16 @@ function setStatus(data) {
 async function sync() {
   try {
     const playing = video.paused || video.ended ? 0 : 1;
-    const response = await fetch(`/api/sync?t=${video.currentTime.toFixed(2)}&playing=${playing}&since=${since}&rev=${rev}`);
+    const response = await fetch(`api/sync?t=${video.currentTime.toFixed(2)}&playing=${playing}&since=${since}&rev=${rev}&web=${webOn() ? 1 : 0}`);
     const data = await response.json();
+    if (data.web_pages !== webPages) {
+      webPages = data.web_pages || 0;
+      webSwitch.classList.toggle('disabled', webPages === 0);
+      webToggle.disabled = webPages === 0;
+      webSwitch.title = webPages ? `Claims, zu denen das Büchlein nichts sagt, zusätzlich mit ${webPages} vertrauenswürdigen Web-Seiten prüfen`
+                                 : 'Für diese Arena sind keine Web-Quellen gesammelt (python -m claimcheck.live.batch)';
+      claimsShown = '';
+    }
     since += data.segments.length;
     data.segments.forEach(addSegment);
     interim = data.interim;
@@ -220,7 +296,7 @@ async function sync() {
       for (const claim of data.claims) claims.set(claim.id, claim);
       rev = data.rev;
     } else {
-      claimsHint.textContent = 'Claim-Prüfung ist aus (ohne --booklet gestartet).';
+      claimsHint.textContent = 'Claim-Prüfung ist aus (kein Büchlein für diese Arena).';
     }
     setStatus(data);
   } catch (error) {

@@ -29,7 +29,9 @@ MAX_WAIT = 7.0           # ... but at most this many seconds after the segment e
 DUPLICATE_SCORE = 82     # rapidfuzz token_set_ratio: the same claim said again is not checked twice
 QUOTE_IN_SEGMENT_SCORE = 85
 
-CLAIMS_VERSION = "claims-v14"   # part of the cache fingerprint: results of older prompts are not reused
+CLAIMS_VERSION = "claims-v14"   # part of the cache fingerprint: claims of older extraction prompts are not reused
+VERIFY_VERSION = "verify-3"    # stored with every verdict: verdicts of older check rules are made again,
+                                # without extracting the claims again
 
 CHECKABLE_TYPES = {"LAW", "NUMBER", "EVENT", "RECOMMENDATION"}
 
@@ -185,11 +187,18 @@ The passages never mention Finland.
 
 # Second look at every claim that was not neutral: only the claim and the cited sentences.
 CONFIRM_PROMPT = """Statement A is a claim from a Swiss TV debate about a federal vote. B are sentences quoted from the
-official voting booklet. Decide how B relates to A:
-- "SUPPORT": B states the same fact as A. B may be more detailed or add conditions and exceptions.
-- "CONFLICT": A and B cannot both be true: B gives a different number, date or actor for the same thing,
-  says the opposite, or excludes what A asserts.
+official voting booklet or another trusted source. Decide how B relates to A:
+- "SUPPORT": B states the same fact as A. B may be more detailed or add conditions and exceptions, and may
+  use other words for the same thing ("Partnerstaaten" and "Leitstaaten"; "ausgenommen" and "bevorzugt").
+- "CONFLICT": A and B cannot both be true about the very same thing: B gives a different number, date or
+  actor for the same quantity in the same period, says the opposite, or excludes what A asserts.
 - "UNRELATED": B is about something else, or it neither confirms nor refutes A.
+Use UNRELATED, not CONFLICT, when:
+- A and B speak about different quantities, periods or situations (costs versus savings; exports versus
+  purchases; per year versus over two years; since 1999 versus since 2002; a share versus a ratio);
+- A reports what somebody said, claimed or demanded, and B does not report that statement;
+- A is a general statement ("führt nicht automatisch zu") and B gives one development or one figure;
+- B is silent on a detail of A, or a detail of A is garbled or unclear.
 Rules for figures: a rounded or bounded figure matches a precise one when they agree ("rund 70 Prozent"
 and "70,2 Prozent"; "mehr als 2 Millionen" and "2,6 Millionen"; "4 bis 5 Milliarden" and "über 4, später
 über 5 Milliarden"). Figures that differ at the precision both state are different ("2,7 Millionen" and
@@ -264,13 +273,23 @@ def find_sentence(task: str, claim: str, chunks: list[dict]) -> dict | None:
     except ValueError:
         return None
     found = locate_quote(quote, int(match.group(1)), chunks)
-    return {"page": found["page"], "text": found["quote"]} if found else None
+    return {"chunk": found["chunk"], "page": found["page"], "text": found["quote"]} if found else None
+
+
+YEAR = re.compile(r"(19|20)\d\d")
 
 
 def figures_differ(claim: str, quotes: list[str]) -> bool:
-    """The claim gives figures, the cited sentences give figures, and the claim's are not among them."""
+    """The claim gives figures, the cited sentences give figures, and the claim's are not among them.
+    Years are no figures here: a year of the claim that the sentences do not name means another
+    period ("seit 1999" versus "seit 2002"), whose figures cannot be compared."""
     claimed = numbers(claim) - {"13"}
     cited = set().union(*(numbers(quote) for quote in quotes)) if quotes else set()
+    claimed_years = {n for n in claimed if YEAR.fullmatch(n)}
+    if not claimed_years <= cited:
+        return False
+    claimed -= claimed_years
+    cited = {n for n in cited if not YEAR.fullmatch(n)}
     return bool(claimed) and bool(cited) and not claimed <= cited
 
 
@@ -331,9 +350,35 @@ def quoted_from(quote: str, segment: str) -> bool:
     return len(quote) >= 15 and fuzz.partial_ratio(quote.casefold(), segment.casefold()) >= QUOTE_IN_SEGMENT_SCORE
 
 
+THOUSANDS = re.compile(r"(?<!\d)\d{1,3}(?:['’\u2009\u202f ]\d{3})+(?!\d)")
+
+
 def numbers(text: str) -> set[str]:
-    """Numbers as written in German ('2,7', '1315', '0.4' -> '0,4'), thousands separators removed."""
-    return {n.replace(".", ",").rstrip(",") for n in re.findall(r"\d+(?:[.,]\d+)?", text.replace("'", ""))}
+    """Numbers as written in German ('2,7', '1315', '0.4' -> '0,4'), thousands separators removed
+    ("40'000", "40’000", "40 000" -> '40000')."""
+    text = THOUSANDS.sub(lambda match: re.sub(r"\D", "", match.group()), text)
+    return {n.replace(".", ",").rstrip(",") for n in re.findall(r"\d+(?:[.,]\d+)?", text)}
+
+
+def as_float(number: str) -> float | None:
+    try:
+        return float(number.replace(",", "."))
+    except ValueError:
+        return None
+
+
+def scale_slip(claim: str, quotes: list[str]) -> bool:
+    """A figure of the claim is a thousandth or millionth of a figure in the source (40 versus 37'500 or
+    40'000). Speech recognition drops "tausend" and "Millionen" this way; it is no contradiction by
+    the speaker."""
+    claimed = [as_float(n) for n in numbers(claim) - {"13"}]
+    cited = [as_float(n) for quote in quotes for n in numbers(quote)]
+    for a in filter(None, claimed):
+        for b in filter(None, cited):
+            for factor in (1e3, 1e6):
+                if 0.85 <= b / (a * factor) <= 1.15:
+                    return True
+    return False
 
 
 def grounded_in(claim: str, segment: str) -> bool:
@@ -410,6 +455,89 @@ def parse_pages(spec: str | None) -> set[int] | None:
     return pages
 
 
+def classify_with(prompt: str, claim: str, chunks: list, vote: str | None = None, max_tokens: int = 1024) -> dict:
+    """nli.classify() with an explicit system prompt: the pipeline's parsing, label derivation and
+    quote location, without touching nli.SYSTEM_PROMPT (the judges' prompt stays as it is)."""
+    from ..nli import (MAX_EVIDENCE_CHARS, _ids, _text, best_chunk, complete, derive_label, locate_quote,
+                       parse_output)
+
+    user = json.dumps({"vote": vote, "claim": claim,
+                       "chunks": [{"chunk": i, **_ids(c), "text": _text(c)} for i, c in enumerate(chunks)]},
+                      ensure_ascii=False)
+    result = complete(prompt, user, max_tokens)
+    pred = {"label": "NEUTRAL", "claim_says": None, "subject_addressed": None, "passage_says": None,
+            "same_meaning": None, "model_label": None, "citations": [], "error": None, "raw": result["text"]}
+    try:
+        parsed = parse_output(result["text"])
+    except ValueError as error:
+        pred["error"] = str(error)
+        return pred
+    pred.update({k: parsed[k] for k in ("claim_says", "subject_addressed", "passage_says", "same_meaning", "model_label")})
+    label = derive_label(parsed)
+    citations = [c for c in (locate_quote(c["quote"], c["chunk"], chunks) for c in parsed["citations"]) if c]
+    if label != "NEUTRAL" and not citations:
+        index = best_chunk([c["quote"] for c in parsed["citations"]] + [parsed["passage_says"] or ""], chunks)
+        pred["error"] = "quote not found verbatim; whole best-matching chunk cited instead"
+        citations = [{"chunk": index, **_ids(chunks[index]), "quote": _text(chunks[index])[:MAX_EVIDENCE_CHARS]}]
+    pred.update(label=label, citations=citations)
+    return pred
+
+
+def judge(claim: str, chunks: list[dict], vote: str, prompt: str, cite: Callable,
+          sections: Callable[[dict], str] = lambda item: "") -> dict:
+    """The shared verdict procedure for booklet pages and web passages:
+
+      1. first check with `prompt`: is the matter addressed, and which sentence speaks about it
+      2. confirm_relation(): a second look at only the claim and that sentence decides the label
+      3. before a contradiction is shown, look for a sentence that states the claim after all
+
+    cite(chunk_index, text) -> evidence item; sections(evidence item) -> kind of text (booklet only).
+    Returns the task's three labels only.
+    """
+    pred = classify_with(prompt, claim, chunks, vote)
+    label, relation, how, evidence = "neutral", None, "not addressed", []
+    if pred["label"] != "NEUTRAL":
+        if pred["error"]:   # the model's quote is not verbatim in the sources: look for the sentence again
+            found = find_sentence("same_matter", claim, chunks)
+            evidence = [cite(found["chunk"], found["text"])] if found else []
+        else:
+            evidence = [cite(c["chunk"], c["quote"]) for c in pred["citations"][:2]]
+        if evidence:
+            quotes = [item["text"] for item in evidence]
+            relation = confirm_relation(claim, quotes)
+            # Green needs the second look to see support. Red needs a second, independent signal: the
+            # first check also saw a conflict, or the claim's figures are not in the cited sentences.
+            # A wrong contradiction on the screen is worse than a missed one.
+            if relation == "CONFLICT" and scale_slip(claim, quotes):
+                relation, how = "UNRELATED", "figure off by a factor of 1000 (speech recognition)"
+            elif relation == "CONFLICT" and not (pred["label"] == "CONTRADICTION" or figures_differ(claim, quotes)):
+                relation, how = "UNRELATED", "checks disagree"
+            else:
+                how = "second look"
+            label = settle(relation, [sections(item) for item in evidence], claim)
+        if label == "contradiction":
+            support = find_sentence("supports", claim, chunks)
+            if support and confirm_relation(claim, [support["text"]]) == "SUPPORT":
+                evidence = [cite(support["chunk"], support["text"])]
+                label, how = settle("SUPPORT", [sections(evidence[0])], claim), "supporting sentence found"
+    return {"label": label, "evidence": evidence if label != "neutral" else [], "note": pred["error"],
+            "why": {"first": pred["label"].lower(), "relation": relation, "how": how,
+                    **{k: pred[k] for k in ("claim_says", "passage_says")}}}
+
+
+_PDF_LOCK = threading.Lock()
+
+
+def booklet_pages(path: Path) -> tuple[dict, ...]:
+    """predict.pdf_pages() for the claim workers. pdfium is not thread-safe, and pdf_pages' lru_cache
+    does not stop several threads from reading the same booklet at once on the first call
+    ("PdfiumError: Failed to load page"): one thread reads it, the others wait for the cached result."""
+    from ..predict import pdf_pages
+
+    with _PDF_LOCK:
+        return pdf_pages(path)
+
+
 class BookletVerifier:
     """Claim -> label and evidence from the booklet, with the pipeline's page text and NLI machinery
     (pdf_pages, classify, quote location) and the live demo's own prompts:
@@ -426,18 +554,9 @@ class BookletVerifier:
 
     def __init__(self, booklet: Path, vote: str, pages: set[int] | None = None, top_k: int = 5):
         self.booklet, self.vote, self.pages, self.top_k = Path(booklet).resolve(), vote, pages, top_k
-        # classify() reads nli.SYSTEM_PROMPT when it is called. The live server process checks nothing
-        # but debate claims, so the prompt is swapped once for the whole process.
-        from .. import nli
-
-        if not hasattr(nli, "PIPELINE_PROMPT"):
-            nli.PIPELINE_PROMPT = nli.SYSTEM_PROMPT   # the prompt as the judges' CLI uses it
-        nli.SYSTEM_PROMPT = VERIFY_PROMPT
 
     def chunks(self, claim: str) -> list[dict]:
-        from ..predict import pdf_pages
-
-        pages = pdf_pages(self.booklet)
+        pages = booklet_pages(self.booklet)
         if self.pages:
             return [page for page in pages if page["page"] in self.pages]
         from ..retrieval import top_pages
@@ -445,49 +564,33 @@ class BookletVerifier:
         return sorted(top_pages(self.booklet, pages, claim, self.vote, self.top_k), key=lambda p: p["page"])
 
     def verify(self, claim: str) -> dict:
-        from ..nli import classify
-        from ..predict import pdf_pages
-
         chunks = self.chunks(claim)
-        pred = classify(claim, chunks, self.vote)   # first check: is the matter addressed, and where
-        sections = page_sections(pdf_pages(self.booklet))
+        sections = page_sections(booklet_pages(self.booklet))
 
-        def cite(item: dict) -> dict:
-            return {"page": item.get("page"), "text": item["text"], "section": sections.get(item.get("page"), "")}
+        def cite(index: int, text: str) -> dict:
+            page = chunks[index].get("page")
+            return {"page": page, "text": text, "section": sections.get(page, "")}
 
-        label, relation, how = "neutral", None, "not addressed"
-        if pred["label"] != "NEUTRAL":
-            if pred["error"]:   # the model's quote is not verbatim in the booklet: look for the sentence again
-                found = find_sentence("same_matter", claim, chunks)
-                evidence = [cite(found)] if found else []
-            else:
-                evidence = [cite({"page": c.get("page"), "text": c["quote"]}) for c in pred["citations"][:2]]
-            if evidence:   # second look: only the claim and the cited sentences decide the label
-                relation = confirm_relation(claim, [item["text"] for item in evidence])
-                label, how = settle(relation, [item["section"] for item in evidence], claim), "second look"
-            if label == "contradiction":   # the booklet prints both sides: is the claim stated somewhere after all?
-                support = find_sentence("supports", claim, chunks)
-                if support and confirm_relation(claim, [support["text"]]) == "SUPPORT":
-                    evidence = [cite(support)]
-                    label, how = settle("SUPPORT", [evidence[0]["section"]], claim), "supporting sentence found"
-        else:
-            evidence = []
-        return {"label": label, "evidence": evidence if label != "neutral" else [], "note": pred["error"],
-                "why": {"first": pred["label"].lower(), "relation": relation, "how": how,
-                        **{k: pred[k] for k in ("claim_says", "passage_says")}}}
+        return judge(claim, chunks, self.vote, VERIFY_PROMPT, cite, lambda item: item["section"])
 
 
 class ClaimChecker:
     """extract(before, segment, after) -> [{"text", "quote"}];  verify(claim) -> {"label", "evidence", "note"}.
+    Both None: cache only, nothing is sent to the model.
+    web_verify(claim): the same for the collected web sources. It is asked only for claims the booklet
+    does not address, and only while web_on is True (the toggle in the page).
 
     follow() is told where playback is and starts the work for transcript segments near it;
     changes() gives the page every claim that is new or has a new status.
     """
 
     def __init__(self, cache: Path, extract: Callable | None, verify: Callable | None,
-                 fingerprint: str | None = None, submit: Callable | None = None):
+                 fingerprint: str | None = None, submit: Callable | None = None,
+                 web_verify: Callable | None = None):
         self.cache = Path(cache)
-        self._extract, self._verify = extract, verify
+        self._extract, self._verify, self._web_verify = extract, verify, web_verify
+        self.web_on = False
+        self._web_running: set[str] = set()
         self._submit = submit or ThreadPoolExecutor(max_workers=3, thread_name_prefix="claims").submit
         self._lock = threading.RLock()
         self.claims: dict[str, dict] = {}
@@ -499,9 +602,11 @@ class ClaimChecker:
                 self._seen.add(record["key"])
                 for claim in record["claims"]:
                     self._put({**claim, "t": record["t"], "start": record["start"], "status": "checking"})
-            elif record.get("type") == "result" and record["id"] in self.claims:
+            elif record.get("type") == "result" and record["id"] in self.claims and record.get("v") == VERIFY_VERSION:
                 self._put({**self.claims[record["id"]], "status": "done", "label": record["label"],
                            "evidence": record["evidence"]})
+            elif record.get("type") == "web" and record["id"] in self.claims and record.get("v") == VERIFY_VERSION:
+                self._put({**self.claims[record["id"]], "web": {"label": record["label"], "evidence": record["evidence"]}})
         self._unchecked = [c["id"] for c in self.claims.values() if c["status"] == "checking"]
         if extract is None:   # cache only: nothing will be checked in this run
             for claim_id in self._unchecked:
@@ -537,6 +642,9 @@ class ClaimChecker:
             unchecked, self._unchecked = self._unchecked, []   # cached claims whose check never finished
             for claim_id in unchecked:
                 self._submit(self._check, claim_id)
+            for claim_id in self._web_pending():          # the toggle was switched on: research the rest
+                self._web_running.add(claim_id)
+                self._submit(self._check_web, claim_id)
             for index, segment in enumerate(segments):
                 if not t - BEHIND <= segment["end"] <= t + AHEAD:
                     continue
@@ -562,7 +670,9 @@ class ClaimChecker:
         Construct the checker with submit=lambda function, *args: function(*args) so that each
         segment's checks run in the same worker and this returns when everything is done."""
         with self._lock:
-            jobs = [(cid,) for cid in self._unchecked]
+            web_jobs = [("web", cid) for cid in self._web_pending()]
+            self._web_running.update(cid for _, cid in web_jobs)
+            jobs = [(cid,) for cid in self._unchecked] + web_jobs
             self._unchecked = []
             for index, segment in enumerate(segments):
                 key = self.segment_key(segment)
@@ -580,6 +690,8 @@ class ClaimChecker:
             nonlocal done
             if len(job) == 1:
                 self._check(job[0])
+            elif job[0] == "web":
+                self._check_web(job[1])
             else:
                 self._process(*job)
             with self._lock:
@@ -623,7 +735,39 @@ class ClaimChecker:
         with self._lock:
             self._put({**claim, "status": "done", "label": result["label"], "evidence": result["evidence"]})
             append_cache(self.cache, {"type": "result", "id": claim_id, "label": result["label"],
-                                      "evidence": result["evidence"]})
+                                      "evidence": result["evidence"], "v": VERIFY_VERSION})
+            research = self._web_on_for(claim_id)
+            if research:
+                self._web_running.add(claim_id)
+        if research:
+            self._check_web(claim_id)
+
+    # ---------------------------------------------------------------- web research
+
+    def _web_on_for(self, claim_id: str) -> bool:
+        claim = self.claims[claim_id]
+        return (self._web_verify is not None and self.web_on and claim.get("status") == "done"
+                and claim.get("label") == "neutral" and "web" not in claim and claim_id not in self._web_running)
+
+    def _web_pending(self) -> list[str]:
+        return [cid for cid in self.claims if self._web_on_for(cid)]
+
+    def _check_web(self, claim_id: str) -> None:
+        with self._lock:
+            claim = self.claims[claim_id]
+            self._put({**claim, "web_status": "checking"})
+        try:
+            result = self._web_verify(claim["text"])
+        except Exception as exc:   # not cached: tried again when the toggle is used next time
+            with self._lock:
+                self._web_running.discard(claim_id)
+                self._put({**self.claims[claim_id], "web_status": "error", "web_note": f"{exc.__class__.__name__}: {exc}"})
+            return
+        with self._lock:
+            self._web_running.discard(claim_id)
+            web = {"label": result["label"], "evidence": result["evidence"]}
+            self._put({**self.claims[claim_id], "web": web, "web_status": "done"})
+            append_cache(self.cache, {"type": "web", "id": claim_id, **web, "v": VERIFY_VERSION})
 
     # ---------------------------------------------------------------- what the page asks for
 
@@ -631,6 +775,19 @@ class ClaimChecker:
         with self._lock:
             changed = sorted((c for c in self.claims.values() if c["rev"] > rev), key=lambda c: c["rev"])
             return {"claims": changed, "rev": self._rev, "claims_error": self.error}
+
+    def counts(self, web: bool = False) -> dict:
+        """Claims per label as the page shows them (web: the web verdict where the booklet is silent)."""
+        counts = {"entailment": 0, "contradiction": 0, "neutral": 0}
+        with self._lock:
+            for claim in self.claims.values():
+                if claim.get("status") != "done":
+                    continue
+                label = claim["label"]
+                if web and label == "neutral" and "web" in claim:
+                    label = claim["web"]["label"]
+                counts[label] = counts.get(label, 0) + 1
+        return counts
 
 
 

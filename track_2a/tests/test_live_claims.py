@@ -8,7 +8,7 @@ from pathlib import Path
 sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "src"))
 
 from claimcheck.live.cachefile import load_cache, video_fingerprint  # noqa: E402
-from claimcheck.live.claims import ClaimChecker, figures_differ, grounded_in, page_sections, parse_claims, parse_pages, quoted_from, settle, usable  # noqa: E402
+from claimcheck.live.claims import ClaimChecker, figures_differ, grounded_in, numbers, scale_slip, page_sections, parse_claims, parse_pages, quoted_from, settle, usable  # noqa: E402
 
 LONG = "Jedes Jahr hat das SECO ungefähr 2500 Gesuche um Export, und einmal kam das vor."
 
@@ -50,11 +50,26 @@ class ParseTest(unittest.TestCase):
         law = {"text": "Die Mehrwertsteuer soll um 0,4 Prozentpunkte erhöht werden.", "quote": "die Mehrwertsteuer soll um 0,4 Prozent erhöht werden"}
         self.assertTrue(usable(law, "Ja, die Mehrwertsteuer soll um 0,4 Prozent erhöht werden, das ist moderat."))
 
+    def test_numbers_and_thousands(self):
+        self.assertEqual(numbers("rund 40'000 oder 37’500, 2,6 Mio."), {"40000", "37500", "2,6"})
+        self.assertEqual(numbers("im Jahr 2025 100 Personen"), {"2025", "100"})
+        self.assertEqual(numbers("netto 40 000 Personen"), {"40000"})
+
+    def test_scale_slip_is_speech_recognition_not_contradiction(self):
+        source = ["Rein rechnerisch könnten bis 2050 jährlich noch gegen 40’000 Personen dazukommen (genau 37’500)."]
+        self.assertTrue(scale_slip("Es könnten jährlich netto 40 Personen zuwandern.", source))
+        self.assertFalse(scale_slip("Es könnten jährlich netto 60'000 Personen zuwandern.", source))
+        self.assertFalse(scale_slip("Die Zuwanderung ist gesunken.", source))
+
     def test_figures_differ(self):
         quote = ["Die Erhöhung verschafft der AHV zusätzliche Einnahmen von schätzungsweise 1,4 Milliarden Franken pro Jahr."]
         self.assertTrue(figures_differ("Mit der Vorlage kommen 1,7 Milliarden Franken in die AHV.", quote))
         self.assertFalse(figures_differ("Mit der Vorlage kommen 1,4 Milliarden Franken in die AHV.", quote))
         self.assertFalse(figures_differ("Die Vorlage verschafft der AHV zusätzliche Einnahmen.", quote))
+        gdp = ["Die Wirtschaftsleistung der Schweiz nahm seit 2002 pro Kopf um 24 Prozent zu."]
+        self.assertFalse(figures_differ("Das BIP pro Kopf ist seit 1999 um 25 bis 26,5 % gestiegen.", gdp))   # another period
+        self.assertTrue(figures_differ("Das BIP pro Kopf ist seit 2002 um 30 % gestiegen.", gdp))
+        self.assertFalse(figures_differ("Das BIP pro Kopf ist seit 2002 gestiegen.", gdp))   # the year is no figure
 
     def test_final_label_is_one_of_the_three(self):
         facts, committee, council = ["Erläuterungen"], ["Argument des Komitees"], ["Argument von Bundesrat und Parlament"]
@@ -198,6 +213,34 @@ class ClaimCheckerTest(unittest.TestCase):
         fresh = self.checker(fingerprint=video_fingerprint(video))
         self.assertEqual(fresh.changes(0)["claims"], [])
         self.assertEqual(len(list(Path(self.tmp.name).glob("video.claims.jsonl.old-*"))), 1)
+
+
+class BookletPagesTest(unittest.TestCase):
+    def test_parallel_workers_read_the_booklet_one_at_a_time(self):
+        """pdfium is not thread-safe: the batch's workers failed with 'Failed to load page'."""
+        import threading
+        import time
+        from unittest.mock import patch
+
+        from claimcheck import predict
+        from claimcheck.live.claims import booklet_pages
+
+        inside, overlaps = [0], []
+
+        def pdf_pages(path):
+            inside[0] += 1
+            overlaps.append(inside[0])
+            time.sleep(0.02)
+            inside[0] -= 1
+            return ({"page": 1, "text": "x"},)
+
+        with patch.object(predict, "pdf_pages", pdf_pages):
+            threads = [threading.Thread(target=booklet_pages, args=(Path("b.pdf"),)) for _ in range(4)]
+            for thread in threads:
+                thread.start()
+            for thread in threads:
+                thread.join()
+        self.assertEqual(max(overlaps), 1)
 
 
 if __name__ == "__main__":

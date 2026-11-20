@@ -1,0 +1,76 @@
+{
+  "arenas": [
+    {
+      "id": "kmg",
+      "title": "Kriegsmaterialgesetz",
+      "vote": "Änderung des Kriegsmaterialgesetzes",
+      "arena_date": "2026-11-06",
+      "vote_date": "2026-11-29",
+      "video": "data/demo/arena_kriegsmaterialgesetz_2026-11-06.mp4",
+      "booklet": "data/booklets/pdfs/BAR_Erlaeuterungen_Nov26_DE_v10.pdf",
+      "pages": "10-11,50-61",
+      "keywords": [
+        "Kriegsmaterial"
+      ],
+      "sources": [
+        "https://www.admin.ch/de/kriegsmaterialgesetz",
+        "https://www.seco.admin.ch/de/abstimmung-kmg",
+        "https://www.admin.ch/de/newnsb/OZlg1hISnipC",
+        "https://swissvotes.ch/vote/693.00",
+        "https://www.srf.ch/news/auf-einen-blick-aenderung-kriegsmaterialgesetz-in-kuerze",
+        "https://www.srf.ch/news/kriegsmaterialgesetz-das-ukraine-paradox-des-neuen-kriegsmaterialgesetzes",
+        "https://www.srf.ch/news/abstimmungs-arena-soll-das-kriegsmaterialgesetz-gelockert-werden",
+        "https://www.srf.ch/news/abstimmungen-vom-29-november-2026"
+      ]
+    },
+    {
+      "id": "ahv",
+      "title": "Finanzierung 13. AHV-Rente",
+      "vote": "Zusatzfinanzierung der AHV durch eine Erhöhung der Mehrwertsteuer",
+      "arena_date": "2026-11-11",
+      "vote_date": "2026-11-29",
+      "video": "data/demo/arena_ahv-finanzierung_2026-11-11.mp4",
+      "booklet": "data/booklets/pdfs/BAR_Erlaeuterungen_Nov26_DE_v10.pdf",
+      "pages": "4-5,12-24",
+      "keywords": [
+        "AHV"
+      ],
+      "sources": [
+        "https://www.admin.ch/de/ahv-zusatzfinanzierung",
+        "https://www.bsv.admin.ch/de/abstimmung-13-ahv-rente",
+        "https://www.admin.ch/de/newnsb/gZ4zhuBYFjyi",
+        "https://www.edi.admin.ch/de/bundesrat-empfiehlt-ja-zur-erhoehung-der-mehrwertsteuer-fuer-die-13-ahv-rente-mk",
+        "https://swissvotes.ch/vote/690.00",
+        "https://www.srf.ch/news/auf-einen-blick-finanzierung-der-13-ahv-rente-in-kuerze",
+        "https://www.srf.ch/news/abstimmung-finanzierung-13-ahv"
+      ]
+    },
+    {
+      "id": "10mio",
+      "title": "Keine 10-Millionen-Schweiz",
+      "vote": "Volksinitiative «Keine 10-Millionen-Schweiz! (Nachhaltigkeitsinitiative)»",
+      "arena_date": "2026-05-14",
+      "vote_date": "2026-06-14",
+      "video": "data/demo/arena_nachhaltigkeitsinitiative_2026-05-13.mp4",
+      "booklet": "data/booklets/pdfs/2026-06-14_erlaeuterungen_des_bundesrates__8228e5139d7e30b75021bb36d9e3729f92dcc3bf49c941605f4031ca3ea0aa99.pdf",
+      "pages": "4-5,8-22",
+      "keywords": [
+        "10-Millionen",
+        "Zuwanderung",
+        "Nachhaltigkeitsinitiative",
+        "Wanderungssaldo"
+      ],
+      "sources": [
+        "https://www.admin.ch/de/nachhaltigkeitsinitiative",
+        "https://www.ejpd.admin.ch/de/bundesrat-lehnt-volksinitiative-keine-10-millionen-schweiz-ab",
+        "https://swissvotes.ch/vote/686.00",
+        "https://www.bfs.admin.ch/bfs/de/home/statistiken/bevoelkerung/migration-integration/internationale-wanderung.html",
+        "https://www.bfs.admin.ch/bfs/de/home/statistiken/bevoelkerung/stand-entwicklung/komponenten-bevoelkerungsentwicklung.html",
+        "https://www.bafu.admin.ch/de/newnsb/eHho7S2A2revQdhyPSYmt",
+        "https://www.srf.ch/news/schweiz/auf-einen-blick-initiative-keine-10-mio-schweiz-in-kuerze",
+        "https://www.srf.ch/news/schweiz/abstimmung-vom-14-juni-initiative-keine-10-mio-schweiz-sechs-argumente-im-faktencheck",
+        "https://www.srf.ch/news/abstimmung-initiative-keine-10-mio-schweiz-vom-14-6-2026"
+      ]
+    }
+  ]
+}

@@ -1,18 +1,21 @@
-"""Live demo: play a debate video, show live subtitles under it and checked claims beside it.
+"""Live demo: pick a debate on the start screen, play it with live subtitles, and see its claims
+checked against the voting booklet (and, with the toggle, against collected web sources).
 
     uv run --with fastapi --with uvicorn --with azure-cognitiveservices-speech --with imageio-ffmpeg \
-        python -m claimcheck.live data/demo/arena_kriegsmaterialgesetz_2026-11-06.mp4 \
-        --booklet data/booklets/pdfs/BAR_Erlaeuterungen_Nov26_DE_v10.pdf --pages 10-11,50-61 \
-        --vote "Änderung des Kriegsmaterialgesetzes"
+        python -m claimcheck.live
 
-Opens http://localhost:8766. While the video plays, its audio goes to Azure Speech (de-CH) and the
-text appears under the picture; Apertus picks checkable claims out of it and checks each one against
-the booklet pages. Transcript and claims are cached next to the video (<video>.subtitles.jsonl,
-<video>.claims.jsonl), so a stretch that was played once costs nothing the second time.
---offline: caches only, no speech service and no model calls. Without --booklet: subtitles only.
+Reads the arenas from data/demo/arenas.json (see arenas.py) and opens http://localhost:8766.
+While a video plays, its audio goes to Azure Speech (de-CH) and the text appears under the picture;
+Apertus picks checkable claims out of it and checks each one against the booklet pages. Transcript,
+claims and web pages are cached next to each video, so a stretch that was played once costs nothing
+the second time. Prepare a whole arena without watching it: python -m claimcheck.live.batch <id>.
 
-Prompt development: with the server running, GET /api/dev/claims?start=0&end=600 runs extraction and
-check over the cached transcript with the prompts as they are on disk (no restart, nothing cached).
+--offline: caches only, no speech service and no model calls.
+A single video without a config file still works:
+    python -m claimcheck.live VIDEO --booklet PDF --pages 10-11,50-61 --vote "..."
+
+Prompt development: GET /arena/<id>/api/dev/claims?start=0&end=600 runs extraction and check over
+the cached transcript with the prompts as they are on disk (no restart, nothing cached).
 """
 
 import argparse
@@ -33,69 +36,91 @@ def load_env(path: Path) -> None:
             os.environ.setdefault(name.strip(), value.strip().strip('"').strip("'"))
 
 
+def build_runtime(arena, language: str, offline: bool, log=print):
+    """Subtitles, claim checker and verifiers for one arena (see server.Runtime)."""
+    from .cachefile import video_fingerprint
+    from .claims import CLAIMS_VERSION, BookletVerifier, ClaimChecker, extract_claims, parse_pages
+    from .research import WebIndex, WebVerifier, load_passages
+    from .server import Runtime
+    from .subtitles import Subtitles
+
+    video = arena.video
+    fingerprint = video_fingerprint(video)
+    start_transcriber = None
+    if not offline:
+        from .transcribe import AzureTranscriber
+
+        def start_transcriber(start, emit):
+            return AzureTranscriber(video, start, emit, language)
+
+    subtitles = Subtitles(arena.subtitles_cache, start_transcriber, fingerprint=fingerprint)
+    passages = load_passages(arena.web_cache)
+    web_pages = len({p["url"] for p in passages})
+    checker, dev = None, None
+    if arena.booklet:
+        if not arena.booklet.exists():
+            raise FileNotFoundError(f"{arena.id}: booklet not found: {arena.booklet}")
+        extract = verify = web_verify = None
+        if not offline:
+            verify = BookletVerifier(arena.booklet, arena.vote, parse_pages(arena.pages)).verify
+            web = WebVerifier(WebIndex(passages), arena.vote) if passages else None
+            web_verify = web.verify if web else None
+
+            def extract(before, segment, after):
+                return extract_claims(arena.vote, before, segment, after)
+
+            dev = {"booklet": arena.booklet, "vote": arena.vote, "pages": parse_pages(arena.pages), "web": web}
+        checker = ClaimChecker(arena.claims_cache, extract, verify, fingerprint=f"{fingerprint}-{CLAIMS_VERSION}",
+                               web_verify=web_verify)
+    log(f"  {arena.id:8} {arena.title}: {len(subtitles.finals)} segments, "
+        f"{len(checker.claims) if checker else 'no'} claims, {web_pages} web pages cached")
+    return Runtime(arena, subtitles, checker, web_pages, dev)
+
+
 def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
-    parser.add_argument("video", type=Path)
+    parser.add_argument("video", type=Path, nargs="?", help="a single video instead of the arenas config")
+    parser.add_argument("--config", type=Path, default=None, help="arenas config (default data/demo/arenas.json)")
     parser.add_argument("--port", type=int, default=8766)
     parser.add_argument("--language", default="de-CH")
-    parser.add_argument("--booklet", type=Path, help="voting booklet PDF; enables the claim check")
-    parser.add_argument("--pages", help="pages of the proposal in the booklet, e.g. 10-11,50-61")
-    parser.add_argument("--vote", default="", help="title of the proposal")
+    parser.add_argument("--booklet", type=Path, help="single video: voting booklet PDF")
+    parser.add_argument("--pages", help="single video: pages of the proposal in the booklet, e.g. 10-11,50-61")
+    parser.add_argument("--vote", default="", help="single video: title of the proposal")
     parser.add_argument("--model", default="swiss-ai/Apertus-v1.5-70B",
                         help="Apertus model for claim extraction and checking (the 8B misjudges spoken claims)")
     parser.add_argument("--offline", action="store_true", help="caches only: no speech service, no model calls")
     parser.add_argument("--no-browser", action="store_true")
     args = parser.parse_args()
-    video = args.video.resolve()
-    if not video.exists():
-        parser.error(f"video not found: {video}")
     load_env(ROOT / ".env")
     os.environ["LLM_NAME"] = args.model   # over .env: the demo was tuned with the 70B model
 
     import uvicorn
 
-    from .cachefile import video_fingerprint
-    from .claims import CLAIMS_VERSION, BookletVerifier, ClaimChecker, extract_claims, parse_pages
+    from .arenas import DEFAULT_CONFIG, Arena, load_arenas
+    from .runtime import build_runtime
     from .server import create_app
-    from .subtitles import Subtitles
 
-    fingerprint = video_fingerprint(video)
-
-    start_transcriber = None
-    if not args.offline:
-        from .transcribe import AzureTranscriber
-
-        def start_transcriber(start, emit):
-            return AzureTranscriber(video, start, emit, args.language)
-
-    subtitles = Subtitles(video.with_suffix(".subtitles.jsonl"), start_transcriber, fingerprint=fingerprint)
-
-    checker = None
-    if args.booklet:
-        if not args.booklet.exists():
-            parser.error(f"booklet not found: {args.booklet}")
-        extract = verify = None
-        if not args.offline:
-            verifier = BookletVerifier(args.booklet, args.vote, parse_pages(args.pages))
-            print(f"booklet: {args.booklet.name}, {len(verifier.chunks(''))} pages per check"
-                  if args.pages else f"booklet: {args.booklet.name}, retrieval over all pages", flush=True)
-            verify = verifier.verify
-
-            def extract(before, segment, after):
-                return extract_claims(args.vote, before, segment, after)
-
-        checker = ClaimChecker(video.with_suffix(".claims.jsonl"), extract, verify,
-                               fingerprint=f"{fingerprint}-{CLAIMS_VERSION}")
-
+    if args.video:
+        video = args.video.resolve()
+        arenas = [Arena(id="video", title=args.vote or video.stem, vote=args.vote, video=video,
+                        booklet=args.booklet.resolve() if args.booklet else None, pages=args.pages)]
+    else:
+        config = args.config or DEFAULT_CONFIG
+        if not config.exists():
+            parser.error(f"no arenas config at {config}: create it (see arenas.example.json) or pass a VIDEO")
+        arenas = load_arenas(config)
+    missing = [a.id for a in arenas if not a.video.exists()]
+    if missing:
+        print(f"videos not found, left out: {', '.join(missing)}", flush=True)
+    print(f"{'cache only' if args.offline else 'live: Azure ' + args.language + ', ' + args.model}", flush=True)
+    runtimes = [build_runtime(a, args.language, args.offline) for a in arenas if a.video.exists()]
     url = f"http://localhost:{args.port}"
-    print(f"{url}   ({video.name}, {len(subtitles.finals)} cached segments, "
-          f"{len(checker.claims) if checker else 'no'} cached claims, "
-          f"{'cache only' if args.offline else 'live: Azure ' + args.language})", flush=True)
+    if len(runtimes) == 1 and args.video:
+        url += f"/arena/{runtimes[0].arena.id}/"
+    print(url, flush=True)
     if not args.no_browser:
         threading.Timer(1.0, webbrowser.open, [url]).start()
-    booklet = ({"path": args.booklet, "vote": args.vote, "pages": parse_pages(args.pages)}
-               if args.booklet and not args.offline else None)
-    uvicorn.run(create_app(video, subtitles, checker, booklet), host="127.0.0.1", port=args.port, log_level="warning")
+    uvicorn.run(create_app(runtimes), host="127.0.0.1", port=args.port, log_level="warning")
     return 0
 
 

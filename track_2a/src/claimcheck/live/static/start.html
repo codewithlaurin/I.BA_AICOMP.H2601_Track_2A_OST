@@ -1,0 +1,168 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>claimcheck live</title>
+<style>
+  :root { --bg:#101418; --panel:#181e24; --panel2:#1f262e; --line:#2a323b; --text:#e8edf2; --muted:#8b98a5;
+          --ok:#3fb97f; --ok-bg:#12281f; --nok:#ef6461; --nok-bg:#2d1717; --accent:#4cc38a; --web:#8fc1f5; }
+  * { box-sizing:border-box; }
+  body { margin:0; background:var(--bg); color:var(--text); font:16px/1.45 system-ui, "Segoe UI", sans-serif; }
+  main { max-width:1240px; margin:0 auto; padding:56px 28px 64px; }
+
+  .hero { display:grid; grid-template-columns:minmax(0, 1fr) auto; gap:32px; align-items:end; margin-bottom:40px; }
+  .eyebrow { font-size:13px; font-weight:600; letter-spacing:.12em; text-transform:uppercase; color:var(--accent); margin:0 0 12px; }
+  h1 { font-size:44px; line-height:1.08; letter-spacing:-.02em; margin:0 0 14px; font-weight:700; max-width:16ch; }
+  .lead { color:#b8c4cf; font-size:18px; margin:0; max-width:62ch; }
+  .legend { display:flex; flex-direction:column; gap:8px; font-size:14px; color:var(--muted); padding:16px 18px;
+            border:1px solid var(--line); border-radius:12px; background:var(--panel); min-width:250px; }
+  .legend b { font-weight:700; }
+  .dot { display:inline-block; width:9px; height:9px; border-radius:50%; margin-right:9px; }
+
+  h2 { font-size:13px; font-weight:600; color:var(--muted); text-transform:uppercase; letter-spacing:.08em; margin:0 0 14px; }
+  .grid { display:grid; grid-template-columns:repeat(auto-fill, minmax(340px, 1fr)); gap:22px; }
+
+  .card { display:flex; flex-direction:column; background:var(--panel); border:1px solid var(--line); border-radius:14px;
+          overflow:hidden; color:inherit; text-decoration:none; transition:transform .15s ease, border-color .15s ease, box-shadow .15s ease; }
+  .card:hover, .card:focus-visible { transform:translateY(-3px); border-color:#3d4a57; box-shadow:0 12px 32px rgba(0,0,0,.35); outline:none; }
+  .poster { position:relative; aspect-ratio:16/9; background:#0b0e11 center/cover no-repeat; }
+  .poster::after { content:""; position:absolute; inset:0; background:linear-gradient(180deg, rgba(16,20,24,0) 45%, rgba(16,20,24,.92)); }
+  .poster .play { position:absolute; left:50%; top:45%; width:58px; height:58px; margin:-29px 0 0 -29px; border-radius:50%;
+                  background:rgba(16,20,24,.65); border:1px solid rgba(255,255,255,.25); z-index:1; opacity:0; transition:opacity .15s; }
+  .poster .play::before { content:""; position:absolute; left:23px; top:18px; border-style:solid; border-width:11px 0 11px 17px;
+                          border-color:transparent transparent transparent #fff; }
+  .card:hover .play { opacity:1; }
+  .chip { position:absolute; z-index:1; left:14px; bottom:12px; font-size:12px; font-weight:600; letter-spacing:.03em;
+          padding:4px 10px; border-radius:999px; background:rgba(16,20,24,.8); border:1px solid rgba(255,255,255,.15); }
+  .duration { left:auto; right:14px; color:#c5cfd9; font-variant-numeric:tabular-nums; }
+
+  .body { padding:16px 18px 18px; display:flex; flex-direction:column; gap:12px; flex:1; }
+  .title { font-size:22px; font-weight:700; letter-spacing:-.01em; margin:0; }
+  .vote { color:var(--muted); font-size:14px; margin:-6px 0 0; }
+  .meta { color:var(--muted); font-size:13px; }
+
+  .progress { display:flex; flex-direction:column; gap:6px; }
+  .bar { height:6px; border-radius:999px; background:var(--panel2); overflow:hidden; }
+  .bar span { display:block; height:100%; background:var(--accent); border-radius:999px; }
+  .progress .meta { display:flex; justify-content:space-between; }
+
+  .counts { display:flex; gap:8px; flex-wrap:wrap; }
+  .count { font-size:13px; font-weight:600; padding:4px 10px; border-radius:999px; border:1px solid var(--line); color:var(--muted); }
+  .count.ok { color:var(--ok); background:var(--ok-bg); border-color:transparent; }
+  .count.nok { color:var(--nok); background:var(--nok-bg); border-color:transparent; }
+
+  .foot { margin-top:auto; display:flex; justify-content:space-between; align-items:center; padding-top:6px; }
+  .web { font-size:13px; color:var(--muted); }
+  .web.yes { color:var(--web); }
+  .open { font-size:14px; font-weight:700; color:var(--text); }
+  .card:hover .open { color:var(--accent); }
+
+  .empty, .error { color:var(--muted); padding:28px; border:1px dashed var(--line); border-radius:14px; }
+  .error { color:var(--nok); border-color:var(--nok-bg); }
+  footer { margin-top:48px; color:var(--muted); font-size:13px; max-width:90ch; }
+  @media (max-width: 760px) { .hero { grid-template-columns:1fr; } h1 { font-size:34px; } }
+</style>
+</head>
+<body>
+<main>
+  <section class="hero">
+    <div>
+      <p class="eyebrow">claimcheck live · Apertus</p>
+      <h1>Abstimmungsdebatten live geprüft</h1>
+      <p class="lead">Wähle eine Abstimmungs-Arena. Während das Video läuft, werden prüfbare Aussagen erkannt und
+        mit den Erläuterungen des Bundesrates abgeglichen, auf Wunsch zusätzlich mit vertrauenswürdigen Web-Quellen.</p>
+    </div>
+    <div class="legend" aria-label="Labels">
+      <span><span class="dot" style="background:var(--ok)"></span><b style="color:var(--ok)">Belegt</b> · Entailment</span>
+      <span><span class="dot" style="background:var(--nok)"></span><b style="color:var(--nok)">Widerspruch</b> · Contradiction</span>
+      <span><span class="dot" style="background:var(--muted)"></span><b>Nicht im Büchlein</b> · Neutral</span>
+    </div>
+  </section>
+
+  <h2>Arenen</h2>
+  <div class="grid" id="grid"><div class="empty">Arenen werden geladen …</div></div>
+
+  <footer>Das Abstimmungsbüchlein ist die Referenz: «Belegt» und «Widerspruch» beziehen sich darauf, was die Erläuterungen
+    des Bundesrates sagen, nicht auf die Wahrheit einer Aussage. Untertitel: Azure Speech (de-CH), Claims und Prüfung: Apertus.</footer>
+</main>
+<script>
+const grid = document.getElementById('grid');
+
+function element(tag, className, text) {
+  const node = document.createElement(tag);
+  if (className) node.className = className;
+  if (text !== undefined) node.textContent = text;
+  return node;
+}
+
+function date(iso) {
+  if (!iso) return '';
+  const [y, m, d] = iso.split('-').map(Number);
+  return new Date(y, m - 1, d).toLocaleDateString('de-CH', { day: 'numeric', month: 'long', year: 'numeric' });
+}
+
+function minutes(seconds) {
+  if (seconds == null) return '–';
+  const m = Math.round(seconds / 60);
+  return m >= 60 ? `${Math.floor(m / 60)} h ${String(m % 60).padStart(2, '0')} min` : `${m} min`;
+}
+
+function card(arena) {
+  const link = element('a', 'card');
+  link.href = `/arena/${encodeURIComponent(arena.id)}/`;
+
+  const poster = element('div', 'poster');
+  poster.style.backgroundImage = `url("/arena/${encodeURIComponent(arena.id)}/poster.jpg")`;
+  poster.append(element('span', 'play'));
+  if (arena.vote_date) poster.append(element('span', 'chip', 'Abstimmung ' + date(arena.vote_date)));
+  if (arena.duration) poster.append(element('span', 'chip duration', minutes(arena.duration)));
+  link.append(poster);
+
+  const body = element('div', 'body');
+  body.append(element('p', 'title', arena.title));
+  if (arena.vote && arena.vote !== arena.title) body.append(element('p', 'vote', arena.vote));
+  if (arena.arena_date) body.append(element('div', 'meta', 'Abstimmungs-Arena vom ' + date(arena.arena_date)));
+
+  const progress = element('div', 'progress');
+  const share = arena.duration ? Math.min(1, arena.transcribed / arena.duration) : 0;
+  const bar = element('div', 'bar');
+  const fill = element('span');
+  fill.style.width = (share * 100).toFixed(1) + '%';
+  bar.append(fill);
+  const label = element('div', 'meta');
+  label.append(element('span', '', share >= 0.995 ? 'Vollständig vorbereitet' : `${minutes(arena.transcribed)} transkribiert`),
+               element('span', '', Math.round(share * 100) + ' %'));
+  progress.append(bar, label);
+  body.append(progress);
+
+  if (arena.claims) {
+    const counts = element('div', 'counts');
+    const c = arena.claims;
+    if (c.entailment + c.contradiction + c.neutral === 0) {
+      counts.append(element('span', 'count', 'Noch keine Claims geprüft'));
+    } else {
+      counts.append(element('span', 'count ok', `✓ ${c.entailment} belegt`),
+                    element('span', 'count nok', `✕ ${c.contradiction} Widerspruch`),
+                    element('span', 'count', `${c.neutral} nicht im Büchlein`));
+    }
+    body.append(counts);
+  }
+
+  const foot = element('div', 'foot');
+  foot.append(element('span', 'web' + (arena.web_pages ? ' yes' : ''),
+                      arena.web_pages ? `Web-Recherche · ${arena.web_pages} Seiten` : 'Keine Web-Quellen gesammelt'),
+              element('span', 'open', 'Öffnen →'));
+  body.append(foot);
+  link.append(body);
+  return link;
+}
+
+fetch('/api/arenas').then(response => response.json()).then(arenas => {
+  grid.replaceChildren(...(arenas.length ? arenas.map(card) : [element('div', 'empty', 'Keine Arena konfiguriert (data/demo/arenas.json).')]));
+}).catch(error => {
+  grid.replaceChildren(element('div', 'error', 'Server nicht erreichbar: ' + error));
+});
+</script>
+</body>
+</html>

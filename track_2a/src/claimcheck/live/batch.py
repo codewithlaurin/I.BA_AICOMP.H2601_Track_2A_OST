@@ -1,22 +1,20 @@
-"""Process a whole debate video in one go, without watching it: transcribe what is not transcribed
-yet (faster than real time, several stretches in parallel), then extract and check all claims.
+"""Prepare whole arenas without watching them: collect the web sources, transcribe what is not
+transcribed yet (faster than real time, several stretches in parallel), then extract and check all
+claims, against the booklet and, where the booklet is silent, against the web sources.
 
-    uv run --with azure-cognitiveservices-speech --with imageio-ffmpeg --with rapidfuzz \
-        python -m claimcheck.live.batch data/demo/arena_nachhaltigkeitsinitiative_2026-05-13.mp4 \
-        --booklet data/booklets/pdfs/2026-06-14_....pdf --pages 4-5,8-22 \
-        --vote "Volksinitiative «Keine 10-Millionen-Schweiz! (Nachhaltigkeitsinitiative)»"
+    uv run --with azure-cognitiveservices-speech --with imageio-ffmpeg --with trafilatura \
+        python -m claimcheck.live.batch kmg ahv          # arena ids from data/demo/arenas.json
+    ... python -m claimcheck.live.batch --all
 
-Writes the same caches as the live demo (<video>.subtitles.jsonl, <video>.claims.jsonl), so the demo
-afterwards plays everything from the cache, and a readable list of all claims (<video>.claims.txt).
-Running it again only does what is missing.
+Writes the same caches as the live demo, so the demo afterwards plays everything from the cache, and
+a readable list of all claims per arena (<video>.claims.txt). Running it again only does what is
+missing; --refresh-web fetches the web sources again, --no-web skips them.
 """
 
 from __future__ import annotations
 
 import argparse
 import os
-import re
-import subprocess
 import sys
 import threading
 import time
@@ -24,21 +22,13 @@ from concurrent.futures import ThreadPoolExecutor
 from pathlib import Path
 
 from .__main__ import ROOT, load_env
+from .arenas import DEFAULT_CONFIG, load_arenas, video_duration
+from .runtime import build_runtime
 
 CHUNK = 600.0   # seconds of video per transcription job
-LABELS = {"entailment": "BELEGT", "contradiction": "WIDERSPRUCH", "neutral": "nicht im Büchlein"}
-
-
-def video_duration(video: Path) -> float:
-    import imageio_ffmpeg
-
-    out = subprocess.run([imageio_ffmpeg.get_ffmpeg_exe(), "-i", str(video)], capture_output=True, text=True,
-                         encoding="utf-8", errors="replace").stderr
-    match = re.search(r"Duration: (\d+):(\d+):(\d+(?:\.\d+)?)", out)
-    if not match:
-        raise RuntimeError(f"cannot read the duration of {video}")
-    hours, minutes, seconds = match.groups()
-    return int(hours) * 3600 + int(minutes) * 60 + float(seconds)
+RETRIES = 3     # attempts per stretch after the first one
+RETRY_WAIT = 10 # seconds, growing with each attempt
+LABELS = {"entailment": "BELEGT", "contradiction": "WIDERSPRUCH", "neutral": "nicht belegt"}
 
 
 def transcribe_stretch(video: Path, start: float, duration: float, language: str) -> list[dict]:
@@ -70,62 +60,90 @@ def clock(seconds: float) -> str:
     return f"{seconds // 3600}:{seconds % 3600 // 60:02d}:{seconds % 60:02d}"
 
 
-def main() -> int:
-    parser = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
-    parser.add_argument("video", type=Path)
-    parser.add_argument("--booklet", type=Path, required=True)
-    parser.add_argument("--pages", help="pages of the proposal in the booklet, e.g. 4-5,8-22")
-    parser.add_argument("--vote", default="")
-    parser.add_argument("--language", default="de-CH")
-    parser.add_argument("--model", default="swiss-ai/Apertus-v1.5-70B")
-    parser.add_argument("--parallel", type=int, default=3, help="transcription jobs at the same time")
-    args = parser.parse_args()
-    video = args.video.resolve()
-    if not video.exists() or not args.booklet.exists():
-        parser.error("video or booklet not found")
-    load_env(ROOT / ".env")
-    os.environ["LLM_NAME"] = args.model
+def report(arena, checker) -> Path:
+    claims = sorted(checker.claims.values(), key=lambda c: c["start"])
+    lines, counts = [], {}
+    for claim in claims:
+        label = LABELS.get(claim.get("label"), claim["status"])
+        web = claim.get("web")
+        if claim.get("label") == "neutral" and web and web["label"] != "neutral":
+            label = f"{LABELS[web['label']]} (Web)"
+        counts[label] = counts.get(label, 0) + 1
+        lines.append(f"[{clock(claim['start'])}] {label}: {claim['text']}")
+        if claim["status"] == "error" and claim.get("note"):
+            lines.append(f"      Fehler: {claim['note']}")
+        for item in claim.get("evidence") or []:
+            lines.append(f"      Büchlein S. {item['page']}: {' '.join(item['text'].split())}")
+        for item in (web or {}).get("evidence") or []:
+            lines.append(f"      {item['source']} ({item['url']}): {' '.join(item['text'].split())}")
+    summary = ", ".join(f"{n} {label}" for label, n in sorted(counts.items(), key=lambda kv: -kv[1]))
+    path = arena.video.with_suffix(".claims.txt")
+    path.write_text(f"{arena.title}: {len(claims)} Claims ({summary})\n\n" + "\n".join(lines) + "\n", encoding="utf-8")
+    print(f"  {len(claims)} claims: {summary}\n  -> {path}", flush=True)
+    return path
 
-    from .cachefile import video_fingerprint
-    from .claims import CLAIMS_VERSION, BookletVerifier, ClaimChecker, extract_claims, parse_pages
-    from .subtitles import Subtitles
 
-    fingerprint = video_fingerprint(video)
-    subtitles = Subtitles(video.with_suffix(".subtitles.jsonl"), None, fingerprint=fingerprint)
+def prepare(arena, args) -> None:
+    print(f"\n=== {arena.id}: {arena.title}", flush=True)
 
-    # ---- 1. transcription
-    duration = video_duration(video)
+    # ---- 1. web sources
+    if not args.no_web and arena.sources and (args.refresh_web or not arena.web_cache.exists()):
+        from .research import collect
+
+        print(f"collecting web sources ({len(arena.sources)} seeds) ...", flush=True)
+        pages = collect(arena.sources, arena.keywords, arena.web_cache)
+        print(f"  {pages} pages -> {arena.web_cache.name}", flush=True)
+
+    runtime = build_runtime(arena, args.language, offline=False)
+    subtitles, checker = runtime.subtitles, runtime.checker
+
+    # ---- 2. transcription
+    duration = video_duration(arena.video)
     jobs = []
     for a, b in subtitles.gaps(duration):
         while a < b:
             jobs.append((a, min(a + CHUNK, b)))
             a += CHUNK
-    todo = sum(b - a for a, b in jobs)
-    print(f"{video.name}: {clock(duration)}, {len(subtitles.finals)} segments cached, "
-          f"{clock(todo)} to transcribe in {len(jobs)} parts", flush=True)
+    print(f"{clock(duration)} video, {clock(sum(b - a for a, b in jobs))} to transcribe in {len(jobs)} parts",
+          flush=True)
     began, finished = time.perf_counter(), 0
+
+    failed = []
 
     def transcribe(job):
         nonlocal finished
         a, b = job
-        finals = transcribe_stretch(video, a, b - a, args.language)
+        for attempt in range(RETRIES + 1):
+            try:
+                finals = transcribe_stretch(arena.video, a, b - a, args.language)
+                break
+            except Exception as exc:   # network hiccups (DNS, Wi-Fi): wait and try the stretch again
+                if attempt == RETRIES:
+                    failed.append(job)
+                    print(f"  FAILED {clock(a)}-{clock(b)}: {str(exc).splitlines()[0]}", flush=True)
+                    return
+                print(f"  retry {clock(a)}-{clock(b)} in {RETRY_WAIT * (attempt + 1)} s: {str(exc).splitlines()[0][:120]}",
+                      flush=True)
+                time.sleep(RETRY_WAIT * (attempt + 1))
         subtitles.add_transcribed(a, b, finals)
         finished += 1
         print(f"  transcribed {clock(a)}-{clock(b)} ({len(finals)} segments) "
               f"[{finished}/{len(jobs)}, {time.perf_counter() - began:.0f} s]", flush=True)
 
     with ThreadPoolExecutor(max_workers=max(1, args.parallel)) as pool:
-        for future in [pool.submit(transcribe, job) for job in jobs]:
-            future.result()
+        list(pool.map(transcribe, jobs))
+    if failed:   # what is transcribed is kept; the claims below are checked for it
+        print(f"  {len(failed)} of {len(jobs)} parts not transcribed: run the batch again later", flush=True)
 
-    # ---- 2. claims
-    verifier = BookletVerifier(args.booklet, args.vote, parse_pages(args.pages))
-    checker = ClaimChecker(video.with_suffix(".claims.jsonl"),
-                           lambda before, segment, after: extract_claims(args.vote, before, segment, after),
-                           verifier.verify, fingerprint=f"{fingerprint}-{CLAIMS_VERSION}",
-                           submit=lambda function, *a: function(*a))
+    # ---- 3. claims
+    if checker is None:
+        print("no booklet configured: claims skipped", flush=True)
+        return
+    checker._submit = lambda function, *a: function(*a)   # each segment's checks in the same worker
+    checker.web_on = not args.no_web and runtime.web_pages > 0
     segments = subtitles.snapshot()
-    print(f"checking claims in {len(segments)} segments with {args.model} ...", flush=True)
+    print(f"checking claims in {len(segments)} segments"
+          f"{' (web research on)' if checker.web_on else ''} ...", flush=True)
     began = time.perf_counter()
 
     def progress(done: int, total: int) -> None:
@@ -133,20 +151,32 @@ def main() -> int:
             print(f"  {done}/{total} [{time.perf_counter() - began:.0f} s]", flush=True)
 
     checker.process_all(segments, progress=progress)
+    report(arena, checker)
 
-    # ---- 3. report
-    claims = sorted(checker.claims.values(), key=lambda c: c["start"])
-    lines, counts = [], {}
-    for claim in claims:
-        label = LABELS.get(claim.get("label"), claim["status"])
-        counts[label] = counts.get(label, 0) + 1
-        lines.append(f"[{clock(claim['start'])}] {label}: {claim['text']}")
-        for item in claim.get("evidence") or []:
-            lines.append(f"      S. {item['page']}: {' '.join(item['text'].split())}")
-    summary = ", ".join(f"{n} {label}" for label, n in sorted(counts.items(), key=lambda kv: -kv[1]))
-    report = video.with_suffix(".claims.txt")
-    report.write_text(f"{video.name}: {len(claims)} Claims ({summary})\n\n" + "\n".join(lines) + "\n", encoding="utf-8")
-    print(f"\n{len(claims)} claims: {summary}\n-> {report}", flush=True)
+
+def main() -> int:
+    parser = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
+    parser.add_argument("arenas", nargs="*", help="arena ids from the config")
+    parser.add_argument("--all", action="store_true")
+    parser.add_argument("--config", type=Path, default=DEFAULT_CONFIG)
+    parser.add_argument("--language", default="de-CH")
+    parser.add_argument("--model", default="swiss-ai/Apertus-v1.5-70B")
+    parser.add_argument("--parallel", type=int, default=3, help="transcription jobs at the same time")
+    parser.add_argument("--no-web", action="store_true", help="no web research")
+    parser.add_argument("--refresh-web", action="store_true", help="fetch the web sources again")
+    args = parser.parse_args()
+    load_env(ROOT / ".env")
+    os.environ["LLM_NAME"] = args.model
+    arenas = load_arenas(args.config)
+    chosen = arenas if args.all else [a for a in arenas if a.id in args.arenas]
+    unknown = set(args.arenas) - {a.id for a in arenas}
+    if unknown or not chosen:
+        parser.error(f"choose arenas by id ({', '.join(a.id for a in arenas)}) or --all")
+    for arena in chosen:
+        if not arena.video.exists():
+            print(f"\n=== {arena.id}: video not found: {arena.video}", flush=True)
+            continue
+        prepare(arena, args)
     return 0
 
 
