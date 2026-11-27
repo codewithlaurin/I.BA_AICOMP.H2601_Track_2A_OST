@@ -18,9 +18,12 @@ from concurrent.futures import ThreadPoolExecutor
 from pathlib import Path
 from typing import Callable
 
+from . import trace
 from .cachefile import append_cache, load_cache
 
 MAX_CLAIMS_PER_SEGMENT = 2
+BEFORE_CHARS = 1500      # transcript context sent with a segment: the end of what came before ...
+AFTER_CHARS = 600        # ... and the beginning of what follows
 MIN_SEGMENT_CHARS = 60   # "In die Runde." and other fragments carry no claim; no call for them
 AHEAD = 15.0             # prepare claims for cached transcript this many seconds ahead of playback
 BEHIND = 60.0            # ... and not for stretches the viewer skipped long ago
@@ -251,20 +254,20 @@ def page_sections(pages) -> dict[int, str]:
 
 def confirm_relation(claim: str, quotes: list[str]) -> str | None:
     """SUPPORT / CONFLICT / UNRELATED for the claim against the cited sentences; None when unparsable."""
-    from ..nli import complete
-
     user = json.dumps({"A": claim, "B": [quote[:1500] for quote in quotes]}, ensure_ascii=False)
-    match = re.search(r'"relation"\s*:\s*"?\s*(SUPPORT|CONFLICT|UNRELATED)', complete(CONFIRM_PROMPT, user, 150)["text"])
+    answer = trace.call("Zweiter Blick", CONFIRM_PROMPT, user, 150)["text"]
+    match = re.search(r'"relation"\s*:\s*"?\s*(SUPPORT|CONFLICT|UNRELATED)', answer)
     return match.group(1) if match else None
 
 
 def find_sentence(task: str, claim: str, chunks: list[dict]) -> dict | None:
     """One verbatim booklet sentence for the claim ({"page", "text"}), or None. task: same_matter | supports."""
-    from ..nli import complete, locate_quote
+    from ..nli import locate_quote
 
     user = json.dumps({"task": task, "claim": claim, "chunks": [{"chunk": i, "page": c.get("page"), "text": c["text"]}
                                                                  for i, c in enumerate(chunks)]}, ensure_ascii=False)
-    text = complete(FIND_PROMPT, user, 300)["text"]
+    name = {"same_matter": "Satzsuche: gleiche Sache", "supports": "Satzsuche: stützender Satz"}.get(task, task)
+    text = trace.call(name, FIND_PROMPT, user, 300)["text"]
     match = re.search(r'"chunk"\s*:\s*(\d+)\s*,\s*"quote"\s*:\s*"((?:[^"\\]|\\.)*)"', text)
     if not match:
         return None
@@ -290,6 +293,9 @@ def figures_differ(claim: str, quotes: list[str]) -> bool:
         return False
     claimed -= claimed_years
     cited = {n for n in cited if not YEAR.fullmatch(n)}
+    # a whole number is the rounded or cut-off form of a decimal with the same whole part ("9 Millionen"
+    # and "9,5 Millionen": speech recognition drops the "Komma fünf"; "70 Prozent" and "70,2 Prozent")
+    cited |= {n.split(",")[0] for n in cited}
     return bool(claimed) and bool(cited) and not claimed <= cited
 
 
@@ -423,11 +429,9 @@ def usable(claim: dict, segment: str) -> bool:
 
 def extract_statements(vote: str, before: str, segment: str, after: str) -> list[dict]:
     """All statements the model sees in `segment`, each with "type" and "rejected" (None = checked)."""
-    from ..nli import complete
-
-    user = json.dumps({"vote": vote, "before": before[-1500:], "segment": segment, "after": after[:600]},
+    user = json.dumps({"vote": vote, "before": before[-BEFORE_CHARS:], "segment": segment, "after": after[:AFTER_CHARS]},
                       ensure_ascii=False)
-    statements = parse_statements(complete(EXTRACT_PROMPT, user, max_tokens=600)["text"])
+    statements = parse_statements(trace.call("Claim-Erkennung", EXTRACT_PROMPT, user, 600)["text"])
     for statement in statements:
         if statement["type"] not in CHECKABLE_TYPES:
             statement["rejected"] = "type"
@@ -435,6 +439,7 @@ def extract_statements(vote: str, before: str, segment: str, after: str) -> list
             statement["rejected"] = "about the booklet"
         else:
             statement["rejected"] = rejection(statement, segment)
+    trace.note("statements", items=statements)
     return statements
 
 
@@ -458,13 +463,12 @@ def parse_pages(spec: str | None) -> set[int] | None:
 def classify_with(prompt: str, claim: str, chunks: list, vote: str | None = None, max_tokens: int = 1024) -> dict:
     """nli.classify() with an explicit system prompt: the pipeline's parsing, label derivation and
     quote location, without touching nli.SYSTEM_PROMPT (the judges' prompt stays as it is)."""
-    from ..nli import (MAX_EVIDENCE_CHARS, _ids, _text, best_chunk, complete, derive_label, locate_quote,
-                       parse_output)
+    from ..nli import MAX_EVIDENCE_CHARS, _ids, _text, best_chunk, derive_label, locate_quote, parse_output
 
     user = json.dumps({"vote": vote, "claim": claim,
                        "chunks": [{"chunk": i, **_ids(c), "text": _text(c)} for i, c in enumerate(chunks)]},
                       ensure_ascii=False)
-    result = complete(prompt, user, max_tokens)
+    result = trace.call("Erste Prüfung", prompt, user, max_tokens)
     pred = {"label": "NEUTRAL", "claim_says": None, "subject_addressed": None, "passage_says": None,
             "same_meaning": None, "model_label": None, "citations": [], "error": None, "raw": result["text"]}
     try:
@@ -505,6 +509,8 @@ def judge(claim: str, chunks: list[dict], vote: str, prompt: str, cite: Callable
         if evidence:
             quotes = [item["text"] for item in evidence]
             relation = confirm_relation(claim, quotes)
+            rules = {"second_look": relation, "first_check": pred["label"].lower(),
+                     "figures_differ": figures_differ(claim, quotes), "scale_slip": scale_slip(claim, quotes)}
             # Green needs the second look to see support. Red needs a second, independent signal: the
             # first check also saw a conflict, or the claim's figures are not in the cited sentences.
             # A wrong contradiction on the screen is worse than a missed one.
@@ -515,11 +521,13 @@ def judge(claim: str, chunks: list[dict], vote: str, prompt: str, cite: Callable
             else:
                 how = "second look"
             label = settle(relation, [sections(item) for item in evidence], claim)
+            trace.note("rules", **rules, sections=[sections(item) for item in evidence], how=how, label=label)
         if label == "contradiction":
             support = find_sentence("supports", claim, chunks)
             if support and confirm_relation(claim, [support["text"]]) == "SUPPORT":
                 evidence = [cite(support["chunk"], support["text"])]
                 label, how = settle("SUPPORT", [sections(evidence[0])], claim), "supporting sentence found"
+                trace.note("rules", how=how, label=label)
     return {"label": label, "evidence": evidence if label != "neutral" else [], "note": pred["error"],
             "why": {"first": pred["label"].lower(), "relation": relation, "how": how,
                     **{k: pred[k] for k in ("claim_says", "passage_says")}}}
@@ -588,6 +596,7 @@ class ClaimChecker:
                  fingerprint: str | None = None, submit: Callable | None = None,
                  web_verify: Callable | None = None):
         self.cache = Path(cache)
+        self.trace_file = trace.trace_path(self.cache)   # what was sent to Apertus, for the trace view
         self._extract, self._verify, self._web_verify = extract, verify, web_verify
         self.web_on = False
         self._web_running: set[str] = set()
@@ -702,13 +711,22 @@ class ClaimChecker:
         with ThreadPoolExecutor(max_workers=workers, thread_name_prefix="batch") as pool:
             list(pool.map(run, jobs))
 
+    def _trace(self, record: dict) -> None:
+        with self._lock:
+            append_cache(self.trace_file, record)
+
     def _process(self, key: str, segment: dict, before: str, after: str) -> None:
-        try:
-            found = self._extract(before, segment["text"], after)
-        except Exception as exc:   # not cached: the segment is tried again on the next start
-            with self._lock:
-                self.error = f"Claim-Erkennung: {exc.__class__.__name__}: {exc}"
-            return
+        context = {"type": "extract", "key": key, "claims_version": CLAIMS_VERSION,
+                   "before": before, "segment": segment["text"], "after": after}
+        with trace.collect() as steps:
+            try:
+                found = self._extract(before, segment["text"], after)
+            except Exception as exc:   # not cached: the segment is tried again on the next start
+                self._trace({**context, "steps": steps, "error": f"{exc.__class__.__name__}: {exc}"})
+                with self._lock:
+                    self.error = f"Claim-Erkennung: {exc.__class__.__name__}: {exc}"
+                return
+        self._trace({**context, "steps": steps})
         with self._lock:
             self.error = None
             claims = []
@@ -726,12 +744,18 @@ class ClaimChecker:
     def _check(self, claim_id: str) -> None:
         with self._lock:
             claim = self.claims[claim_id]
-        try:
-            result = self._verify(claim["text"])
-        except Exception as exc:   # not cached either
+        with trace.collect() as steps:
+            try:
+                result = self._verify(claim["text"])
+            except Exception as exc:
+                result, error = None, f"{exc.__class__.__name__}: {exc}"
+        context = {"type": "verify", "id": claim_id, "v": VERIFY_VERSION, "claim": claim["text"], "steps": steps}
+        if result is None:   # not cached either
+            self._trace({**context, "error": error})
             with self._lock:
-                self._put({**claim, "status": "error", "note": f"{exc.__class__.__name__}: {exc}"})
+                self._put({**claim, "status": "error", "note": error})
             return
+        self._trace({**context, "label": result["label"], "why": result.get("why")})
         with self._lock:
             self._put({**claim, "status": "done", "label": result["label"], "evidence": result["evidence"]})
             append_cache(self.cache, {"type": "result", "id": claim_id, "label": result["label"],
@@ -756,13 +780,19 @@ class ClaimChecker:
         with self._lock:
             claim = self.claims[claim_id]
             self._put({**claim, "web_status": "checking"})
-        try:
-            result = self._web_verify(claim["text"])
-        except Exception as exc:   # not cached: tried again when the toggle is used next time
+        with trace.collect() as steps:
+            try:
+                result = self._web_verify(claim["text"])
+            except Exception as exc:
+                result, error = None, f"{exc.__class__.__name__}: {exc}"
+        context = {"type": "web", "id": claim_id, "v": VERIFY_VERSION, "claim": claim["text"], "steps": steps}
+        if result is None:   # not cached: tried again when the toggle is used next time
+            self._trace({**context, "error": error})
             with self._lock:
                 self._web_running.discard(claim_id)
-                self._put({**self.claims[claim_id], "web_status": "error", "web_note": f"{exc.__class__.__name__}: {exc}"})
+                self._put({**self.claims[claim_id], "web_status": "error", "web_note": error})
             return
+        self._trace({**context, "label": result["label"], "why": result.get("why")})
         with self._lock:
             self._web_running.discard(claim_id)
             web = {"label": result["label"], "evidence": result["evidence"]}
@@ -770,6 +800,40 @@ class ClaimChecker:
             append_cache(self.cache, {"type": "web", "id": claim_id, **web, "v": VERIFY_VERSION})
 
     # ---------------------------------------------------------------- what the page asks for
+
+    def trace_for(self, claim_id: str, segments: list[dict]) -> dict | None:
+        """Everything behind one card: the transcript the extraction saw, and every Apertus call of the
+        extraction, the booklet check and the web check, as recorded. Claims checked before tracing
+        existed have no recorded calls; their transcript context is rebuilt from the subtitles cache the
+        way process_all() builds it (marked "reconstructed")."""
+        with self._lock:
+            claim = self.claims.get(claim_id)
+            claim = dict(claim) if claim else None
+        if claim is None:
+            return None
+        key = claim_id.rpartition("#")[0]
+        extract = trace.find(self.trace_file, "extract", key, "key", {"claims_version": CLAIMS_VERSION})
+        verify = trace.find(self.trace_file, "verify", claim_id, "id", {"v": VERIFY_VERSION})
+        web = trace.find(self.trace_file, "web", claim_id, "id", {"v": VERIFY_VERSION})
+        if extract:
+            context = {k: extract[k] for k in ("before", "segment", "after")} | {"reconstructed": False}
+        else:
+            context = {"before": "", "segment": "", "after": "", "reconstructed": True}
+            for index, segment in enumerate(segments):
+                if self.segment_key(segment) == key:
+                    context.update(before=" ".join(s["text"] for s in segments[max(0, index - 2):index]),
+                                   segment=segment["text"],
+                                   after=segments[index + 1]["text"] if index + 1 < len(segments) else "")
+                    break
+        # as sent to Apertus (extract_statements cuts the context)
+        context.update(before=context["before"][-BEFORE_CHARS:], after=context["after"][:AFTER_CHARS])
+        return {"claim": {k: claim.get(k) for k in ("id", "text", "quote", "start", "t", "status", "label",
+                                                     "evidence", "note", "web")},
+                "versions": {"claims": CLAIMS_VERSION, "verify": VERIFY_VERSION},
+                "transcript": context,
+                "extraction": extract and {"steps": extract["steps"], "error": extract.get("error")},
+                "booklet": verify and {k: verify.get(k) for k in ("steps", "label", "why", "error")},
+                "web": web and {k: web.get(k) for k in ("steps", "label", "why", "error")}}
 
     def changes(self, rev: int) -> dict:
         with self._lock:

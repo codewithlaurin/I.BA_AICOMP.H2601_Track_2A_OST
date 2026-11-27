@@ -19,6 +19,8 @@ from pathlib import Path
 from typing import Callable
 from urllib.parse import urldefrag, urljoin, urlparse
 
+from . import trace
+
 WHITELIST = ("admin.ch", "parlament.ch", "swissvotes.ch", "srf.ch")
 SOURCE_NAMES = {
     "bfs.admin.ch": "BFS", "statistik.admin.ch": "BFS", "sem.admin.ch": "SEM", "seco.admin.ch": "SECO", "bsv.admin.ch": "BSV",
@@ -324,4 +326,5 @@ class WebVerifier:
         if result["label"] == "contradiction":
             result = {**result, "label": "neutral", "evidence": [],
                       "why": {**result["why"], "how": "web sources do not contradict"}}
+            trace.note("rules", how="web sources do not contradict", label="neutral")
         return result

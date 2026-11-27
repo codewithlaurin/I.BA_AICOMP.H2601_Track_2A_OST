@@ -75,6 +75,24 @@ def create_app(runtimes: list[Runtime]) -> FastAPI:
             data.update(checker.changes(rev))
         return data
 
+    @app.get("/arena/{arena_id}/api/trace")
+    def claim_trace(arena_id: str, claim: str) -> dict:
+        """The trace view of one card (claim ids contain '#', so the id is a query parameter)."""
+        from . import claims as module
+
+        runtime = get(arena_id)
+        if runtime.checker is None:
+            raise HTTPException(404, "no claim check for this arena")
+        found = runtime.checker.trace_for(claim, runtime.subtitles.snapshot())
+        if found is None:
+            raise HTTPException(404, f"unknown claim {claim}")
+        arena = runtime.arena
+        found["arena"] = {"vote": arena.vote, "pages": arena.pages, "booklet": arena.booklet.name if arena.booklet else None}
+        # for claims checked before tracing existed: the prompts as they are on disk now
+        found["prompts"] = {"Claim-Erkennung": module.EXTRACT_PROMPT, "Erste Prüfung": module.VERIFY_PROMPT,
+                            "Zweiter Blick": module.CONFIRM_PROMPT, "Satzsuche": module.FIND_PROMPT}
+        return found
+
     @app.get("/arena/{arena_id}/api/dev/claims")
     def dev_claims(arena_id: str, start: float = 0.0, end: float = 1e9, verify: int = 1, debug: int = 0) -> dict:
         """Run claim extraction (and the check) over the cached transcript between start and end

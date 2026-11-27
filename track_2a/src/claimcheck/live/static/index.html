@@ -94,6 +94,57 @@
   .claim .pending::before { content:""; display:inline-block; width:9px; height:9px; margin-right:5px; vertical-align:-1px;
            border:2px solid var(--muted); border-top-color:transparent; border-radius:50%; animation:spin .8s linear infinite; }
   .claim blockquote a { color:#8fc1f5; font-size:12px; word-break:break-all; }
+  .claim .text { cursor:pointer; }
+  .claim .text:hover { text-decoration:underline; text-decoration-color:var(--muted); text-underline-offset:3px; }
+  .claim .trace-link { background:none; border:0; padding:0; margin-left:8px; color:var(--muted); font:inherit; font-size:12px; cursor:pointer; }
+  .claim .trace-link:hover { color:var(--text); }
+
+  /* ---- trace view: everything behind one card ---- */
+  #trace[hidden], #trace-backdrop[hidden] { display:none; }
+  #trace-backdrop { position:fixed; inset:0; background:rgba(0,0,0,.55); z-index:20; }
+  #trace { position:fixed; top:0; right:0; bottom:0; width:min(820px, 100vw); z-index:21; background:var(--bg);
+           border-left:1px solid var(--line); display:flex; flex-direction:column; }
+  #trace header { margin:0; padding:14px 18px; border-bottom:1px solid var(--line); align-items:flex-start; }
+  #trace header .claim-text { font-size:17px; margin:4px 0 0; }
+  #trace header .meta { font-size:12px; color:var(--muted); }
+  #trace .close { background:var(--panel2); border:1px solid var(--line); color:var(--text); border-radius:8px; padding:5px 12px; cursor:pointer; font:inherit; font-size:13px; }
+  #trace-body { overflow-y:auto; padding:16px 18px 40px; display:flex; flex-direction:column; gap:22px; }
+  .tr-section { display:flex; flex-direction:column; gap:10px; }
+  .tr-section > h3 { margin:0; font-size:13px; font-weight:600; color:var(--muted); text-transform:uppercase; letter-spacing:.06em;
+                     display:flex; gap:8px; align-items:center; }
+  .tag { font-size:11px; font-weight:600; letter-spacing:.03em; text-transform:none; padding:2px 8px; border-radius:999px;
+         background:var(--panel2); color:var(--muted); border:1px solid var(--line); }
+  .tag.warn { color:#e0b25c; border-color:#4a3a1c; background:#2a2214; }
+  .tag.ok { color:var(--ok); background:var(--ok-bg); border-color:transparent; }
+  .tag.nok { color:var(--nok); background:var(--nok-bg); border-color:transparent; }
+  .tr-note { font-size:13px; color:var(--muted); margin:0; }
+  .tr-transcript { background:var(--panel); border:1px solid var(--line); border-radius:10px; padding:12px 14px; font-size:14px; line-height:1.6; }
+  .tr-transcript .ctx { color:var(--muted); }
+  .tr-transcript .seg { color:var(--text); background:#1f2a35; box-shadow:0 0 0 3px #1f2a35; border-radius:2px; }
+  .tr-transcript mark { background:#3a3215; color:#f3dc8a; border-radius:2px; }
+  .tr-transcript .lbl { display:block; font-size:11px; font-weight:600; color:var(--muted); text-transform:uppercase; letter-spacing:.06em; margin-top:8px; }
+  .tr-transcript .lbl:first-child { margin-top:0; }
+  .tr-call { border:1px solid var(--line); border-radius:10px; background:var(--panel); overflow:hidden; }
+  .tr-call > .head { display:flex; justify-content:space-between; gap:12px; align-items:baseline; padding:9px 14px; background:var(--panel2); }
+  .tr-call > .head b { font-size:14px; }
+  .tr-call > .head span { font-size:12px; color:var(--muted); font-variant-numeric:tabular-nums; text-align:right; }
+  .tr-call .part { padding:8px 14px; border-top:1px solid var(--line); }
+  .tr-call .part > .lbl, .tr-call summary { font-size:12px; font-weight:600; color:var(--muted); }
+  .tr-call summary { cursor:pointer; }
+  .tr-call summary:hover { color:var(--text); }
+  pre.code { margin:6px 0 0; padding:10px 12px; background:#0b0f13; border:1px solid var(--line); border-radius:6px; max-height:320px; overflow:auto;
+             font:12.5px/1.5 ui-monospace, "Cascadia Mono", Consolas, monospace; white-space:pre-wrap; word-break:break-word; color:#d5dde5; }
+  .tr-call .error { color:var(--nok); font-size:13px; }
+  .pages { display:flex; flex-direction:column; gap:4px; margin-top:6px; }
+  .pages details { border:1px solid var(--line); border-radius:6px; padding:4px 10px; background:#0b0f13; }
+  .pages summary { font-weight:500; }
+  table.tr { width:100%; border-collapse:collapse; font-size:13px; }
+  table.tr th, table.tr td { text-align:left; padding:6px 8px; border-top:1px solid var(--line); vertical-align:top; }
+  table.tr th { color:var(--muted); font-weight:600; font-size:12px; border-top:0; }
+  table.tr td.why { color:var(--muted); white-space:nowrap; }
+  .rules { display:grid; grid-template-columns:max-content minmax(0, 1fr); gap:6px 14px; font-size:13px; background:var(--panel);
+           border:1px solid var(--line); border-radius:10px; padding:12px 14px; }
+  .rules dt { color:var(--muted); } .rules dd { margin:0; }
 </style>
 </head>
 <body>
@@ -127,6 +178,17 @@
     </aside>
   </div>
 </main>
+<div id="trace-backdrop" hidden></div>
+<section id="trace" hidden aria-label="Ablauf des Claims" role="dialog">
+  <header>
+    <div>
+      <div class="meta" id="trace-meta"></div>
+      <p class="claim-text" id="trace-claim"></p>
+    </div>
+    <button class="close" id="trace-close" type="button">Schliessen</button>
+  </header>
+  <div id="trace-body"></div>
+</section>
 <script>
 const video = document.getElementById('video');
 const subtitleBox = document.getElementById('subtitle');
@@ -211,8 +273,16 @@ function claimCard(claim) {
   const badge = element('span', 'badge', text);
   if (claim.status === 'error' && claim.note) badge.title = claim.note;
   right.append(badge);
-  top.append(stamp, right);
+  const left = element('span');
+  const traceLink = element('button', 'trace-link', 'Ablauf ›');
+  traceLink.type = 'button';
+  traceLink.title = 'Was Apertus bekommen und geantwortet hat';
+  traceLink.onclick = () => openTrace(claim.id);
+  left.append(stamp, traceLink);
+  top.append(left, right);
   const body = element('p', 'text');
+  body.title = 'Ablauf anzeigen';
+  body.onclick = () => openTrace(claim.id);
   body.append(element('small', '', 'Claim'), claim.text);
   if (webOn() && claim.status === 'done' && claim.label === 'neutral' && !claim.web && claim.web_status !== 'error')
     body.append(element('span', 'pending', 'Web-Recherche läuft'));
@@ -353,6 +423,240 @@ function render() {
   }
   renderClaims();
   requestAnimationFrame(render);
+}
+
+// ---------------------------------------------------------------- trace view
+
+const traceBox = document.getElementById('trace');
+const traceBackdrop = document.getElementById('trace-backdrop');
+const traceBody = document.getElementById('trace-body');
+const STEP_NOTE = {
+  'Claim-Erkennung': 'Sucht im Transkript-Abschnitt prüfbare Aussagen.',
+  'Erste Prüfung': 'Sucht in den gesendeten Seiten den Satz zur selben Sache: passt, widerspricht oder fehlt.',
+  'Zweiter Blick': 'Sieht nur den Claim und den zitierten Satz: SUPPORT, CONFLICT oder UNRELATED.',
+  'Satzsuche: gleiche Sache': 'Das Zitat der ersten Prüfung stand nicht wörtlich im Text. Der Satz wird neu gesucht.',
+  'Satzsuche: stützender Satz': 'Vor einem Widerspruch: Gibt es doch einen Satz, der den Claim stützt?',
+};
+const HOW = {
+  'not addressed': 'Thema nicht gefunden',
+  'second look': 'Entscheid des zweiten Blicks',
+  'checks disagree': 'Zweiter Blick sah Konflikt, aber kein zweites Signal: nicht rot',
+  'supporting sentence found': 'Stützender Satz gefunden',
+  'figure off by a factor of 1000 (speech recognition)': 'Zahl um Faktor 1000 verschoben (Spracherkennung)',
+  'web sources do not contradict': 'Web-Quellen widersprechen nie',
+};
+const REJECTED = { type: 'kein prüfbarer Typ', 'about the booklet': 'spricht über das Büchlein' };
+
+function closeTrace() { traceBox.hidden = true; traceBackdrop.hidden = true; }
+document.getElementById('trace-close').onclick = closeTrace;
+traceBackdrop.onclick = closeTrace;
+document.addEventListener('keydown', event => { if (event.key === 'Escape' && !traceBox.hidden) closeTrace(); });
+
+function pretty(text) {
+  try { return JSON.stringify(JSON.parse(text), null, 2); } catch (error) { return text; }
+}
+
+function codeBlock(text) { return element('pre', 'code', text); }
+
+function collapsible(title, content, open = false) {
+  const box = element('details');
+  box.open = open;
+  box.append(element('summary', '', title), content);
+  return box;
+}
+
+function labelTag(label) {
+  const names = { entailment: 'Belegt', contradiction: 'Widerspruch', neutral: 'Nicht im Büchlein' };
+  const kind = { entailment: 'ok', contradiction: 'nok' }[label] || '';
+  return element('span', 'tag ' + kind, names[label] || label || '–');
+}
+
+// The request: booklet pages (or web passages) one by one, everything else as JSON.
+function requestView(user) {
+  let data;
+  try { data = JSON.parse(user); } catch (error) { return codeBlock(user); }
+  const wrap = element('div');
+  const pages = Array.isArray(data.chunks) ? data.chunks : null;
+  const rest = { ...data };
+  if (pages) rest.chunks = '[' + pages.length + ' Abschnitte, siehe unten]';
+  wrap.append(codeBlock(JSON.stringify(rest, null, 2)));
+  if (pages) {
+    const list = element('div', 'pages');
+    for (const chunk of pages) {
+      const where = chunk.page != null ? 'Seite ' + chunk.page : (chunk.source || chunk.url || 'Abschnitt');
+      list.append(collapsible('Abschnitt ' + chunk.chunk + ' · ' + where + ' · ' + (chunk.text || '').length + ' Zeichen',
+                              codeBlock(chunk.text || '')));
+    }
+    wrap.append(list);
+  }
+  return wrap;
+}
+
+function callView(step) {
+  const box = element('div', 'tr-call');
+  const head = element('div', 'head');
+  const meta = [step.model, step.input_tokens != null ? step.input_tokens + ' → ' + step.output_tokens + ' Tokens' : null,
+                step.ms != null ? (step.ms / 1000).toFixed(1) + ' s' : null].filter(Boolean).join(' · ');
+  head.append(element('b', '', step.name), element('span', '', meta));
+  box.append(head);
+  if (STEP_NOTE[step.name]) {
+    const note = element('div', 'part');
+    note.append(element('p', 'tr-note', STEP_NOTE[step.name]));
+    box.append(note);
+  }
+  const system = element('div', 'part');
+  system.append(collapsible('Systemprompt (' + step.system.length + ' Zeichen)', codeBlock(step.system)));
+  const request = element('div', 'part');
+  request.append(collapsible('Gesendet', requestView(step.user), true));
+  const answer = element('div', 'part');
+  if (step.error) answer.append(element('div', 'lbl', 'Fehler'), element('p', 'error', step.error));
+  else answer.append(element('div', 'lbl', 'Antwort von Apertus (roh)'), codeBlock(pretty(step.response)));
+  box.append(system, request, answer);
+  return box;
+}
+
+function statementsView(items) {
+  if (!items.length) return element('p', 'tr-note', 'Apertus hat in diesem Abschnitt keine Aussage gefunden.');
+  const table = element('table', 'tr');
+  const head = element('tr');
+  ['Aussage', 'Typ', 'Ergebnis'].forEach(text => head.append(element('th', '', text)));
+  table.append(head);
+  for (const item of items) {
+    const row = element('tr');
+    const text = element('td');
+    text.append(item.text || '');
+    if (item.quote) text.append(element('div', 'tr-note', '«' + item.quote + '»'));
+    const result = item.rejected == null ? 'geprüft' : 'verworfen: ' + (REJECTED[item.rejected] || item.rejected);
+    row.append(text, element('td', 'why', item.type || ''), element('td', 'why', result));
+    table.append(row);
+  }
+  return table;
+}
+
+function rulesView(rules, why) {
+  const list = element('dl', 'rules');
+  const add = (term, value) => { if (value == null || value === '') return; list.append(element('dt', '', term), element('dd', '', value)); };
+  const yes = value => value == null ? null : value ? 'ja' : 'nein';
+  if (why) {
+    add('Claim laut Apertus', why.claim_says);
+    add('Quelle laut Apertus', why.passage_says);
+  }
+  add('Erste Prüfung', rules.first_check || (why && why.first));
+  add('Zweiter Blick', rules.second_look || (why && why.relation));
+  add('Zahlen weichen ab', yes(rules.figures_differ));
+  add('Faktor 1000 (Spracherkennung)', yes(rules.scale_slip));
+  if (rules.sections && rules.sections.some(Boolean)) add('Textsorte der Zitate', rules.sections.filter(Boolean).join(', '));
+  add('Entscheid', HOW[rules.how] || rules.how || (why && (HOW[why.how] || why.how)));
+  if (rules.label) {
+    const result = element('dd');
+    result.append(labelTag(rules.label));
+    list.append(element('dt', '', 'Ergebnis'), result);
+  }
+  return list;
+}
+
+function checkView(check) {
+  const wrap = element('div', 'tr-section');
+  if (check.error) wrap.append(element('p', 'error', 'Fehler: ' + check.error));
+  const steps = check.steps || [];
+  for (const step of steps) {
+    if (step.kind === 'call') wrap.append(callView(step));
+    else if (step.kind === 'rules') wrap.append(rulesView(step, check.why));
+  }
+  if (!steps.some(step => step.kind === 'rules') && check.why) wrap.append(rulesView({ label: check.label }, check.why));
+  return wrap;
+}
+
+function section(title, ...tags) {
+  const box = element('div', 'tr-section');
+  const head = element('h3', '', title);
+  tags.filter(Boolean).forEach(tag => head.append(tag));
+  box.append(head);
+  return box;
+}
+
+function transcriptView(context, quote) {
+  const box = element('div', 'tr-transcript');
+  if (context.before) box.append(element('span', 'lbl', 'Vorher (Kontext)'), element('span', 'ctx', context.before));
+  box.append(element('span', 'lbl', 'Abschnitt, aus dem der Claim stammt'));
+  const segment = element('span', 'seg');
+  const text = context.segment || '';
+  const at = quote ? text.indexOf(quote) : -1;
+  if (at >= 0) segment.append(text.slice(0, at), element('mark', '', quote), text.slice(at + quote.length));
+  else segment.append(text || '(nicht gefunden)');
+  box.append(segment);
+  if (context.after) box.append(element('span', 'lbl', 'Nachher (Kontext)'), element('span', 'ctx', context.after));
+  return box;
+}
+
+function notRecorded(text) { return element('p', 'tr-note', text); }
+
+function renderTrace(data) {
+  const claim = data.claim;
+  document.getElementById('trace-claim').textContent = claim.text;
+  document.getElementById('trace-meta').textContent =
+    clock(claim.start || 0) + ' · ' + (data.arena.vote || '') + ' · ' + data.versions.claims + ', ' + data.versions.verify;
+  const parts = [];
+
+  const transcript = section('Transkript', data.transcript.reconstructed ? element('span', 'tag warn', 'rekonstruiert') : null);
+  transcript.append(transcriptView(data.transcript, claim.quote));
+  if (claim.quote) transcript.append(element('p', 'tr-note', 'Markiert: das Zitat, das Apertus zum Claim angegeben hat («' + claim.quote + '»).'));
+  if (data.transcript.reconstructed)
+    transcript.append(notRecorded('Aus dem Untertitel-Cache so zusammengesetzt, wie die Auswertung ihn aufbaut: zwei Abschnitte davor, einer danach. Im Live-Betrieb kann der Text danach kürzer gewesen sein.'));
+  parts.push(transcript);
+
+  const extraction = section('1 · Claim-Erkennung', data.extraction ? null : element('span', 'tag warn', 'nicht aufgezeichnet'));
+  if (data.extraction) {
+    for (const step of data.extraction.steps) {
+      if (step.kind === 'call') extraction.append(callView(step));
+      else if (step.kind === 'statements') extraction.append(element('p', 'tr-note', 'Alle Aussagen, die Apertus gefunden hat:'), statementsView(step.items));
+    }
+    if (data.extraction.error) extraction.append(element('p', 'error', 'Fehler: ' + data.extraction.error));
+  } else {
+    extraction.append(notRecorded('Dieser Claim wurde geprüft, bevor das Aufzeichnen eingebaut war. Die Antwort von Apertus ist nicht gespeichert. Der Prompt unten ist der aktuelle Stand.'),
+                      collapsible('Prompt (aktueller Stand)', codeBlock(data.prompts['Claim-Erkennung'])));
+  }
+  parts.push(extraction);
+
+  const booklet = section('2 · Prüfung gegen das Büchlein', claim.label ? labelTag(claim.label) : null,
+                          data.booklet ? null : element('span', 'tag warn', 'nicht aufgezeichnet'));
+  if (data.booklet) booklet.append(checkView(data.booklet));
+  else {
+    booklet.append(notRecorded('Nur das gespeicherte Ergebnis liegt vor. Gesendet wurden die Büchlein-Seiten ' +
+                               (data.arena.pages || '(Auswahl per Suche)') + ' aus ' + (data.arena.booklet || 'dem Büchlein') + '.'));
+    for (const name of ['Erste Prüfung', 'Zweiter Blick', 'Satzsuche'])
+      booklet.append(collapsible('Prompt «' + name + '» (aktueller Stand)', codeBlock(data.prompts[name])));
+  }
+  if (claim.evidence && claim.evidence.length) {
+    const cited = element('div');
+    for (const item of claim.evidence) cited.append(codeBlock('Seite ' + item.page + (item.section ? ' · ' + item.section : '') + '\n' + item.text));
+    booklet.append(collapsible('Zitat auf der Karte', cited, true));
+  }
+  parts.push(booklet);
+
+  if (data.web || claim.web) {
+    const web = section('3 · Web-Recherche', claim.web ? labelTag(claim.web.label) : null,
+                        data.web ? null : element('span', 'tag warn', 'nicht aufgezeichnet'));
+    if (data.web) web.append(checkView(data.web));
+    else web.append(notRecorded('Nur das gespeicherte Ergebnis liegt vor.'));
+    parts.push(web);
+  }
+  traceBody.replaceChildren(...parts);
+  traceBody.scrollTop = 0;
+}
+
+async function openTrace(id) {
+  traceBox.hidden = false; traceBackdrop.hidden = false;
+  document.getElementById('trace-claim').textContent = claims.get(id) ? claims.get(id).text : '';
+  document.getElementById('trace-meta').textContent = '';
+  traceBody.replaceChildren(element('p', 'tr-note', 'Lade Ablauf …'));
+  try {
+    const response = await fetch('api/trace?claim=' + encodeURIComponent(id));
+    if (!response.ok) throw new Error((await response.json()).detail || response.statusText);
+    renderTrace(await response.json());
+  } catch (error) {
+    traceBody.replaceChildren(element('p', 'error', 'Ablauf nicht verfügbar: ' + error.message));
+  }
 }
 
 sync();

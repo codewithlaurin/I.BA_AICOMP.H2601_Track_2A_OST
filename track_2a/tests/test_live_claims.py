@@ -70,6 +70,10 @@ class ParseTest(unittest.TestCase):
         self.assertFalse(figures_differ("Das BIP pro Kopf ist seit 1999 um 25 bis 26,5 % gestiegen.", gdp))   # another period
         self.assertTrue(figures_differ("Das BIP pro Kopf ist seit 2002 um 30 % gestiegen.", gdp))
         self.assertFalse(figures_differ("Das BIP pro Kopf ist seit 2002 gestiegen.", gdp))   # the year is no figure
+        limit = ["Wenn die Wohnbevölkerung die 9,5-Millionen-Grenze überschreitet, müssen Bundesrat und Parlament handeln."]
+        self.assertFalse(figures_differ("Die Initiative setzt bei 9 Millionen an.", limit))   # "9 Komma Mio." in the transcript
+        self.assertTrue(figures_differ("Die Initiative setzt bei 8 Millionen an.", limit))
+        self.assertTrue(figures_differ("Die Initiative setzt bei 9,2 Millionen an.", limit))
 
     def test_final_label_is_one_of_the_three(self):
         facts, committee, council = ["Erläuterungen"], ["Argument des Komitees"], ["Argument von Bundesrat und Parlament"]
